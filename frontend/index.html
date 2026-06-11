@@ -5,9 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
 <meta name="theme-color" content="#0d0f14">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>BuildLedger</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #0d0f14;
@@ -21,12 +20,9 @@
   --blu: #5e72e4;
   --txt: #e8eaf0;
   --mut: #6b7394;
-  --fh: 'Bebas Neue', sans-serif;
   --fb: 'DM Sans', sans-serif;
   --fm: 'JetBrains Mono', monospace;
-  --r: 10px;
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-top: env(safe-area-inset-top, 0px);
+  --r: 12px;
 }
 
 * {
@@ -41,164 +37,10 @@ body {
   color: var(--txt);
   font-family: var(--fb);
   min-height: 100vh;
-  padding-bottom: var(--safe-bottom);
-}
-
-/* Mobile Optimized Scrollbar */
-::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--bd);
-  border-radius: 3px;
-}
-
-/* Auth Screen */
-.auth-wrap {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(ellipse at 20% 50%, rgba(245,166,35,.08), transparent 60%), var(--bg);
-  padding: 20px;
-}
-
-.auth-card {
-  background: var(--s1);
-  border: 1px solid var(--bd);
-  border-radius: 24px;
-  padding: 32px 24px;
-  width: 100%;
-  max-width: 400px;
-}
-
-.auth-logo {
-  font-family: var(--fh);
-  font-size: 32px;
-  letter-spacing: 2px;
-  color: var(--acc);
-  text-align: center;
-}
-
-.auth-sub {
-  color: var(--mut);
-  font-size: 12px;
-  text-align: center;
-  margin-bottom: 28px;
-  margin-top: 4px;
-}
-
-.auth-tabs {
-  display: flex;
-  gap: 8px;
-  background: var(--bg);
-  border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 24px;
-}
-
-.auth-tab {
-  flex: 1;
-  text-align: center;
-  padding: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--mut);
-  border: none;
-  background: none;
-  transition: all .2s;
-}
-
-.auth-tab.active {
-  background: var(--acc);
-  color: #000;
-}
-
-/* Form Elements */
-.fg { margin-bottom: 16px; }
-.fl {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--mut);
-  text-transform: uppercase;
-  letter-spacing: .8px;
-  margin-bottom: 6px;
-  display: block;
-}
-.fi, .fs, .fta {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--bd);
-  border-radius: var(--r);
-  padding: 12px 14px;
-  color: var(--txt);
-  font-family: var(--fb);
-  font-size: 15px;
-  outline: none;
-  transition: border-color .2s;
-}
-.fi:focus, .fs:focus, .fta:focus { border-color: var(--acc); }
-.fi::placeholder { color: var(--mut); }
-.fs { cursor: pointer; }
-.fta { resize: vertical; min-height: 80px; }
-
-.frow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-/* Buttons */
-.btn {
-  padding: 12px 20px;
-  border-radius: var(--r);
-  font-family: var(--fb);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all .2s;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  white-space: nowrap;
-  text-decoration: none;
-}
-.btn-p { background: var(--acc); color: #000; }
-.btn-p:hover { background: #ffb733; transform: translateY(-1px); }
-.btn-sm { padding: 8px 14px; font-size: 13px; }
-.btn-o { background: transparent; border: 1px solid var(--bd); color: var(--txt); }
-.btn-o:hover { border-color: var(--acc); color: var(--acc); }
-.btn-d { background: rgba(245,54,92,.12); color: var(--red); border: 1px solid rgba(245,54,92,.25); }
-.btn-g { background: rgba(45,206,137,.12); color: var(--grn); border: 1px solid rgba(45,206,137,.25); }
-.btn-b { background: rgba(94,114,228,.12); color: var(--blu); border: 1px solid rgba(94,114,228,.25); }
-.btn-full { width: 100%; justify-content: center; font-size: 15px; }
-
-.err {
-  background: rgba(245,54,92,.1);
-  border: 1px solid rgba(245,54,92,.3);
-  color: var(--red);
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  margin-top: 10px;
-}
-
-/* Bottom Navigation (Mobile) */
-.app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
   padding-bottom: 70px;
 }
 
+/* Bottom Navigation */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -209,7 +51,7 @@ body {
   display: flex;
   justify-content: space-around;
   padding: 8px 12px;
-  padding-bottom: max(8px, var(--safe-bottom));
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
   z-index: 100;
 }
 
@@ -222,42 +64,26 @@ body {
   border: none;
   color: var(--mut);
   font-size: 11px;
-  padding: 6px 8px;
+  padding: 8px 12px;
   border-radius: 10px;
   cursor: pointer;
   transition: all .15s;
   font-family: var(--fb);
 }
 
-.nav-item .ico {
-  font-size: 22px;
-}
-
-.nav-item.active {
-  color: var(--acc);
-  background: rgba(245,166,35,.1);
-}
+.nav-item .ico { font-size: 22px; }
+.nav-item.active { color: var(--acc); background: rgba(245,166,35,.1); }
 
 .main {
-  flex: 1;
   padding: 16px;
   padding-bottom: 20px;
 }
 
-/* Header */
+/* Cards & Layout */
 .ph { margin-bottom: 16px; }
-.ptitle {
-  font-family: var(--fh);
-  font-size: 28px;
-  letter-spacing: 1px;
-}
-.psub {
-  color: var(--mut);
-  font-size: 12px;
-  margin-top: 2px;
-}
+.ptitle { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; background: linear-gradient(135deg, #fff, var(--acc)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.psub { color: var(--mut); font-size: 12px; margin-top: 2px; }
 
-/* Cards */
 .card {
   background: var(--s1);
   border: 1px solid var(--bd);
@@ -265,23 +91,24 @@ body {
   padding: 16px;
   margin-bottom: 12px;
 }
+
 .ch {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 14px;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 10px;
 }
 .ct { font-size: 15px; font-weight: 600; }
 
-/* Stats Grid */
 .sgrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   margin-bottom: 16px;
 }
+
 .sc {
   background: var(--s1);
   border: 1px solid var(--bd);
@@ -290,93 +117,62 @@ body {
   position: relative;
   overflow: hidden;
 }
-.sc::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-}
+.sc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
 .sc.or::before { background: var(--acc); }
 .sc.gn::before { background: var(--grn); }
 .sc.rd::before { background: var(--red); }
 .sc.bl::before { background: var(--blu); }
 .si { font-size: 18px; margin-bottom: 6px; }
-.sv { font-family: var(--fh); font-size: 24px; letter-spacing: 1px; }
+.sv { font-size: 24px; font-weight: 700; }
 .sv.or { color: var(--acc); }
 .sv.gn { color: var(--grn); }
 .sv.rd { color: var(--red); }
 .sv.bl { color: var(--blu); }
-.slb { font-size: 11px; color: var(--mut); margin-top: 2px; }
-.ssb { font-size: 10px; color: var(--mut); margin-top: 2px; }
+.slb { font-size: 11px; color: var(--mut); }
 
-/* Tables - Mobile Scroll */
-.tw { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
-table { width: 100%; border-collapse: collapse; min-width: 500px; }
-thead th {
-  font-size: 10px;
+/* Forms */
+.fi, .fs, .fta {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--txt);
+  font-size: 14px;
+  outline: none;
+}
+.fi:focus, .fs:focus { border-color: var(--acc); }
+.fl { font-size: 11px; font-weight: 600; color: var(--mut); margin-bottom: 5px; display: block; }
+.fg { margin-bottom: 14px; }
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .7px;
-  color: var(--mut);
-  padding: 8px 10px;
-  text-align: left;
-  border-bottom: 1px solid var(--bd);
+  cursor: pointer;
+  border: none;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
-tbody td {
-  padding: 10px 10px;
-  font-size: 13px;
-  border-bottom: 1px solid rgba(255,255,255,.04);
-}
-tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover td { background: rgba(255,255,255,.02); }
+.btn-p { background: var(--acc); color: #000; }
+.btn-o { background: transparent; border: 1px solid var(--bd); color: var(--txt); }
+.btn-d { background: rgba(245,54,92,.12); color: var(--red); border: 1px solid rgba(245,54,92,.25); }
+.btn-sm { padding: 7px 12px; font-size: 12px; }
 
 .badge {
   padding: 2px 8px;
   border-radius: 20px;
   font-size: 10px;
   font-weight: 600;
-  display: inline-block;
 }
 .bg-g { background: rgba(45,206,137,.15); color: var(--grn); }
 .bg-r { background: rgba(245,54,92,.15); color: var(--red); }
 .bg-o { background: rgba(245,166,35,.15); color: var(--acc); }
 .bg-b { background: rgba(94,114,228,.15); color: var(--blu); }
-.bg-gr { background: rgba(107,115,148,.15); color: var(--mut); }
-
-/* Modal */
-.ov {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.8);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  animation: fi .15s ease;
-}
-.modal {
-  background: var(--s1);
-  border: 1px solid var(--bd);
-  border-radius: 20px;
-  width: 100%;
-  max-width: 500px;
-  max-height: 85vh;
-  overflow-y: auto;
-}
-.mh {
-  padding: 18px 20px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.mt { font-size: 17px; font-weight: 600; }
-.mc { background: none; border: none; color: var(--mut); font-size: 22px; cursor: pointer; padding: 0 8px; }
-.mb { padding: 16px 20px 20px; }
-.mact { display: flex; gap: 10px; margin-top: 16px; }
-.mact .btn { flex: 1; justify-content: center; }
 
 /* Worker Grid */
 .wgrid {
@@ -389,43 +185,26 @@ tbody tr:hover td { background: rgba(255,255,255,.02); }
   border: 1px solid var(--bd);
   border-radius: 12px;
   padding: 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   text-align: center;
-  gap: 6px;
 }
 .wavatar {
   width: 56px;
   height: 56px;
   border-radius: 50%;
   background: var(--acc);
-  color: #000;
-  font-weight: 700;
-  font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  margin: 0 auto 8px;
+  font-size: 20px;
+  font-weight: 700;
   cursor: pointer;
+  overflow: hidden;
 }
 .wavatar img { width: 100%; height: 100%; object-fit: cover; }
 .wname { font-size: 14px; font-weight: 600; cursor: pointer; }
-.wskill { font-size: 11px; color: var(--mut); }
-.wwage { font-family: var(--fm); font-size: 12px; color: var(--acc); }
-.wcontact { display: flex; gap: 6px; }
-.wcontact a {
-  background: var(--s3);
-  border: 1px solid var(--bd);
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  text-decoration: none;
-}
+.wskill { font-size: 11px; color: var(--mut); margin: 4px 0; }
+.wwage { font-size: 13px; color: var(--acc); font-weight: 600; }
 
 /* Attendance */
 .att-row {
@@ -433,30 +212,28 @@ tbody tr:hover td { background: rgba(255,255,255,.02); }
   border: 1px solid var(--bd);
   border-radius: 12px;
   padding: 12px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 8px;
 }
 .att-av {
   width: 44px;
   height: 44px;
   border-radius: 50%;
   background: var(--acc);
-  color: #000;
-  font-weight: 700;
-  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  font-weight: 700;
   flex-shrink: 0;
+  overflow: hidden;
 }
 .att-inf { flex: 1; min-width: 120px; }
-.att-nm { font-size: 14px; font-weight: 500; }
-.att-mt { font-size: 11px; color: var(--mut); margin-top: 1px; }
-.pha-btns { display: flex; gap: 6px; flex-shrink: 0; }
+.att-nm { font-size: 14px; font-weight: 600; }
+.att-mt { font-size: 11px; color: var(--mut); }
+.pha-btns { display: flex; gap: 6px; }
 .pha {
   padding: 5px 10px;
   border-radius: 6px;
@@ -464,7 +241,6 @@ tbody tr:hover td { background: rgba(255,255,255,.02); }
   font-weight: 700;
   cursor: pointer;
   border: 1.5px solid;
-  transition: all .12s;
   background: transparent;
 }
 .pha.p { border-color: var(--grn); color: var(--grn); }
@@ -474,13 +250,6 @@ tbody tr:hover td { background: rgba(255,255,255,.02); }
 .pha.a { border-color: var(--red); color: var(--red); }
 .pha.a.sel { background: var(--red); color: #fff; }
 
-.wage-toggle {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-.wt-lbl { font-size: 10px; color: var(--mut); }
 .tog {
   width: 40px;
   height: 20px;
@@ -489,7 +258,6 @@ tbody tr:hover td { background: rgba(255,255,255,.02); }
   cursor: pointer;
   position: relative;
   transition: background .2s;
-  flex-shrink: 0;
 }
 .tog.on { background: var(--grn); }
 .tog.off { background: var(--bd); }
@@ -513,11 +281,10 @@ tbody tr:hover td { background: rgba(255,255,255,.02); }
   padding: 12px;
   margin-bottom: 12px;
   display: flex;
-  align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
-.date-nav { display: flex; align-items: center; gap: 6px; }
+.date-nav { display: flex; gap: 6px; align-items: center; }
 .date-nav button {
   background: var(--s3);
   border: 1px solid var(--bd);
@@ -529,17 +296,46 @@ tbody tr:hover td { background: rgba(255,255,255,.02); }
   font-size: 18px;
 }
 
-/* Toast */
+/* Modal */
+.ov {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.8);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal {
+  background: var(--s1);
+  border: 1px solid var(--bd);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.mh { padding: 18px 20px 0; display: flex; justify-content: space-between; align-items: center; }
+.mt { font-size: 17px; font-weight: 600; }
+.mc { background: none; border: none; color: var(--mut); font-size: 22px; cursor: pointer; }
+.mb { padding: 16px 20px 20px; }
+.mact { display: flex; gap: 10px; margin-top: 16px; }
+.mact .btn { flex: 1; justify-content: center; }
+
+.loader { text-align: center; padding: 40px; color: var(--mut); }
+.spin { width: 28px; height: 28px; border: 3px solid var(--bd); border-top-color: var(--acc); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 10px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty { text-align: center; padding: 40px; color: var(--mut); }
+.ei { font-size: 48px; margin-bottom: 8px; }
+
 .toast-wrap {
   position: fixed;
   bottom: 80px;
   left: 16px;
   right: 16px;
   z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  pointer-events: none;
 }
 .toast {
   background: var(--s2);
@@ -547,60 +343,13 @@ tbody tr:hover td { background: rgba(255,255,255,.02); }
   border-radius: 12px;
   padding: 12px 16px;
   font-size: 13px;
-  font-weight: 500;
-  animation: slideup .2s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  pointer-events: auto;
+  margin-bottom: 8px;
 }
-.toast.success { border-color: rgba(45,206,137,.4); }
-.toast.error { border-color: rgba(245,54,92,.4); }
-
-.loader {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  color: var(--mut);
-  flex-direction: column;
-  gap: 10px;
-}
-.spin {
-  width: 28px;
-  height: 28px;
-  border: 3px solid var(--bd);
-  border-top-color: var(--acc);
-  border-radius: 50%;
-  animation: sp .8s linear infinite;
-}
-.empty { text-align: center; padding: 40px 20px; color: var(--mut); }
-.ei { font-size: 48px; margin-bottom: 8px; }
-.et { font-size: 14px; }
-
-@keyframes sp { to { transform: rotate(360deg); } }
-@keyframes fi { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideup {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.two-col { display: grid; grid-template-columns: 1fr; gap: 12px; }
-.progress-bar {
-  height: 4px;
-  background: var(--bd);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: 6px;
-}
-.progress-fill { height: 100%; border-radius: 2px; transition: width .4s; }
 
 @media (min-width: 768px) {
-  .main { padding: 24px; }
   .sgrid { grid-template-columns: repeat(4, 1fr); }
-  .two-col { grid-template-columns: 1fr 1fr; }
   .wgrid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
-  .toast-wrap { bottom: 20px; left: auto; right: 20px; min-width: 280px; }
+  .toast-wrap { bottom: 20px; right: 20px; left: auto; width: 320px; }
 }
 </style>
 </head>
@@ -609,16 +358,10 @@ tbody tr:hover td { background: rgba(255,255,255,.02); }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script>
-// Full React App - Mobile Optimized BuildLedger
 const { useState, useEffect, useCallback, useRef, createContext, useContext } = React;
 
-// API Configuration
-const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:5000/api'
-  : window.location.origin + '/api';
-
+const API = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : window.location.origin + '/api';
 const TODAY = new Date().toISOString().split('T')[0];
-const monthStart = () => TODAY.slice(0,7) + '-01';
 
 async function apiFetch(path, opts = {}) {
   const token = localStorage.getItem('bl_token');
@@ -633,19 +376,14 @@ async function apiFetch(path, opts = {}) {
 
 async function apiForm(path, fd, method = 'POST') {
   const token = localStorage.getItem('bl_token');
-  const res = await fetch(API + path, {
-    method,
-    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-    body: fd
-  });
+  const res = await fetch(API + path, { method, headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: fd });
   const d = await res.json();
   if (!res.ok) throw new Error(d.error || 'Request failed');
   return d;
 }
 
 const fmt = n => '₹' + Number(n || 0).toLocaleString('en-IN');
-const fmtD = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
-const fmtDs = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) : '—';
+const fmtD = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) : '—';
 const wa = n => n ? `https://wa.me/91${n.replace(/\D/g, '')}` : '#';
 const tel = n => n ? `tel:${n}` : '#';
 const E = React.createElement;
@@ -656,191 +394,193 @@ function ToastProvider({ children }) {
   const show = useCallback((msg, type = 'success') => {
     const id = Date.now();
     setToasts(t => [...t, { id, msg, type }]);
-    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3200);
+    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3000);
   }, []);
-  return E(ToastCtx.Provider, { value: show },
-    children,
-    E('div', { className: 'toast-wrap' },
-      toasts.map(t => E('div', { key: t.id, className: `toast ${t.type}` }, t.type === 'success' ? '✓' : '⚠️', t.msg))
-    )
-  );
+  return E(ToastCtx.Provider, { value: show }, children, E('div', { className: 'toast-wrap' }, toasts.map(t => E('div', { key: t.id, className: 'toast' }, t.type === 'success' ? '✓' : '⚠️', t.msg))));
 }
 const useToast = () => useContext(ToastCtx);
 
-// Navigation Items for Bottom Bar
-const NAV_ITEMS = [
-  { id: 'dashboard', ico: '📊', label: 'Home' },
-  { id: 'workers', ico: '👷', label: 'Workers' },
-  { id: 'attendance', ico: '📋', label: 'Attendance' },
-  { id: 'sites', ico: '🏗️', label: 'Sites' },
-  { id: 'more', ico: '⚙️', label: 'More' }
-];
-
-const MORE_ITEMS = [
-  { id: 'owners', ico: '👤', label: 'Owners' },
-  { id: 'payments', ico: '💰', label: 'Payments' },
-  { id: 'expenses', ico: '💸', label: 'Expenses' }
-];
-
-// Auth Screen
 function AuthScreen({ onLogin }) {
   const [tab, setTab] = useState('login');
   const [f, setF] = useState({ name: '', email: '', password: '', companyName: '' });
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState('');
   const toast = useToast();
-  
   const set = k => ev => setF(x => ({ ...x, [k]: ev.target.value }));
-  
   const submit = async () => {
-    setErr('');
-    setLoading(true);
+    setErr(''); setLoading(true);
     try {
       const d = await apiFetch(`/auth/${tab}`, { method: 'POST', body: JSON.stringify(f) });
       localStorage.setItem('bl_token', d.token);
       localStorage.setItem('bl_user', JSON.stringify(d.user));
-      toast('Welcome, ' + d.user.name + '!');
+      toast('Welcome ' + d.user.name);
       onLogin(d.user);
-    } catch (e) {
-      setErr(e.message);
-    }
+    } catch (e) { setErr(e.message); }
     setLoading(false);
   };
-  
-  return E('div', { className: 'auth-wrap' },
-    E('div', { className: 'auth-card' },
-      E('div', { className: 'auth-logo' }, '🏗️ BUILDLEDGER'),
-      E('div', { className: 'auth-sub' }, 'Construction Management'),
-      E('div', { className: 'auth-tabs' },
-        ['login', 'register'].map(t => E('button', {
-          key: t,
-          className: `auth-tab ${tab === t ? 'active' : ''}`,
-          onClick: () => { setTab(t); setErr(''); }
-        }, t === 'login' ? 'Sign In' : 'Register'))
-      ),
-      tab === 'register' && E('div', { className: 'fg' },
-        E('label', { className: 'fl' }, 'Your Name'),
-        E('input', { className: 'fi', placeholder: 'Ramesh Kumar', value: f.name, onChange: set('name') })
-      ),
-      tab === 'register' && E('div', { className: 'fg' },
-        E('label', { className: 'fl' }, 'Company Name'),
-        E('input', { className: 'fi', placeholder: 'RK Constructions', value: f.companyName, onChange: set('companyName') })
-      ),
-      E('div', { className: 'fg' },
-        E('label', { className: 'fl' }, 'Email'),
-        E('input', { className: 'fi', type: 'email', placeholder: 'you@example.com', value: f.email, onChange: set('email') })
-      ),
-      E('div', { className: 'fg' },
-        E('label', { className: 'fl' }, 'Password'),
-        E('input', { className: 'fi', type: 'password', placeholder: '••••••••', value: f.password, onChange: set('password') })
-      ),
-      err && E('div', { className: 'err' }, err),
-      E('button', { className: 'btn btn-p btn-full', style: { marginTop: '18px' }, onClick: submit, disabled: loading },
-        loading ? 'Loading…' : (tab === 'login' ? 'Sign In' : 'Create Account')
-      )
+  return E('div', { style: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', background: 'radial-gradient(ellipse at 20% 50%, rgba(245,166,35,.08), transparent 60%), var(--bg)' } },
+    E('div', { style: { background: 'var(--s1)', border: '1px solid var(--bd)', borderRadius: '24px', padding: '32px 24px', width: '100%', maxWidth: '400px' } },
+      E('div', { style: { fontSize: '32px', fontWeight: 'bold', color: 'var(--acc)', textAlign: 'center', marginBottom: '4px' } }, '🏗️ BUILDLEDGER'),
+      E('div', { style: { textAlign: 'center', color: 'var(--mut)', fontSize: '12px', marginBottom: '28px' } }, 'Construction Management'),
+      E('div', { style: { display: 'flex', gap: '8px', background: 'var(--bg)', borderRadius: '12px', padding: '4px', marginBottom: '24px' } },
+        ['login', 'register'].map(t => E('button', { key: t, style: { flex: 1, padding: '10px', borderRadius: '8px', border: 'none', background: tab === t ? 'var(--acc)' : 'transparent', color: tab === t ? '#000' : 'var(--mut)', fontWeight: 600, cursor: 'pointer' }, onClick: () => { setTab(t); setErr(''); } }, t === 'login' ? 'Sign In' : 'Register'))),
+      tab === 'register' && E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Name'), E('input', { className: 'fi', value: f.name, onChange: set('name') })),
+      tab === 'register' && E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Company'), E('input', { className: 'fi', value: f.companyName, onChange: set('companyName') })),
+      E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Email'), E('input', { className: 'fi', type: 'email', value: f.email, onChange: set('email') })),
+      E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Password'), E('input', { className: 'fi', type: 'password', value: f.password, onChange: set('password') })),
+      err && E('div', { style: { color: 'var(--red)', fontSize: '13px', marginTop: '10px' } }, err),
+      E('button', { className: 'btn btn-p', style: { width: '100%', marginTop: '18px', justifyContent: 'center' }, onClick: submit, disabled: loading }, loading ? 'Loading...' : (tab === 'login' ? 'Sign In' : 'Create Account'))
     )
   );
 }
 
-// Bottom Navigation
-function BottomNav({ page, setPage, user, onLogout, showMore, setShowMore }) {
-  const mainItems = NAV_ITEMS.filter(i => i.id !== 'more');
-  
+function BottomNav({ page, setPage, onLogout, showMore, setShowMore }) {
+  const mainItems = [{ id: 'dashboard', ico: '📊', label: 'Home' }, { id: 'workers', ico: '👷', label: 'Workers' }, { id: 'attendance', ico: '📋', label: 'Attendance' }, { id: 'sites', ico: '🏗️', label: 'Sites' }];
+  const moreItems = [{ id: 'owners', ico: '👤', label: 'Owners' }, { id: 'payments', ico: '💰', label: 'Payments' }, { id: 'expenses', ico: '💸', label: 'Expenses' }];
   return E('div', { className: 'bottom-nav' },
-    mainItems.map(item => E('button', {
-      key: item.id,
-      className: `nav-item ${page === item.id ? 'active' : ''}`,
-      onClick: () => { setPage(item.id); setShowMore(false); }
-    }, E('span', { className: 'ico' }, item.ico), E('span', null, item.label))),
+    mainItems.map(item => E('button', { key: item.id, className: `nav-item ${page === item.id ? 'active' : ''}`, onClick: () => { setPage(item.id); setShowMore(false); } }, E('span', { className: 'ico' }, item.ico), E('span', null, item.label))),
     E('div', { style: { position: 'relative' } },
-      E('button', {
-        className: `nav-item ${showMore ? 'active' : ''}`,
-        onClick: () => setShowMore(!showMore)
-      }, E('span', { className: 'ico' }, '⚙️'), E('span', null, 'More')),
-      showMore && E('div', {
-        style: {
-          position: 'absolute',
-          bottom: '100%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: 'var(--s1)',
-          border: '1px solid var(--bd)',
-          borderRadius: '12px',
-          padding: '8px',
-          marginBottom: '8px',
-          minWidth: '140px',
-          zIndex: 200
-        }
-      },
-        MORE_ITEMS.map(item => E('button', {
-          key: item.id,
-          className: 'nav-item',
-          style: { width: '100%', flexDirection: 'row', justifyContent: 'flex-start', gap: '10px', padding: '10px' },
-          onClick: () => { setPage(item.id); setShowMore(false); }
-        }, E('span', { className: 'ico' }, item.ico), E('span', null, item.label))),
+      E('button', { className: `nav-item ${showMore ? 'active' : ''}`, onClick: () => setShowMore(!showMore) }, E('span', { className: 'ico' }, '⚙️'), E('span', null, 'More')),
+      showMore && E('div', { style: { position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)', background: 'var(--s1)', border: '1px solid var(--bd)', borderRadius: '12px', padding: '8px', marginBottom: '8px', minWidth: '140px', zIndex: 200 } },
+        moreItems.map(item => E('button', { key: item.id, className: 'nav-item', style: { width: '100%', flexDirection: 'row', justifyContent: 'flex-start', gap: '10px', padding: '10px' }, onClick: () => { setPage(item.id); setShowMore(false); } }, E('span', { className: 'ico' }, item.ico), E('span', null, item.label))),
         E('hr', { style: { margin: '8px 0', borderColor: 'var(--bd)' } }),
-        E('button', {
-          className: 'nav-item',
-          style: { width: '100%', flexDirection: 'row', justifyContent: 'flex-start', gap: '10px', padding: '10px', color: 'var(--red)' },
-          onClick: () => { onLogout(); setShowMore(false); }
-        }, E('span', { className: 'ico' }, '🚪'), E('span', null, 'Logout'))
+        E('button', { className: 'nav-item', style: { width: '100%', flexDirection: 'row', justifyContent: 'flex-start', gap: '10px', padding: '10px', color: 'var(--red)' }, onClick: onLogout }, E('span', { className: 'ico' }, '🚪'), E('span', null, 'Logout'))
       )
     )
   );
 }
 
-// Dashboard Component (Simplified for Mobile)
 function Dashboard({ setPage }) {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    apiFetch('/finance/dashboard').then(d => { setData(d); setLoading(false); }).catch(() => setLoading(false));
-  }, []);
-  
-  if (loading) return E('div', { className: 'loader' }, E('div', { className: 'spin' }), 'Loading…');
-  if (!data) return null;
-  
-  const { totals: t, todayAttendance: ta, recentPayments: rp, recentExpenses: re, sites } = data;
-  
-  return E('div', null,
-    E('div', { className: 'ph' },
-      E('div', { className: 'ptitle' }, 'DASHBOARD'),
-      E('div', { className: 'psub' }, fmtD(TODAY))
+  useEffect(() => { apiFetch('/finance/dashboard').then(setData).catch(() => {}); }, []);
+  if (!data) return E('div', { className: 'loader' }, E('div', { className: 'spin' }), 'Loading...');
+  const { totals: t, todayAttendance: ta, recentPayments, sites } = data;
+  return E('div', { className: 'main' },
+    E('div', { className: 'ph' }, E('div', { className: 'ptitle' }, 'BUILDLEDGER'), E('div', { className: 'psub' }, fmtD(TODAY))),
+    E('div', { className: 'sgrid' },
+      E('div', { className: 'sc or' }, E('div', { className: 'si' }, '💰'), E('div', { className: 'sv or' }, fmt(t.totalReceived)), E('div', { className: 'slb' }, 'Received')),
+      E('div', { className: 'sc rd' }, E('div', { className: 'si' }, '⚠️'), E('div', { className: 'sv rd' }, fmt(t.totalOutstanding)), E('div', { className: 'slb' }, 'Outstanding')),
+      E('div', { className: 'sc gn' }, E('div', { className: 'si' }, '📈'), E('div', { className: 'sv gn' }, fmt(t.netProfit)), E('div', { className: 'slb' }, 'Profit')),
+      E('div', { className: 'sc bl' }, E('div', { className: 'si' }, '👷'), E('div', { className: 'sv bl' }, ta.present), E('div', { className: 'slb' }, 'Present Today'))
     ),
-    E('div', { className: 'main' },
-      E('div', { className: 'sgrid' },
-        E('div', { className: 'sc or' }, E('div', { className: 'si' }, '💰'), E('div', { className: 'sv or' }, fmt(t.totalReceived)), E('div', { className: 'slb' }, 'Total Received')),
-        E('div', { className: 'sc rd' }, E('div', { className: 'si' }, '⚠️'), E('div', { className: 'sv rd' }, fmt(t.totalOutstanding)), E('div', { className: 'slb' }, 'Outstanding')),
-        E('div', { className: 'sc gn' }, E('div', { className: 'si' }, '📈'), E('div', { className: 'sv gn' }, fmt(t.netProfit)), E('div', { className: 'slb' }, 'Net Profit')),
-        E('div', { className: 'sc bl' }, E('div', { className: 'si' }, '👷'), E('div', { className: 'sv bl' }, ta.present), E('div', { className: 'slb' }, 'Today Present'))
-      ),
-      E('div', { className: 'card' },
-        E('div', { className: 'ch' }, E('div', { className: 'ct' }, '💰 Recent Payments'), E('button', { className: 'btn btn-o btn-sm', onClick: () => setPage('payments') }, 'View All')),
-        (rp || []).length === 0 ? E('div', { className: 'empty', style: { padding: '20px' } }, 'No payments yet') :
-          (rp || []).slice(0, 3).map(p => E('div', { key: p._id, style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--bd)' } },
-            E('div', null, E('div', { style: { fontSize: '13px', fontWeight: 500 } }, p.siteId?.name || '—'), E('div', { style: { fontSize: '11px', color: 'var(--mut)' } }, fmtD(p.date))),
-            E('div', { style: { fontFamily: 'var(--fm)', color: 'var(--grn)' } }, fmt(p.amount))
-          ))
-      ),
-      E('div', { className: 'card' },
-        E('div', { className: 'ch' }, E('div', { className: 'ct' }, '🏗️ Active Sites'), E('button', { className: 'btn btn-o btn-sm', onClick: () => setPage('sites') }, 'View All')),
-        (sites || []).filter(s => s.status === 'active').slice(0, 3).map(s => E('div', { key: s._id, style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--bd)' } },
-          E('div', null, E('div', { style: { fontSize: '13px', fontWeight: 500 } }, s.name), E('div', { style: { fontSize: '11px', color: 'var(--mut)' } }, s.location)),
-          E('div', { style: { fontFamily: 'var(--fm)', color: 'var(--acc)' } }, fmt(s.contractAmount))
-        ))
-      )
-    )
+    E('div', { className: 'card' }, E('div', { className: 'ch' }, E('div', { className: 'ct' }, '💰 Recent Payments'), E('button', { className: 'btn btn-o btn-sm', onClick: () => setPage('payments') }, 'View All')),
+      recentPayments?.slice(0, 3).map(p => E('div', { key: p._id, style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--bd)' } }, E('div', null, E('div', { style: { fontSize: '13px', fontWeight: 500 } }, p.siteId?.name || '—'), E('div', { style: { fontSize: '11px', color: 'var(--mut)' } }, fmtD(p.date))), E('div', { style: { color: 'var(--grn)', fontWeight: 600 } }, fmt(p.amount))))),
+    E('div', { className: 'card' }, E('div', { className: 'ch' }, E('div', { className: 'ct' }, '🏗️ Active Sites'), E('button', { className: 'btn btn-o btn-sm', onClick: () => setPage('sites') }, 'View All')),
+      sites?.filter(s => s.status === 'active').slice(0, 3).map(s => E('div', { key: s._id, style: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--bd)' } }, E('div', null, E('div', { style: { fontSize: '13px', fontWeight: 500 } }, s.name), E('div', { style: { fontSize: '11px', color: 'var(--mut)' } }, s.location)), E('div', { style: { fontWeight: 600 } }, fmt(s.contractAmount)))))
   );
 }
 
-// Simplified placeholder components for other pages (to keep code under limit)
-function Workers() { return E('div', { className: 'main' }, E('div', { className: 'card' }, E('div', { className: 'ct' }, 'Workers Page - Full version loaded in original'))) }
-function Attendance() { return E('div', { className: 'main' }, E('div', { className: 'card' }, E('div', { className: 'ct' }, 'Attendance Page - Full version loaded'))) }
-function Sites() { return E('div', { className: 'main' }, E('div', { className: 'card' }, E('div', { className: 'ct' }, 'Sites Page - Full version loaded'))) }
-function Owners() { return E('div', { className: 'main' }, E('div', { className: 'card' }, E('div', { className: 'ct' }, 'Owners Page - Full version loaded'))) }
-function Payments() { return E('div', { className: 'main' }, E('div', { className: 'card' }, E('div', { className: 'ct' }, 'Payments Page - Full version loaded'))) }
-function Expenses() { return E('div', { className: 'main' }, E('div', { className: 'card' }, E('div', { className: 'ct' }, 'Expenses Page - Full version loaded'))) }
+function Workers() {
+  const [workers, setWorkers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(null);
+  const [form, setForm] = useState({ name: '', mobile: '', skill: 'Mason', dailyWage: '' });
+  const toast = useToast();
+  const load = () => apiFetch('/workers').then(w => { setWorkers(w); setLoading(false); });
+  useEffect(() => { load(); }, []);
+  const save = async () => {
+    try {
+      await apiFetch('/workers', { method: 'POST', body: JSON.stringify({ ...form, dailyWage: Number(form.dailyWage), contractorId: 'auto' }) });
+      toast('Worker added');
+      setModal(null);
+      setForm({ name: '', mobile: '', skill: 'Mason', dailyWage: '' });
+      load();
+    } catch (e) { toast(e.message, 'error'); }
+  };
+  const del = async (id) => { if (confirm('Delete?')) { await apiFetch(`/workers/${id}`, { method: 'DELETE' }); toast('Deleted'); load(); } };
+  if (loading) return E('div', { className: 'loader' }, E('div', { className: 'spin' }));
+  return E('div', { className: 'main' },
+    E('div', { className: 'ph' }, E('div', { className: 'ptitle' }, 'WORKERS'), E('div', { className: 'psub' }, workers.length + ' workers')),
+    E('div', { className: 'card' }, E('div', { className: 'ch' }, E('div', { className: 'ct' }, 'All Workers'), E('button', { className: 'btn btn-p btn-sm', onClick: () => setModal('add') }, '+ Add')),
+      workers.length === 0 ? E('div', { className: 'empty' }, E('div', { className: 'ei' }, '👷'), 'No workers') :
+      E('div', { className: 'wgrid' }, workers.map(w => E('div', { key: w._id, className: 'wcard' }, E('div', { className: 'wavatar' }, w.name[0]), E('div', { className: 'wname' }, w.name), E('div', { className: 'wskill' }, E('span', { className: 'badge bg-b' }, w.skill)), E('div', { className: 'wwage' }, fmt(w.dailyWage) + '/day'), E('div', { style: { display: 'flex', gap: '6px', marginTop: '8px', justifyContent: 'center' } }, w.mobile && E('a', { href: tel(w.mobile), style: { textDecoration: 'none', fontSize: '16px' } }, '📞'), E('button', { className: 'btn btn-sm btn-o', onClick: () => del(w._id) }, '🗑️')))))
+    ),
+    modal && E('div', { className: 'ov', onClick: e => e.target.className === 'ov' && setModal(null) }, E('div', { className: 'modal' }, E('div', { className: 'mh' }, E('div', { className: 'mt' }, 'Add Worker'), E('button', { className: 'mc', onClick: () => setModal(null) }, '✕')), E('div', { className: 'mb' }, E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Name'), E('input', { className: 'fi', value: form.name, onChange: e => setForm({ ...form, name: e.target.value }) })), E('div', { className: 'frow' }, E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Mobile'), E('input', { className: 'fi', value: form.mobile, onChange: e => setForm({ ...form, mobile: e.target.value }) })), E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Skill'), E('select', { className: 'fs', value: form.skill, onChange: e => setForm({ ...form, skill: e.target.value }) }, ['Mason', 'Helper', 'Carpenter', 'Electrician', 'Plumber', 'Painter'].map(s => E('option', { key: s, value: s }, s))))), E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Daily Wage (₹)'), E('input', { className: 'fi', type: 'number', value: form.dailyWage, onChange: e => setForm({ ...form, dailyWage: e.target.value }) })), E('div', { className: 'mact' }, E('button', { className: 'btn btn-o', onClick: () => setModal(null) }, 'Cancel'), E('button', { className: 'btn btn-p', onClick: save }, 'Save')))))
+  );
+}
+
+function Attendance() {
+  const [workers, setWorkers] = useState([]);
+  const [attendance, setAttendance] = useState({});
+  const [date, setDate] = useState(TODAY);
+  const toast = useToast();
+  useEffect(() => { apiFetch('/workers').then(w => setWorkers(w.filter(x => x.status === 'active'))); }, []);
+  useEffect(() => { apiFetch(`/attendance/by-date/${date}`).then(recs => { const map = {}; recs.forEach(r => { map[r.workerId?._id || r.workerId] = r; }); setAttendance(map); }); }, [date]);
+  const mark = async (workerId, status) => {
+    try {
+      const rec = await apiFetch('/attendance/mark', { method: 'POST', body: JSON.stringify({ workerId, date, status }) });
+      setAttendance(a => ({ ...a, [workerId]: rec }));
+    } catch (e) { toast(e.message, 'error'); }
+  };
+  const togglePaid = async (workerId) => {
+    const rec = attendance[workerId];
+    if (!rec?._id) { toast('Mark attendance first', 'error'); return; }
+    try {
+      const updated = await apiFetch(`/attendance/${rec._id}/wage-paid`, { method: 'PATCH', body: JSON.stringify({ wagePaid: !rec.wagePaid }) });
+      setAttendance(a => ({ ...a, [workerId]: updated }));
+    } catch (e) { toast(e.message, 'error'); }
+  };
+  const changeDate = (d) => { const dt = new Date(date); dt.setDate(dt.getDate() + d); setDate(dt.toISOString().split('T')[0]); };
+  return E('div', { className: 'main' }, E('div', { className: 'ph' }, E('div', { className: 'ptitle' }, 'ATTENDANCE'), E('div', { className: 'psub' }, fmtD(date))),
+    E('div', { className: 'date-bar' }, E('div', { className: 'date-nav' }, E('button', { onClick: () => changeDate(-1) }, '←'), E('input', { className: 'fi', type: 'date', value: date, onChange: e => setDate(e.target.value), style: { width: '140px', margin: 0 } }), E('button', { onClick: () => changeDate(1) }, '→')), date !== TODAY && E('button', { className: 'btn btn-o btn-sm', onClick: () => setDate(TODAY) }, 'Today')),
+    workers.map(w => { const rec = attendance[w._id]; const status = rec?.status; const wagePaid = rec?.wagePaid; return E('div', { key: w._id, className: 'att-row' }, E('div', { className: 'att-av' }, w.name[0]), E('div', { className: 'att-inf' }, E('div', { className: 'att-nm' }, w.name), E('div', { className: 'att-mt' }, w.skill + ' · ' + fmt(w.dailyWage))), E('div', { className: 'pha-btns' }, E('button', { className: `pha p ${status === 'present' ? 'sel' : ''}`, onClick: () => mark(w._id, 'present') }, 'P'), E('button', { className: `pha h ${status === 'half' ? 'sel' : ''}`, onClick: () => mark(w._id, 'half') }, '½'), E('button', { className: `pha a ${status === 'absent' ? 'sel' : ''}`, onClick: () => mark(w._id, 'absent') }, 'A')), (status === 'present' || status === 'half') && E('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, E('button', { className: `tog ${wagePaid ? 'on' : 'off'}`, onClick: () => togglePaid(w._id) }), E('span', { style: { fontSize: '11px', color: 'var(--mut)' } }, wagePaid ? 'Paid' : 'Unpaid'))); }))
+  );
+}
+
+function Sites() {
+  const [sites, setSites] = useState([]);
+  const [owners, setOwners] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(null);
+  const [form, setForm] = useState({ name: '', location: '', ownerId: '', contractAmount: '', status: 'active' });
+  const toast = useToast();
+  const load = () => Promise.all([apiFetch('/sites'), apiFetch('/owners')]).then(([s, o]) => { setSites(s); setOwners(o); setLoading(false); });
+  useEffect(() => { load(); }, []);
+  const save = async () => {
+    try {
+      await apiFetch('/sites', { method: 'POST', body: JSON.stringify({ ...form, contractAmount: Number(form.contractAmount) }) });
+      toast('Site added');
+      setModal(null);
+      setForm({ name: '', location: '', ownerId: '', contractAmount: '', status: 'active' });
+      load();
+    } catch (e) { toast(e.message, 'error'); }
+  };
+  if (loading) return E('div', { className: 'loader' }, E('div', { className: 'spin' }));
+  return E('div', { className: 'main' }, E('div', { className: 'ph' }, E('div', { className: 'ptitle' }, 'SITES'), E('div', { className: 'psub' }, sites.length + ' sites')), E('div', { className: 'card' }, E('div', { className: 'ch' }, E('div', { className: 'ct' }, 'All Sites'), E('button', { className: 'btn btn-p btn-sm', onClick: () => setModal('add') }, '+ New')), sites.map(s => E('div', { key: s._id, style: { padding: '12px', borderBottom: '1px solid var(--bd)' } }, E('div', { style: { fontWeight: 600 } }, s.name), E('div', { style: { fontSize: '12px', color: 'var(--mut)' } }, s.location), E('div', { style: { marginTop: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }, E('span', { className: `badge bg-${s.status === 'active' ? 'g' : 'gr'}` }, s.status), E('span', { style: { fontWeight: 600 } }, fmt(s.contractAmount)))))), modal && E('div', { className: 'ov', onClick: e => e.target.className === 'ov' && setModal(null) }, E('div', { className: 'modal' }, E('div', { className: 'mh' }, E('div', { className: 'mt' }, 'Add Site'), E('button', { className: 'mc', onClick: () => setModal(null) }, '✕')), E('div', { className: 'mb' }, E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Site Name'), E('input', { className: 'fi', value: form.name, onChange: e => setForm({ ...form, name: e.target.value }) })), E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Location'), E('input', { className: 'fi', value: form.location, onChange: e => setForm({ ...form, location: e.target.value }) })), E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Owner'), E('select', { className: 'fs', value: form.ownerId, onChange: e => setForm({ ...form, ownerId: e.target.value }) }, E('option', { value: '' }, '— None —'), owners.map(o => E('option', { key: o._id, value: o._id }, o.name)))), E('div', { className: 'frow' }, E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Contract Amt'), E('input', { className: 'fi', type: 'number', value: form.contractAmount, onChange: e => setForm({ ...form, contractAmount: e.target.value }) })), E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Status'), E('select', { className: 'fs', value: form.status, onChange: e => setForm({ ...form, status: e.target.value }) }, ['active', 'completed', 'on-hold'].map(s => E('option', { key: s, value: s }, s))))), E('div', { className: 'mact' }, E('button', { className: 'btn btn-o', onClick: () => setModal(null) }, 'Cancel'), E('button', { className: 'btn btn-p', onClick: save }, 'Save'))))));
+}
+
+function Owners() {
+  const [owners, setOwners] = useState([]);
+  const [modal, setModal] = useState(null);
+  const [form, setForm] = useState({ name: '', mobile: '', whatsapp: '' });
+  const toast = useToast();
+  const load = () => apiFetch('/owners').then(setOwners);
+  useEffect(() => { load(); }, []);
+  const save = async () => {
+    try {
+      await apiFetch('/owners', { method: 'POST', body: JSON.stringify(form) });
+      toast('Owner added');
+      setModal(null);
+      setForm({ name: '', mobile: '', whatsapp: '' });
+      load();
+    } catch (e) { toast(e.message, 'error'); }
+  };
+  return E('div', { className: 'main' }, E('div', { className: 'ph' }, E('div', { className: 'ptitle' }, 'OWNERS')), E('div', { className: 'card' }, E('div', { className: 'ch' }, E('div', { className: 'ct' }, owners.length + ' Owners'), E('button', { className: 'btn btn-p btn-sm', onClick: () => setModal('add') }, '+ Add')), owners.map(o => E('div', { key: o._id, style: { padding: '12px', borderBottom: '1px solid var(--bd)' } }, E('div', { style: { fontWeight: 600 } }, o.name), E('div', { style: { fontSize: '12px', color: 'var(--mut)' } }, o.mobile), o.whatsapp && E('a', { href: wa(o.whatsapp), target: '_blank', style: { fontSize: '12px', color: 'var(--grn)', textDecoration: 'none' } }, '💬 WhatsApp')))), modal && E('div', { className: 'ov', onClick: e => e.target.className === 'ov' && setModal(null) }, E('div', { className: 'modal' }, E('div', { className: 'mh' }, E('div', { className: 'mt' }, 'Add Owner'), E('button', { className: 'mc', onClick: () => setModal(null) }, '✕')), E('div', { className: 'mb' }, E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Name'), E('input', { className: 'fi', value: form.name, onChange: e => setForm({ ...form, name: e.target.value }) })), E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'Mobile'), E('input', { className: 'fi', value: form.mobile, onChange: e => setForm({ ...form, mobile: e.target.value }) })), E('div', { className: 'fg' }, E('label', { className: 'fl' }, 'WhatsApp'), E('input', { className: 'fi', value: form.whatsapp, onChange: e => setForm({ ...form, whatsapp: e.target.value }) })), E('div', { className: 'mact' }, E('button', { className: 'btn btn-o', onClick: () => setModal(null) }, 'Cancel'), E('button', { className: 'btn btn-p', onClick: save }, 'Save'))))));
+}
+
+function Payments() {
+  const [payments, setPayments] = useState([]);
+  useEffect(() => { apiFetch('/finance/payments').then(setPayments); }, []);
+  const total = payments.reduce((s, p) => s + p.amount, 0);
+  return E('div', { className: 'main' }, E('div', { className: 'ph' }, E('div', { className: 'ptitle' }, 'PAYMENTS')), E('div', { className: 'card' }, E('div', { className: 'ch' }, E('div', { className: 'ct' }, 'Total: ' + fmt(total)), E('span', null, payments.length + ' txns')), payments.map(p => E('div', { key: p._id, style: { display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid var(--bd)' } }, E('div', null, E('div', { style: { fontWeight: 500 } }, p.siteId?.name || '—'), E('div', { style: { fontSize: '11px', color: 'var(--mut)' } }, fmtD(p.date))), E('div', { style: { color: 'var(--grn)', fontWeight: 600 } }, fmt(p.amount))))));
+}
+
+function Expenses() {
+  const [expenses, setExpenses] = useState([]);
+  useEffect(() => { apiFetch('/finance/expenses').then(setExpenses); }, []);
+  const total = expenses.reduce((s, e) => s + e.amount, 0);
+  return E('div', { className: 'main' }, E('div', { className: 'ph' }, E('div', { className: 'ptitle' }, 'EXPENSES')), E('div', { className: 'card' }, E('div', { className: 'ch' }, E('div', { className: 'ct' }, 'Total: ' + fmt(total)), E('span', null, expenses.length + ' items')), expenses.map(e => E('div', { key: e._id, style: { display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid var(--bd)' } }, E('div', null, E('div', { style: { fontWeight: 500 } }, e.category), E('div', { style: { fontSize: '11px', color: 'var(--mut)' } }, e.siteId?.name || '—')), E('div', { style: { color: 'var(--red)', fontWeight: 600 } }, fmt(e.amount))))));
+}
 
 const PAGES = { dashboard: Dashboard, workers: Workers, attendance: Attendance, sites: Sites, owners: Owners, payments: Payments, expenses: Expenses };
 
@@ -848,23 +588,9 @@ function App() {
   const [user, setUser] = useState(() => { try { return JSON.parse(localStorage.getItem('bl_user')); } catch { return null; } });
   const [page, setPage] = useState('dashboard');
   const [showMore, setShowMore] = useState(false);
-  
-  const logout = () => {
-    localStorage.removeItem('bl_token');
-    localStorage.removeItem('bl_user');
-    setUser(null);
-  };
-  
-  const PageComponent = PAGES[page] || Dashboard;
-  
+  const logout = () => { localStorage.removeItem('bl_token'); localStorage.removeItem('bl_user'); setUser(null); };
   if (!user) return E(ToastProvider, null, E(AuthScreen, { onLogin: u => { setUser(u); setPage('dashboard'); } }));
-  
-  return E(ToastProvider, null,
-    E('div', { className: 'app' },
-      E('div', { className: 'main' }, E(PageComponent, { setPage })),
-      E(BottomNav, { page, setPage, user, onLogout: logout, showMore, setShowMore })
-    )
-  );
+  return E(ToastProvider, null, E('div', { style: { minHeight: '100vh', paddingBottom: '70px' } }, E('div', { className: 'main' }, E(PAGES[page] || Dashboard, { setPage })), E(BottomNav, { page, setPage, onLogout: logout, showMore, setShowMore })));
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(E(App));
