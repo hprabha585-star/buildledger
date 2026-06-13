@@ -1,15 +1,13 @@
 const mongoose = require('mongoose');
 
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/construction_app';
+
 const connect = async () => {
   try {
-    const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/buildledger';
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('✅ MongoDB connected successfully');
-  } catch (error) {
-    console.error('❌ MongoDB connection error:', error.message);
+    await mongoose.connect(MONGO_URI);
+    console.log('✅ MongoDB connected:', MONGO_URI);
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err.message);
     process.exit(1);
   }
 };

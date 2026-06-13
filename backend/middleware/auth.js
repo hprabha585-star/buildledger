@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-
 const JWT_SECRET = process.env.JWT_SECRET || 'construction_app_secret_2024';
 
 module.exports = (req, res, next) => {
@@ -10,7 +9,7 @@ module.exports = (req, res, next) => {
   try {
     req.user = jwt.verify(auth.split(' ')[1], JWT_SECRET);
     next();
-  } catch (err) {
+  } catch {
     res.status(401).json({ error: 'Invalid token' });
   }
 };

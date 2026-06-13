@@ -2,1115 +2,1108 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<meta name="theme-color" content="#0d0f14">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>BuildLedger - Construction Management</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>BuildLedger</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-:root {
-  --bg: #0a0c10;
-  --surface: #12151c;
-  --surface2: #1a1f2a;
-  --border: #252b3b;
-  --primary: #f5a623;
-  --success: #2dce89;
-  --danger: #f5365c;
-  --info: #5e72e4;
-  --text: #e8eaf0;
-  --text-secondary: #8a92b0;
-  --font: 'Inter', sans-serif;
-}
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  padding-bottom: 70px;
-}
-
-/* Bottom Navigation */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-around;
-  padding: 8px 12px;
-  padding-bottom: max(8px, env(safe-area-inset-bottom));
-  z-index: 100;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 11px;
-  padding: 8px 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: var(--font);
-}
-
-.nav-item .ico { font-size: 22px; }
-.nav-item.active { color: var(--primary); background: rgba(245, 166, 35, 0.1); }
-
-/* Main Content */
-.main {
-  padding: 16px;
-  padding-bottom: 20px;
-}
-
-/* Header */
-.header { margin-bottom: 20px; }
-.title { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.subtitle { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
-
-/* Cards */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 12px;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-.card-title { font-size: 15px; font-weight: 600; }
-
-/* Stats Grid */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px;
-  position: relative;
-  overflow: hidden;
-}
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-}
-.stat-card.income::before { background: var(--success); }
-.stat-card.outstanding::before { background: var(--danger); }
-.stat-card.profit::before { background: var(--primary); }
-.stat-card.workers::before { background: var(--info); }
-.stat-icon { font-size: 20px; margin-bottom: 6px; }
-.stat-value { font-size: 24px; font-weight: 700; }
-.stat-value.income { color: var(--success); }
-.stat-value.outstanding { color: var(--danger); }
-.stat-value.profit { color: var(--primary); }
-.stat-value.workers { color: var(--info); }
-.stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
-
-/* Forms */
-.input-group { margin-bottom: 14px; }
-.label { font-size: 11px; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
-.input, .select, .textarea {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  color: var(--text);
-  font-size: 14px;
-  outline: none;
-  font-family: var(--font);
-}
-.input:focus, .select:focus { border-color: var(--primary); }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-/* Buttons */
-.btn {
-  padding: 10px 16px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font);
-}
-.btn-primary { background: var(--primary); color: #000; }
-.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
-.btn-danger { background: rgba(245, 54, 92, 0.12); color: var(--danger); border: 1px solid rgba(245, 54, 92, 0.25); }
-.btn-small { padding: 7px 12px; font-size: 12px; }
-.btn-full { width: 100%; justify-content: center; }
-
-/* Badges */
-.badge {
-  padding: 2px 8px;
-  border-radius: 20px;
-  font-size: 10px;
-  font-weight: 600;
-  display: inline-block;
-}
-.badge-success { background: rgba(45, 206, 137, 0.15); color: var(--success); }
-.badge-danger { background: rgba(245, 54, 92, 0.15); color: var(--danger); }
-.badge-warning { background: rgba(245, 166, 35, 0.15); color: var(--primary); }
-.badge-info { background: rgba(94, 114, 228, 0.15); color: var(--info); }
-
-/* Worker Grid */
-.worker-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 12px;
-}
-.worker-card {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px;
-  text-align: center;
-}
-.worker-avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 10px;
-  font-size: 22px;
-  font-weight: 700;
-  color: #000;
-}
-.worker-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-.worker-skill { font-size: 10px; color: var(--text-secondary); margin-bottom: 6px; }
-.worker-wage { font-size: 13px; color: var(--primary); font-weight: 600; }
-
-/* Attendance Row */
-.attendance-row {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 12px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.attendance-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-.attendance-info { flex: 1; min-width: 120px; }
-.attendance-name { font-size: 14px; font-weight: 600; }
-.attendance-meta { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-.status-buttons { display: flex; gap: 6px; }
-.status-btn {
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  border: 1.5px solid;
-  background: transparent;
-}
-.status-btn.present { border-color: var(--success); color: var(--success); }
-.status-btn.present.active { background: var(--success); color: #000; }
-.status-btn.half { border-color: var(--primary); color: var(--primary); }
-.status-btn.half.active { background: var(--primary); color: #000; }
-.status-btn.absent { border-color: var(--danger); color: var(--danger); }
-.status-btn.absent.active { background: var(--danger); color: #fff; }
-.wage-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.toggle {
-  width: 44px;
-  height: 22px;
-  border-radius: 11px;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  transition: background 0.2s;
-}
-.toggle.on { background: var(--success); }
-.toggle.off { background: var(--border); }
-.toggle::after {
-  content: '';
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: white;
-  top: 2px;
-  transition: left 0.2s;
-}
-.toggle.on::after { left: 24px; }
-.toggle.off::after { left: 2px; }
-
-/* Date Bar */
-.date-bar {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 12px;
-  margin-bottom: 12px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.date-nav { display: flex; gap: 6px; align-items: center; }
-.date-nav button {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 18px;
-}
-
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-.modal {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  width: 100%;
-  max-width: 500px;
-  max-height: 85vh;
-  overflow-y: auto;
-}
-.modal-header {
-  padding: 18px 20px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.modal-title { font-size: 17px; font-weight: 600; }
-.modal-close {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 22px;
-  cursor: pointer;
-}
-.modal-body { padding: 16px 20px 20px; }
-.modal-actions { display: flex; gap: 10px; margin-top: 16px; }
-.modal-actions .btn { flex: 1; justify-content: center; }
-
-/* List Items */
-.list-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-.list-item:last-child { border-bottom: none; }
-.list-item-info { flex: 1; }
-.list-item-title { font-size: 14px; font-weight: 500; }
-.list-item-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-.list-item-amount { font-weight: 600; }
-.list-item-amount.positive { color: var(--success); }
-.list-item-amount.negative { color: var(--danger); }
-
-/* Site Card */
-.site-card {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 10px;
-}
-.site-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-.site-location { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
--site-stats { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: 40px;
-  color: var(--text-secondary);
-}
-.empty-icon { font-size: 48px; margin-bottom: 10px; }
-
-/* Loader */
-.loader {
-  text-align: center;
-  padding: 40px;
-}
-.spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid var(--border);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 10px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Toast */
-.toast-container {
-  position: fixed;
-  bottom: 80px;
-  left: 16px;
-  right: 16px;
-  z-index: 9999;
-}
-.toast {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-size: 13px;
-  margin-bottom: 8px;
-  animation: slideUp 0.2s ease;
-}
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Auth Screen */
-.auth-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: radial-gradient(ellipse at 20% 50%, rgba(245, 166, 35, 0.08), transparent 60%), var(--bg);
-}
-.auth-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 32px 24px;
-  width: 100%;
-  max-width: 400px;
-}
-.auth-logo { font-size: 32px; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 4px; }
-.auth-sub { text-align: center; color: var(--text-secondary); font-size: 12px; margin-bottom: 28px; }
-.auth-tabs {
-  display: flex;
-  gap: 8px;
-  background: var(--bg);
-  border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 24px;
-}
-.auth-tab {
-  flex: 1;
-  padding: 10px;
-  text-align: center;
-  border-radius: 8px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  font-weight: 600;
-  cursor: pointer;
-}
-.auth-tab.active { background: var(--primary); color: #000; }
-
-@media (min-width: 768px) {
-  .stats-grid { grid-template-columns: repeat(4, 1fr); }
-  .worker-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
-  .toast-container { bottom: 20px; right: 20px; left: auto; width: 320px; }
-}
+:root{--bg:#0d0f14;--s1:#141720;--s2:#1c2030;--s3:#252b3b;--acc:#f5a623;--grn:#2dce89;--red:#f5365c;--blu:#5e72e4;--txt:#e8eaf0;--mut:#6b7394;--bd:#252b3b;--fb:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace;--r:12px;--nav:64px;--safe:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--txt);font-family:var(--fb);font-size:15px;overscroll-behavior:none}
+::-webkit-scrollbar{display:none}
+/* AUTH */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 30% 40%,rgba(245,166,35,.1),transparent 55%),var(--bg)}
+.auth-card{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:32px 24px;width:100%;max-width:400px}
+.auth-logo{font-size:26px;font-weight:600;color:var(--acc);margin-bottom:4px}
+.auth-sub{font-size:13px;color:var(--mut);margin-bottom:28px}
+.auth-tabs{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:22px;gap:4px}
+.auth-tab{flex:1;padding:10px;font-size:14px;font-weight:500;border-radius:8px;border:none;background:none;color:var(--mut);cursor:pointer;transition:all .2s;font-family:var(--fb)}
+.auth-tab.active{background:var(--acc);color:#000;font-weight:600}
+/* FORMS */
+.fg{margin-bottom:14px}
+.fl{font-size:11px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;display:block}
+.fi,.fs,.fta{width:100%;background:var(--s2);border:1.5px solid var(--bd);border-radius:var(--r);padding:14px;color:var(--txt);font-family:var(--fb);font-size:15px;outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--acc)}
+.fi::placeholder{color:var(--mut)}
+.fs{cursor:pointer}
+.fta{resize:none;min-height:80px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.err{background:rgba(245,54,92,.1);border:1px solid rgba(245,54,92,.3);color:var(--red);padding:12px;border-radius:10px;font-size:13px;margin-top:10px}
+/* BUTTONS */
+.btn{padding:12px 18px;border-radius:var(--r);font-family:var(--fb);font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;text-decoration:none;-webkit-appearance:none;touch-action:manipulation}
+.btn:active{transform:scale(.97)}
+.btn-p{background:var(--acc);color:#000}
+.btn-sm{padding:8px 14px;font-size:13px}
+.btn-xs{padding:6px 10px;font-size:12px;border-radius:8px}
+.btn-o{background:transparent;border:1.5px solid var(--bd);color:var(--txt)}
+.btn-d{background:rgba(245,54,92,.12);color:var(--red);border:1.5px solid rgba(245,54,92,.25)}
+.btn-g{background:rgba(45,206,137,.12);color:var(--grn);border:1.5px solid rgba(45,206,137,.25)}
+.btn-b{background:rgba(94,114,228,.12);color:var(--blu);border:1.5px solid rgba(94,114,228,.25)}
+.btn-full{width:100%;justify-content:center}
+.mact{display:flex;gap:10px;margin-top:8px}
+.mact .btn{flex:1;justify-content:center}
+/* APP SHELL */
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh}
+.topbar{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--bd);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.tb-left{flex:1}
+.tb-title{font-size:18px;font-weight:600}
+.tb-sub{font-size:11px;color:var(--mut);margin-top:1px}
+.tb-avatar{width:36px;height:36px;border-radius:50%;background:var(--acc);color:#000;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.page-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding-bottom:calc(var(--nav) + var(--safe) + 8px)}
+.bottom-nav{flex-shrink:0;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--s1);border-top:1px solid var(--bd);height:calc(var(--nav) + var(--safe));padding-bottom:var(--safe);display:flex}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--mut);font-family:var(--fb);font-size:10px;font-weight:500;padding:6px 2px;touch-action:manipulation;transition:color .15s}
+.bnav-item.active{color:var(--acc)}
+.bnav-ico{font-size:22px;line-height:1}
+/* DRAWER */
+.dov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;animation:fadein .15s}
+.drawer{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-radius:20px 20px 0 0;z-index:310;padding:12px 0 calc(20px + var(--safe));animation:slideup .2s ease}
+.d-handle{width:36px;height:4px;background:var(--bd);border-radius:2px;margin:0 auto 16px}
+.d-item{display:flex;align-items:center;gap:14px;padding:16px 20px;font-size:15px;font-weight:500;cursor:pointer;border:none;background:none;width:100%;text-align:left;color:var(--txt);font-family:var(--fb)}
+.d-item:active{background:var(--s2)}
+.d-ico{font-size:22px;width:28px;text-align:center}
+.d-divider{height:1px;background:var(--bd);margin:8px 16px}
+/* PAGE */
+.pp{padding:16px}
+.shead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.stitle{font-size:16px;font-weight:600}
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:14px}
+/* STATS */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:var(--s2);border-radius:14px;padding:14px;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat.or::before{background:var(--acc)}.stat.gn::before{background:var(--grn)}.stat.rd::before{background:var(--red)}.stat.bl::before{background:var(--blu)}
+.s-ico{font-size:18px;margin-bottom:8px}
+.s-val{font-family:var(--fm);font-size:20px;font-weight:500;line-height:1}
+.s-val.or{color:var(--acc)}.s-val.gn{color:var(--grn)}.s-val.rd{color:var(--red)}.s-val.bl{color:var(--blu)}
+.s-lbl{font-size:11px;color:var(--mut);margin-top:4px}
+.s-sub{font-size:10px;color:var(--mut);margin-top:3px}
+/* BADGE */
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;display:inline-block;white-space:nowrap}
+.bg-g{background:rgba(45,206,137,.15);color:var(--grn)}.bg-r{background:rgba(245,54,92,.15);color:var(--red)}
+.bg-o{background:rgba(245,166,35,.15);color:var(--acc)}.bg-b{background:rgba(94,114,228,.15);color:var(--blu)}
+.bg-gr{background:rgba(107,115,148,.15);color:var(--mut)}
+/* LIST ROW */
+.lrow{display:flex;align-items:center;padding:14px 16px;gap:12px;border-bottom:1px solid rgba(255,255,255,.05);background:var(--s1);cursor:pointer}
+.lrow:last-child{border-bottom:none}
+.lrow:active{background:var(--s2)}
+.lrow.nt{cursor:default}.lrow.nt:active{background:var(--s1)}
+.lav{width:44px;height:44px;border-radius:50%;background:var(--acc);color:#000;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.lav img{width:100%;height:100%;object-fit:cover}
+.li{flex:1;min-width:0}
+.ln{font-size:15px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ls{font-size:12px;color:var(--mut);margin-top:2px}
+/* LEDGER */
+.ldr{display:flex;align-items:center;padding:13px 0;gap:12px;border-bottom:1px solid rgba(255,255,255,.05)}
+.ldr:last-child{border-bottom:none}
+.ld{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ld.in{background:rgba(45,206,137,.12)}.ld.out{background:rgba(245,54,92,.12)}
+.la{font-family:var(--fm);font-size:14px;font-weight:500;flex-shrink:0}
+.la.in{color:var(--grn)}.la.out{color:var(--red)}
+/* BOTTOM SHEET */
+.sov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:400;animation:fadein .15s}
+.sheet{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-radius:20px 20px 0 0;z-index:410;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(16px + var(--safe));animation:slideup .22s ease}
+.sh{width:36px;height:4px;background:var(--bd);border-radius:2px;margin:12px auto 0}
+.shd{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0}
+.sht{font-size:17px;font-weight:600}
+.shc{background:var(--s2);border:none;width:30px;height:30px;border-radius:50%;color:var(--mut);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.shb{padding:16px}
+/* ATTENDANCE */
+.arow{display:flex;align-items:center;padding:12px 16px;gap:10px;background:var(--s1);border-bottom:1px solid rgba(255,255,255,.05)}
+.arow.pr{border-left:3px solid var(--grn)}.arow.hr{border-left:3px solid var(--acc)}.arow.ar{border-left:3px solid transparent}
+.aav{width:40px;height:40px;border-radius:50%;background:var(--acc);color:#000;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.aav img{width:100%;height:100%;object-fit:cover}
+.ainf{flex:1;min-width:0}
+.anm{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.amt{font-size:11px;color:var(--mut);margin-top:1px}
+.pha-w{display:flex;gap:4px;flex-shrink:0}
+.pha{padding:6px 10px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid;background:transparent;touch-action:manipulation}
+.pha:active{transform:scale(.93)}
+.pha.pp{border-color:var(--grn);color:var(--grn)}.pha.pp.sel{background:var(--grn);color:#000}
+.pha.hh{border-color:var(--acc);color:var(--acc)}.pha.hh.sel{background:var(--acc);color:#000}
+.pha.aa{border-color:var(--red);color:var(--red)}.pha.aa.sel{background:var(--red);color:#fff}
+.wtw{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.wtl{font-size:10px;color:var(--mut)}
+.tog{width:36px;height:20px;border-radius:10px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;touch-action:manipulation}
+.tog.on{background:var(--grn)}.tog.off{background:var(--bd)}
+.tog::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;transition:left .2s}
+.tog.on::after{left:19px}.tog.off::after{left:3px}
+.wc{font-family:var(--fm);font-size:11px;min-width:58px;text-align:right;flex-shrink:0}
+.wc.e{color:var(--acc)}.wc.p{color:var(--grn)}.wc.z{color:var(--mut)}
+.spw{position:relative;display:inline-block}
+.schip{font-size:10px;padding:2px 7px;border-radius:5px;background:rgba(94,114,228,.1);color:var(--blu);border:1px solid rgba(94,114,228,.2);cursor:pointer;display:inline-block;margin-top:2px}
+.spdd{position:absolute;top:calc(100% + 4px);left:0;background:var(--s2);border:1px solid var(--bd);border-radius:10px;z-index:50;min-width:160px;padding:4px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.spdd button{display:block;width:100%;text-align:left;padding:10px 12px;font-size:13px;background:none;border:none;color:var(--txt);cursor:pointer;border-radius:6px;font-family:var(--fb)}
+.spdd button:active{background:var(--s3)}
+/* DATE BAR */
+.dbar{background:var(--s2);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dnav{display:flex;align-items:center;gap:8px}
+.dnav button{background:var(--s3);border:none;color:var(--txt);width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+/* MISC */
+.prog{height:5px;background:var(--bd);border-radius:3px;overflow:hidden;margin-top:6px}
+.pf{height:100%;border-radius:3px;transition:width .4s}
+.tabs{display:flex;background:var(--s2);border-radius:10px;padding:3px;margin-bottom:14px;gap:3px}
+.tab{flex:1;text-align:center;padding:9px 6px;font-size:13px;font-weight:500;border-radius:8px;cursor:pointer;color:var(--mut);border:none;background:none;font-family:var(--fb)}
+.tab.active{background:var(--acc);color:#000}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--acc);font-size:15px;font-weight:500;cursor:pointer;padding:0;font-family:var(--fb)}
+.ib{background:rgba(94,114,228,.07);border:1px solid rgba(94,114,228,.18);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--mut);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.sc2{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer}
+.sc2:active{border-color:var(--acc)}
+.prow{display:flex;align-items:center;padding:13px 0;gap:12px;border-bottom:1px solid rgba(255,255,255,.05)}
+.prow:last-child{border-bottom:none}
+.pico{width:36px;height:36px;border-radius:10px;background:rgba(45,206,137,.1);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.pnm{font-size:14px;font-weight:500}.pdt{font-size:12px;color:var(--mut);margin-top:2px}
+.pamt{font-family:var(--fm);font-size:15px;font-weight:500;color:var(--grn);flex-shrink:0}
+.pdel{background:none;border:none;color:var(--mut);cursor:pointer;font-size:16px;padding:4px;flex-shrink:0}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tb2{background:var(--s2);border:1.5px solid var(--bd);border-radius:12px;padding:16px 12px;cursor:pointer;text-align:left;color:var(--txt);font-family:var(--fb);width:100%}
+.tb2:active{border-color:var(--acc)}
+.fab{position:fixed;bottom:calc(var(--nav) + var(--safe) + 16px);right:16px;z-index:100;width:52px;height:52px;border-radius:50%;background:var(--acc);color:#000;border:none;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(245,166,35,.4);touch-action:manipulation}
+.fab:active{transform:scale(.93)}
+.pw{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:16px}
+.pc{width:88px;height:88px;border-radius:50%;border:2px dashed var(--bd);display:flex;align-items:center;justify-content:center;font-size:30px;overflow:hidden;background:var(--s2);cursor:pointer;position:relative}
+.pc img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.pb{display:flex;gap:8px}
+.cw{position:relative;background:#000;border-radius:12px;overflow:hidden;margin-bottom:10px;width:100%}
+.cw video{width:100%;display:block}
+.co{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:10px}
+.sw{position:relative;margin-bottom:14px}
+.sw::before{content:'🔍';position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px}
+.si{width:100%;background:var(--s2);border:1.5px solid var(--bd);border-radius:12px;padding:12px 14px 12px 40px;color:var(--txt);font-family:var(--fb);font-size:15px;outline:none}
+.si:focus{border-color:var(--acc)}
+.si::placeholder{color:var(--mut)}
+.crow{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.cbtn{display:flex;align-items:center;gap:6px;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:500;text-decoration:none;border:1.5px solid;touch-action:manipulation}
+.cbtn:active{transform:scale(.96)}
+.cbtn.call{background:rgba(45,206,137,.1);color:var(--grn);border-color:rgba(45,206,137,.3)}
+.cbtn.wa{background:rgba(37,211,102,.1);color:#25d366;border-color:rgba(37,211,102,.3)}
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px;color:var(--mut)}
+.spin{width:28px;height:28px;border:3px solid var(--bd);border-top-color:var(--acc);border-radius:50%;animation:sp .8s linear infinite}
+.empty{text-align:center;padding:50px 20px;color:var(--mut)}
+.ei{font-size:44px;margin-bottom:10px}.et{font-size:14px;line-height:1.5}
+.tw{position:fixed;bottom:calc(var(--nav) + var(--safe) + 12px);left:16px;right:16px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;font-size:14px;font-weight:500;animation:slideup .2s ease;display:flex;align-items:center;gap:8px}
+.toast.success{border-color:rgba(45,206,137,.4)}.toast.error{border-color:rgba(245,54,92,.4)}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes slideup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 </style>
+
 </head>
 <body>
 <div id="root"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script>
-const { useState, useEffect, createContext, useContext } = React;
-
-// API Configuration
-const API = window.location.origin + '/api';
-const TODAY = new Date().toISOString().split('T')[0];
-
-// Helper Functions
-const formatCurrency = (n) => '₹' + (n || 0).toLocaleString('en-IN');
-const formatDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) : '—';
-const formatWhatsApp = (n) => n ? `https://wa.me/91${n.replace(/\D/g, '')}` : '#';
-const formatTel = (n) => n ? `tel:${n}` : '#';
-
-// API Calls
-async function apiFetch(path, options = {}) {
-  const token = localStorage.getItem('bl_token');
-  const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  
-  const response = await fetch(API + path, { headers, ...options });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || 'Request failed');
-  return data;
+const {useState,useEffect,useCallback,useRef,createContext,useContext}=React;
+const API=window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'
+  ?'http://localhost:5000/api'
+  :window.location.origin+'/api';
+const TODAY=new Date().toISOString().split('T')[0];
+const monthStart=()=>TODAY.slice(0,7)+'-01';
+async function apiFetch(path,opts={}){
+  const token=localStorage.getItem('bl_token');
+  const res=await fetch(API+path,{headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})}, ...opts});
+  const d=await res.json();if(!res.ok)throw new Error(d.error||'Request failed');return d;
 }
+async function apiForm(path,fd,method='POST'){
+  const token=localStorage.getItem('bl_token');
+  const res=await fetch(API+path,{method,headers:{...(token?{Authorization:`Bearer ${token}`}:{})},body:fd});
+  const d=await res.json();if(!res.ok)throw new Error(d.error||'Request failed');return d;
+}
+const fmt=n=>'₹'+Number(n||0).toLocaleString('en-IN');
+const fmtD=d=>d?new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—';
+const fmtDs=d=>d?new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short'}):'—';
+const wa=n=>n?`https://wa.me/91${n.replace(/\D/g,'')}`:'#';
+const tel=n=>n?`tel:${n}`:'#';
+const E=React.createElement;
+const ToastCtx=createContext(null);
+function ToastProvider({children}){
+  const [toasts,setToasts]=useState([]);
+  const show=useCallback((msg,type='success')=>{const id=Date.now();setToasts(t=>[...t,{id,msg,type}]);setTimeout(()=>setToasts(t=>t.filter(x=>x.id!==id)),3200);},[]);
+  return E(ToastCtx.Provider,{value:show},children,E('div',{className:'tw'},toasts.map(t=>E('div',{key:t.id,className:`toast ${t.type}`},t.type==='success'?'✅':'❌',t.msg))));
+}
+const useToast=()=>useContext(ToastCtx);
 
-// Toast Context
-const ToastContext = createContext(null);
-function useToast() { return useContext(ToastContext); }
-
-function ToastProvider({ children }) {
-  const [toasts, setToasts] = useState([]);
-  const show = (msg, type = 'success') => {
-    const id = Date.now();
-    setToasts(t => [...t, { id, msg, type }]);
-    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3000);
+function AuthScreen({onLogin}){
+  const [tab,setTab]=useState('login');
+  const [f,setF]=useState({name:'',email:'',password:'',companyName:''});
+  const [loading,setLoading]=useState(false);const [err,setErr]=useState('');
+  const toast=useToast();const set=k=>ev=>setF(x=>({...x,[k]:ev.target.value}));
+  const submit=async()=>{setErr('');setLoading(true);try{const d=await apiFetch(`/auth/${tab}`,{method:'POST',body:JSON.stringify(f)});localStorage.setItem('bl_token',d.token);localStorage.setItem('bl_user',JSON.stringify(d.user));toast('Welcome, '+d.user.name+'!');onLogin(d.user);}catch(e){setErr(e.message);}setLoading(false);};
+  const kp=ev=>ev.key==='Enter'&&submit();
+  return E('div',{className:'auth-wrap'},E('div',{className:'auth-card'},
+    E('div',{className:'auth-logo'},'🏗️ BUILDLEDGER'),E('div',{className:'auth-sub'},'Construction Management Platform'),
+    E('div',{className:'auth-tabs'},['login','register'].map(t=>E('button',{key:t,className:`auth-tab ${tab===t?'active':''}`,onClick:()=>{setTab(t);setErr('');}},t==='login'?'Sign In':'Register'))),
+    tab==='register'&&E('div',{className:'fg'},E('label',{className:'fl'},'Your Name'),E('input',{className:'fi',placeholder:'Ramesh Kumar',value:f.name,onChange:set('name'),onKeyPress:kp})),
+    tab==='register'&&E('div',{className:'fg'},E('label',{className:'fl'},'Company Name'),E('input',{className:'fi',placeholder:'RK Constructions',value:f.companyName,onChange:set('companyName'),onKeyPress:kp})),
+    E('div',{className:'fg'},E('label',{className:'fl'},'Email'),E('input',{className:'fi',type:'email',placeholder:'you@example.com',value:f.email,onChange:set('email'),onKeyPress:kp})),
+    E('div',{className:'fg'},E('label',{className:'fl'},'Password'),E('input',{className:'fi',type:'password',placeholder:'••••••••',value:f.password,onChange:set('password'),onKeyPress:kp})),
+    err&&E('div',{className:'err'},err),
+    E('button',{className:'btn btn-p btn-full',style:{marginTop:'18px'},onClick:submit,disabled:loading},loading?'Loading…':tab==='login'?'Sign In':'Create Account')
+  ));
+}
+const NAV=[{sec:'Overview',items:[{id:'dashboard',ico:'📊',lbl:'Dashboard'}]},{sec:'Workforce',items:[{id:'workers',ico:'👷',lbl:'Workers'},{id:'attendance',ico:'📋',lbl:'Attendance'}]},{sec:'Projects',items:[{id:'sites',ico:'🏗️',lbl:'Sites'},{id:'owners',ico:'👤',lbl:'Owners'}]},{sec:'Finance',items:[{id:'payments',ico:'💰',lbl:'Payments'},{id:'expenses',ico:'💸',lbl:'Expenses'}]}];
+function Sidebar({page,setPage,user,onLogout}){
+  return E('div',{className:'sidebar'},
+    E('div',{className:'sb-logo'},E('div',{className:'logo-txt'},'🏗️ BUILD'),E('div',{className:'logo-co'},user.companyName||'Ledger')),
+    E('div',{className:'sb-nav'},NAV.map(s=>E('div',{key:s.sec,className:'nav-sec'},E('div',{className:'nav-lbl'},s.sec),s.items.map(it=>E('button',{key:it.id,className:`ni ${page===it.id?'active':''}`,onClick:()=>setPage(it.id)},E('span',{className:'ico'},it.ico),E('span',null,it.lbl)))))),
+    E('div',{className:'sb-foot'},E('div',{className:'user-pill'},E('div',{className:'uav'},user.name?.[0]?.toUpperCase()),E('div',null,E('div',{className:'uname'},user.name),E('div',{className:'urole'},'Contractor')),E('button',{className:'logout-btn',onClick:onLogout,title:'Logout'},'⏏')))
+  );
+}
+function PhotoPicker({photo,onChange}){
+  const [cam,setCam]=useState(false);const [stream,setStream]=useState(null);
+  const vRef=useRef(null);const fRef=useRef(null);
+  const startCam=async()=>{try{const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});setStream(s);setCam(true);setTimeout(()=>{if(vRef.current)vRef.current.srcObject=s;},100);}catch{alert('Camera not available');}};
+  const stopCam=()=>{stream?.getTracks().forEach(t=>t.stop());setStream(null);setCam(false);};
+  const capture=()=>{const v=vRef.current,c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);onChange(c.toDataURL('image/jpeg',.7));stopCam();};
+  const pickFile=ev=>{const file=ev.target.files[0];if(!file)return;const r=new FileReader();r.onload=e=>onChange(e.target.result);r.readAsDataURL(file);};
+  return E('div',{className:'pw'},cam?E('div',{className:'cw',style:{width:'100%'}},E('video',{ref:vRef,autoPlay:true,playsInline:true}),E('div',{className:'co'},E('button',{className:'btn btn-p btn-sm',onClick:capture},'📸 Capture'),E('button',{className:'btn btn-o btn-sm',onClick:stopCam},'Cancel'))):E(React.Fragment,null,E('div',{className:'pp',onClick:()=>fRef.current?.click()},photo?E('img',{src:photo,alt:'w'}):E('span',null,'👷')),E('div',{className:'pb'},E('button',{className:'btn btn-o btn-sm',onClick:()=>fRef.current?.click()},'📁 Upload'),E('button',{className:'btn btn-o btn-sm',onClick:startCam},'📷 Camera')),E('input',{ref:fRef,type:'file',accept:'image/*',style:{display:'none'},onChange:pickFile})));
+}
+function Dashboard({setPage}){
+  const [data,setData]=useState(null);const [loading,setLoading]=useState(true);
+  useEffect(()=>{apiFetch('/finance/dashboard').then(d=>{setData(d);setLoading(false);}).catch(()=>setLoading(false));},[]);
+  if(loading)return E('div',{className:'loader'},E('div',{className:'spin'}),'Loading…');
+  if(!data)return null;
+  const{totals:t,todayAttendance:ta,recentPayments:rp,recentExpenses:re,sites}=data;
+  return E('div',null,
+    E('div',{className:'pp'},E('div',{className:'stitle'},'DASHBOARD'),E('div',{className:'ls'},'Overview · '+fmtD(TODAY))),
+    E('div',{className:'pp'},
+      E('div',{className:'sg'},
+        E('div',{className:'sc or'},E('div',{className:'si'},'💰'),E('div',{className:'sv or'},fmt(t.totalReceived)),E('div',{className:'slb'},'Total Received'),E('div',{className:'ssb'},'Contract: '+fmt(t.totalContractValue))),
+        E('div',{className:'sc rd'},E('div',{className:'si'},'⚠️'),E('div',{className:'sv rd'},fmt(t.totalOutstanding)),E('div',{className:'slb'},'Outstanding'),E('div',{className:'ssb'},t.activeSites+' active sites')),
+        E('div',{className:'sc gn'},E('div',{className:'si'},'📈'),E('div',{className:'sv gn'},fmt(t.netProfit)),E('div',{className:'slb'},'Net Profit'),E('div',{className:'ssb'},'Expenses: '+fmt(t.totalExpenses))),
+        E('div',{className:'sc bl'},E('div',{className:'si'},'👷'),E('div',{className:'sv bl'},ta.present),E('div',{className:'slb'},'Today Present'),E('div',{className:'ssb'},'of '+t.workers+' workers'))
+      ),
+      E('div',{className:'two-col'},
+        E('div',{className:'card'},E('div',{className:'ch'},E('div',{className:'ct'},'💰 Recent Payments'),E('button',{className:'btn btn-o btn-sm',onClick:()=>setPage('payments')},'View All')),(rp||[]).length===0?E('div',{className:'empty',style:{padding:'20px'}},E('div',null,'No payments yet')):(rp||[]).map(p=>E('div',{key:p._id,className:'ldr'},E('div',{className:'ld in'},'⬆️'),E('div',{className:'li'},E('div',{className:'ln'},p.siteId?.name||'—'),E('div',{className:'ls'},fmtD(p.date)+' · '+p.paymentMode)),E('div',{className:'la in'},fmt(p.amount))))),
+        E('div',{className:'card'},E('div',{className:'ch'},E('div',{className:'ct'},'💸 Recent Expenses'),E('button',{className:'btn btn-o btn-sm',onClick:()=>setPage('expenses')},'View All')),(re||[]).length===0?E('div',{className:'empty',style:{padding:'20px'}},E('div',null,'No expenses yet')):(re||[]).map(e=>E('div',{key:e._id,className:'ldr'},E('div',{className:'ld out'},'⬇️'),E('div',{className:'li'},E('div',{className:'ln'},e.description||e.category),E('div',{className:'ls'},fmtD(e.date)+' · '+e.siteId?.name)),E('div',{className:'la out'},fmt(e.amount)))))
+      ),
+      E('div',{className:'card',style:{marginTop:'16px'}},E('div',{className:'ch'},E('div',{className:'ct'},'🏗️ Sites'),E('button',{className:'btn btn-o btn-sm',onClick:()=>setPage('sites')},'View All')),(sites||[]).length===0?E('div',{className:'empty'},E('div',{className:'ei'},'🏗️'),E('div',{className:'et'},'No sites yet')):E('div',{className:'tw'},E('table',null,E('thead',null,E('tr',null,['Site','Contract','Received','Balance','Status'].map(h=>E('th',{key:h},h)))),E('tbody',null,(sites||[]).map(s=>{const pct=s.contractAmount?Math.min(100,(s.received/s.contractAmount)*100):0;return E('tr',{key:s._id},E('td',null,E('strong',null,s.name)),E('td',{style:{fontFamily:'var(--fm)'}},fmt(s.contractAmount)),E('td',null,E('div',{style:{fontFamily:'var(--fm)',color:'var(--grn)'}},fmt(s.received)),E('div',{className:'progress-bar'},E('div',{className:'progress-fill',style:{width:pct+'%',background:'var(--grn)'}}))),E('td',{style:{fontFamily:'var(--fm)',color:s.balance>0?'var(--red)':'var(--grn)'}},fmt(s.balance)),E('td',null,E('span',{className:`badge bg-${s.status==='active'?'g':'gr'}`},s.status)));})))))
+    )
+  );
+}
+const SKILLS=['Mason','Helper','Carpenter','Electrician','Plumber','Painter','Supervisor','Welder','Tile Layer','Steel Fixer','Other'];
+function Workers(){
+  const [workers,setWorkers]=useState([]);const [loading,setLoading]=useState(true);
+  const [modal,setModal]=useState(null);const [detail,setDetail]=useState(null);
+  const [photo,setPhoto]=useState('');const [wPhotos,setWPhotos]=useState({});
+  const [f,setF]=useState({name:'',mobile:'',whatsapp:'',skill:'Mason',dailyWage:'',address:'',joiningDate:'',idProof:''});
+  const [search,setSearch]=useState('');const [saving,setSaving]=useState(false);
+  const toast=useToast();
+  const load=()=>apiFetch('/workers').then(d=>{setWorkers(d);setLoading(false);});
+  useEffect(()=>{load();},[]);
+  const loadPhoto=async id=>{if(wPhotos[id])return;try{const d=await apiFetch(`/workers/${id}/photo`);setWPhotos(m=>({...m,[id]:d.photo}));}catch{}};
+  const openAdd=()=>{setF({name:'',mobile:'',whatsapp:'',skill:'Mason',dailyWage:'',address:'',joiningDate:'',idProof:''});setPhoto('');setModal('add');};
+  const openEdit=w=>{setF({name:w.name,mobile:w.mobile||'',whatsapp:w.whatsapp||'',skill:w.skill,dailyWage:String(w.dailyWage),address:w.address||'',joiningDate:w.joiningDate||'',idProof:w.idProof||''});setPhoto('');setModal(w);};
+  const set=k=>ev=>{
+    const val=ev.target.value;
+    setF(x=>{
+      const upd={...x,[k]:val};
+      if(k==='mobile'&&(x.whatsapp===''||x.whatsapp===x.mobile))upd.whatsapp=val;
+      return upd;
+    });
   };
-  return (
-    React.createElement(ToastContext.Provider, { value: show },
-      children,
-      React.createElement('div', { className: 'toast-container' },
-        toasts.map(t => React.createElement('div', { key: t.id, className: 'toast' }, t.type === 'success' ? '✓' : '⚠️', ' ', t.msg))
+  const save=async()=>{setSaving(true);try{const fd=new FormData();Object.entries(f).forEach(([k,v])=>fd.append(k,v));if(photo&&photo.startsWith('data:'))fd.append('photo',photo);if(modal==='add'){await apiForm('/workers',fd,'POST');toast('Worker added');}else{await apiForm(`/workers/${modal._id}`,fd,'PUT');toast('Updated');}setModal(null);load();}catch(e){toast(e.message,'error');}setSaving(false);};
+  const del=async id=>{if(!confirm('Delete?'))return;try{await apiFetch(`/workers/${id}`,{method:'DELETE'});toast('Deleted');load();}catch(e){toast(e.message,'error');}};
+  const filtered=workers.filter(w=>w.name.toLowerCase().includes(search.toLowerCase())||w.skill.toLowerCase().includes(search.toLowerCase()));
+  if(detail)return E(WorkerDetail,{workerId:detail,onBack:()=>setDetail(null)});
+  return E('div',null,
+    E('div',{className:'pp'},E('div',{className:'stitle'},'WORKERS'),E('div',{className:'ls'},workers.length+' workers')),
+    E('div',{className:'pp'},
+      E('div',{className:'card'},
+        E('div',{className:'ch'},E('div',{className:'swrap'},E('input',{className:'sbar',placeholder:'Search…',value:search,onChange:ev=>setSearch(ev.target.value)})),E('button',{className:'btn btn-p btn-sm',onClick:openAdd},'+ Add Worker')),
+        loading?E('div',{className:'loader'},E('div',{className:'spin'})):
+        filtered.length===0?E('div',{className:'empty'},E('div',{className:'ei'},'👷'),E('div',{className:'et'},'No workers yet')):
+        E('div',{className:'wgrid'},filtered.map(w=>{
+          if(!wPhotos[w._id])loadPhoto(w._id);const ph=wPhotos[w._id];
+          return E('div',{key:w._id,className:'wcard'},
+            E('div',{className:'wavatar',onClick:()=>setDetail(w._id)},ph?E('img',{src:ph,alt:w.name}):w.name[0]?.toUpperCase()),
+            E('div',{className:'wname',onClick:()=>setDetail(w._id)},w.name),
+            E('div',{className:'wskill'},E('span',{className:'badge bg-b'},w.skill)),
+            E('div',{className:'wwage'},fmt(w.dailyWage)+'/day'),
+            E('div',{className:'wcontact'},w.mobile&&E('a',{href:tel(w.mobile),title:'Call'},'📞'),w.whatsapp&&E('a',{href:wa(w.whatsapp),target:'_blank',rel:'noreferrer',title:'WhatsApp'},'💬')),
+            E('span',{className:`badge bg-${w.status==='active'?'g':'gr'}`},w.status),
+            E('div',{style:{display:'flex',gap:'6px',marginTop:'4px'}},E('button',{className:'btn btn-sm btn-o',onClick:()=>openEdit(w)},'✏️'),E('button',{className:'btn btn-sm btn-d',onClick:()=>del(w._id)},'🗑️'))
+          );
+        }))
+      )
+    ),
+    modal!==null&&E('div',{className:'sov',onClick:ev=>ev.target.className==='ov'&&setModal(null)},
+      E('div',{className:'sheet'},
+        E('div',{className:'shd'},E('div',{className:'sht'},modal==='add'?'Add Worker':'Edit Worker'),E('button',{className:'shc',onClick:()=>setModal(null)},'✕')),
+        E('div',{className:'shb'},
+          E(PhotoPicker,{photo,onChange:setPhoto}),
+          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Full Name *'),E('input',{className:'fi',value:f.name,onChange:set('name'),placeholder:'Suresh Kumar'})),E('div',{className:'fg'},E('label',{className:'fl'},'Mobile (calling) *'),E('input',{className:'fi',value:f.mobile,onChange:set('mobile'),placeholder:'9876543210',type:'tel'}))),
+          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'WhatsApp'),E('input',{className:'fi',value:f.whatsapp,onChange:set('whatsapp'),placeholder:'Auto-filled from mobile',type:'tel'})),E('div',{className:'fg'},E('label',{className:'fl'},'Aadhaar / ID'),E('input',{className:'fi',value:f.idProof,onChange:set('idProof'),placeholder:'XXXX XXXX XXXX'}))),
+          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Skill *'),E('select',{className:'fs',value:f.skill,onChange:set('skill')},SKILLS.map(s=>E('option',{key:s,value:s},s)))),E('div',{className:'fg'},E('label',{className:'fl'},'Daily Wage (₹) *'),E('input',{className:'fi',type:'number',value:f.dailyWage,onChange:set('dailyWage'),placeholder:'600'}))),
+          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Joining Date'),E('input',{className:'fi',type:'date',value:f.joiningDate,onChange:set('joiningDate')})),E('div',{className:'fg'},E('label',{className:'fl'},'Address'),E('input',{className:'fi',value:f.address,onChange:set('address'),placeholder:'Village / City'}))),
+          E('div',{className:'mact'},E('button',{className:'btn btn-o',onClick:()=>setModal(null)},'Cancel'),E('button',{className:'btn btn-p',onClick:save,disabled:saving},saving?'Saving…':'Save Worker'))
+        )
       )
     )
   );
 }
+function WorkerDetail({workerId,onBack}){
+  const [worker,setWorker]=useState(null);const [summary,setSummary]=useState(null);
+  const [range,setRange]=useState({start:monthStart(),end:TODAY});
+  const [tab,setTab]=useState('info');const [loading,setLoading]=useState(true);
+  useEffect(()=>{apiFetch(`/workers/${workerId}`).then(d=>{setWorker(d);setLoading(false);});},[workerId]);
+  const loadSummary=()=>apiFetch(`/workers/${workerId}/wage-summary?startDate=${range.start}&endDate=${range.end}`).then(setSummary);
+  useEffect(()=>{if(tab==='wages')loadSummary();},[tab]);
+  if(loading)return E('div',{className:'pp'},E('div',{className:'loader'},E('div',{className:'spin'})));
+  if(!worker)return null;
+  return E('div',null,
+    E('div',{className:'pp'},E('button',{className:'back-btn',onClick:onBack,style:{marginTop:'8px'}},'← Back'),E('div',{className:'stitle'},worker.name),E('div',{className:'ls'},worker.skill+' · '+fmt(worker.dailyWage)+'/day')),
+    E('div',{className:'pp'},
+      E('div',{className:'card'},
+        E('div',{className:'wavatar',style:{width:'70px',height:'70px',fontSize:'26px',flexShrink:0}},worker.photo?E('img',{src:worker.photo,alt:worker.name}):worker.name[0]?.toUpperCase()),
+        E('div',{style:{flex:1}},
+          E('div',{style:{fontSize:'18px',fontWeight:600,marginBottom:'8px'}},worker.name),
+          E('div',{style:{display:'flex',gap:'8px',flexWrap:'wrap'}},E('span',{className:`badge bg-${worker.status==='active'?'g':'gr'}`},worker.status),E('span',{className:'badge bg-b'},worker.skill),E('span',{className:'badge bg-o'},fmt(worker.dailyWage)+'/day')),
+          worker.mobile&&E('div',{style:{marginTop:'10px',display:'flex',gap:'8px',flexWrap:'wrap'}},E('a',{href:tel(worker.mobile),className:'btn btn-g btn-sm'},'📞 Call '+worker.mobile),worker.whatsapp&&E('a',{href:wa(worker.whatsapp),target:'_blank',rel:'noreferrer',className:'btn btn-b btn-sm'},'💬 WhatsApp'))
+        )
+      ),
+      E('div',{className:'tabs'},['info','wages'].map(t=>E('button',{key:t,className:`tab ${tab===t?'active':''}`,onClick:()=>setTab(t)},t==='info'?'📋 Info':'💰 Wage Ledger'))),
+      tab==='info'&&E('div',{className:'card'},E('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}},[['Mobile',worker.mobile||'—'],['WhatsApp',worker.whatsapp||'—'],['ID Proof',worker.idProof||'—'],['Joined',fmtD(worker.joiningDate)],['Address',worker.address||'—']].map(([k,v])=>E('div',{key:k},E('div',{className:'fl'},k),E('div',{style:{fontSize:'14px'}},v))))),
+      tab==='wages'&&E('div',null,
+        E('div',{className:'card',style:{marginBottom:'14px'}},E('div',{style:{display:'flex',gap:'12px',alignItems:'flex-end',flexWrap:'wrap'}},E('div',{className:'fg',style:{margin:0}},E('label',{className:'fl'},'From'),E('input',{className:'fi',type:'date',value:range.start,onChange:ev=>setRange(r=>({...r,start:ev.target.value}))})),E('div',{className:'fg',style:{margin:0}},E('label',{className:'fl'},'To'),E('input',{className:'fi',type:'date',value:range.end,onChange:ev=>setRange(r=>({...r,end:ev.target.value}))})),E('button',{className:'btn btn-p btn-sm',onClick:loadSummary},'Calculate'))),
+        summary&&E('div',null,
+          E('div',{className:'sg',style:{gridTemplateColumns:'repeat(3,1fr)',marginBottom:'14px'}},
+            E('div',{className:'sc gn'},E('div',{className:'si'},'✅'),E('div',{className:'sv gn'},summary.totalDays),E('div',{className:'slb'},'Days Worked')),
+            E('div',{className:'sc or'},E('div',{className:'si'},'💰'),E('div',{className:'sv or'},fmt(summary.totalWage)),E('div',{className:'slb'},'Total Earned')),
+            E('div',{className:'sc bl'},E('div',{className:'si'},'📋'),E('div',{className:'sv bl'},summary.records?.length||0),E('div',{className:'slb'},'Records'))
+          ),
+          summary.records?.length>0&&E('div',{className:'card'},E('div',{className:'ct',style:{marginBottom:'14px'}},'Attendance Records'),E('div',{className:'tw'},E('table',null,E('thead',null,E('tr',null,['Date','Site','Status','Wage','Paid?'].map(h=>E('th',{key:h},h)))),E('tbody',null,(summary.records||[]).map((r,i)=>E('tr',{key:i},E('td',null,fmtD(r.date)),E('td',null,r.siteId?.name||E('span',{style:{color:'var(--mut)'}},'—')),E('td',null,E('span',{className:`badge bg-${r.status==='present'?'g':r.status==='half'?'o':'r'}`},r.status)),E('td',{style:{fontFamily:'var(--fm)',color:'var(--acc)'}},r.status==='present'?fmt(worker.dailyWage):r.status==='half'?fmt(worker.dailyWage/2):'—'),E('td',null,E('span',{className:`badge bg-${r.wagePaid?'g':'r'}`},r.wagePaid?'Paid':'Unpaid'))))))))
+        )
+      )
+    )
+  );
+}
+// ── ATTENDANCE (standalone, no site coupling) ─────────────────────────────────
+function Attendance(){
+  const [workers,setWorkers]=useState([]);
+  const [sites,setSites]=useState([]);
+  const [attMap,setAttMap]=useState({});   // workerId → record
+  const [date,setDate]=useState(TODAY);
+  const [loading,setLoading]=useState(false);
+  const [wPhotos,setWPhotos]=useState({});
+  const [sitePicker,setSitePicker]=useState(null); // workerId with open picker
+  const [tab,setTab]=useState('mark');
+  const [summary,setSummary]=useState([]);
+  const [sumRange,setSumRange]=useState({start:monthStart(),end:TODAY});
+  const [stats,setStats]=useState(null);
+  const toast=useToast();
 
-// Auth Screen
-function AuthScreen({ onLogin }) {
-  const [isLogin, setIsLogin] = useState(true);
-  const [form, setForm] = useState({ name: '', email: '', password: '', companyName: '' });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const toast = useToast();
+  useEffect(()=>{
+    Promise.all([apiFetch('/workers'),apiFetch('/sites')]).then(([w,s])=>{setWorkers(w.filter(x=>x.status==='active'));setSites(s);});
+    apiFetch('/attendance/stats').then(setStats).catch(()=>{});
+  },[]);
 
-  const handleSubmit = async () => {
-    setError('');
+  useEffect(()=>{
+    if(!date)return;
     setLoading(true);
-    try {
-      const endpoint = isLogin ? '/auth/login' : '/auth/register';
-      const data = await apiFetch(endpoint, { method: 'POST', body: JSON.stringify(form) });
-      localStorage.setItem('bl_token', data.token);
-      localStorage.setItem('bl_user', JSON.stringify(data.user));
-      toast(`Welcome ${data.user.name}!`);
-      onLogin(data.user);
-    } catch (err) {
-      setError(err.message);
-    }
-    setLoading(false);
+    apiFetch(`/attendance/by-date/${date}`).then(recs=>{
+      const m={};recs.forEach(r=>{m[r.workerId?._id||r.workerId]=r;});
+      setAttMap(m);setLoading(false);
+    }).catch(()=>setLoading(false));
+  },[date]);
+
+  const loadPhoto=async id=>{if(wPhotos[id])return;try{const d=await apiFetch(`/workers/${id}/photo`);setWPhotos(m=>({...m,[id]:d.photo}));}catch{}};
+  const changeDate=d=>{const dt=new Date(date);dt.setDate(dt.getDate()+d);setDate(dt.toISOString().split('T')[0]);};
+
+  const markStatus=async(workerId,status)=>{
+    const existing=attMap[workerId];
+    setAttMap(m=>({...m,[workerId]:{...existing,workerId:{_id:workerId},status,date,wagePaid:existing?.wagePaid||false}}));
+    try{
+      const rec=await apiFetch('/attendance/mark',{method:'POST',body:JSON.stringify({workerId,date,status,siteId:existing?.siteId?._id||existing?.siteId||null})});
+      setAttMap(m=>({...m,[workerId]:rec}));
+    }catch(e){toast(e.message,'error');if(existing)setAttMap(m=>({...m,[workerId]:existing}));}
   };
 
-  return React.createElement('div', { className: 'auth-container' },
-    React.createElement('div', { className: 'auth-card' },
-      React.createElement('div', { className: 'auth-logo' }, '🏗️ BUILDLEDGER'),
-      React.createElement('div', { className: 'auth-sub' }, 'Construction Management Platform'),
-      React.createElement('div', { className: 'auth-tabs' },
-        React.createElement('button', { className: `auth-tab ${isLogin ? 'active' : ''}`, onClick: () => { setIsLogin(true); setError(''); } }, 'Sign In'),
-        React.createElement('button', { className: `auth-tab ${!isLogin ? 'active' : ''}`, onClick: () => { setIsLogin(false); setError(''); } }, 'Register')
-      ),
-      !isLogin && React.createElement('div', { className: 'input-group' },
-        React.createElement('label', { className: 'label' }, 'Full Name'),
-        React.createElement('input', { className: 'input', placeholder: 'Ramesh Kumar', value: form.name, onChange: e => setForm({ ...form, name: e.target.value }) })
-      ),
-      !isLogin && React.createElement('div', { className: 'input-group' },
-        React.createElement('label', { className: 'label' }, 'Company Name'),
-        React.createElement('input', { className: 'input', placeholder: 'RK Constructions', value: form.companyName, onChange: e => setForm({ ...form, companyName: e.target.value }) })
-      ),
-      React.createElement('div', { className: 'input-group' },
-        React.createElement('label', { className: 'label' }, 'Email'),
-        React.createElement('input', { className: 'input', type: 'email', placeholder: 'you@example.com', value: form.email, onChange: e => setForm({ ...form, email: e.target.value }) })
-      ),
-      React.createElement('div', { className: 'input-group' },
-        React.createElement('label', { className: 'label' }, 'Password'),
-        React.createElement('input', { className: 'input', type: 'password', placeholder: '••••••••', value: form.password, onChange: e => setForm({ ...form, password: e.target.value }) })
-      ),
-      error && React.createElement('div', { style: { color: 'var(--danger)', fontSize: '13px', marginTop: '10px' } }, error),
-      React.createElement('button', { className: 'btn btn-primary btn-full', style: { marginTop: '20px' }, onClick: handleSubmit, disabled: loading },
-        loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Create Account')
-      )
-    )
-  );
-}
+  const toggleWagePaid=async(workerId)=>{
+    const rec=attMap[workerId];
+    if(!rec?._id){toast('Mark attendance first','error');return;}
+    const newVal=!rec.wagePaid;
+    setAttMap(m=>({...m,[workerId]:{...rec,wagePaid:newVal}}));
+    try{
+      const updated=await apiFetch(`/attendance/${rec._id}/wage-paid`,{method:'PATCH',body:JSON.stringify({wagePaid:newVal})});
+      setAttMap(m=>({...m,[workerId]:updated}));
+      const wname=workers.find(w=>w._id===workerId)?.name||'Worker';
+      toast(wname+(newVal?' — wage marked paid':' — marked unpaid'));
+    }catch(e){toast(e.message,'error');setAttMap(m=>({...m,[workerId]:rec}));}
+  };
 
-// Bottom Navigation
-function BottomNav({ page, setPage, onLogout, showMore, setShowMore }) {
-  const mainItems = [
-    { id: 'dashboard', icon: '📊', label: 'Home' },
-    { id: 'workers', icon: '👷', label: 'Workers' },
-    { id: 'attendance', icon: '📋', label: 'Attendance' },
-    { id: 'sites', icon: '🏗️', label: 'Sites' }
-  ];
-  const moreItems = [
-    { id: 'owners', icon: '👤', label: 'Owners' },
-    { id: 'payments', icon: '💰', label: 'Payments' },
-    { id: 'expenses', icon: '💸', label: 'Expenses' }
-  ];
+  const assignSite=async(workerId,siteId)=>{
+    setSitePicker(null);
+    const rec=attMap[workerId];
+    const status=rec?.status||'present';
+    try{
+      const updated=await apiFetch('/attendance/mark',{method:'POST',body:JSON.stringify({workerId,date,status,siteId:siteId||null})});
+      setAttMap(m=>({...m,[workerId]:updated}));
+      toast(siteId?'Site assigned':'Site removed');
+    }catch(e){toast(e.message,'error');}
+  };
 
-  return React.createElement('div', { className: 'bottom-nav' },
-    mainItems.map(item => React.createElement('button', {
-      key: item.id,
-      className: `nav-item ${page === item.id ? 'active' : ''}`,
-      onClick: () => { setPage(item.id); setShowMore(false); }
-    }, React.createElement('span', { className: 'ico' }, item.icon), React.createElement('span', null, item.label))),
-    React.createElement('div', { style: { position: 'relative' } },
-      React.createElement('button', { className: `nav-item ${showMore ? 'active' : ''}`, onClick: () => setShowMore(!showMore) },
-        React.createElement('span', { className: 'ico' }, '⚙️'), React.createElement('span', null, 'More')
+  const loadSummary=()=>{
+    apiFetch(`/attendance/wage-summary?startDate=${sumRange.start}&endDate=${sumRange.end}`).then(setSummary).catch(e=>toast(e.message,'error'));
+  };
+  useEffect(()=>{if(tab==='summary')loadSummary();},[tab]);
+
+  // Day stats
+  const presentW=workers.filter(w=>attMap[w._id]?.status==='present');
+  const halfW=workers.filter(w=>attMap[w._id]?.status==='half');
+  const absentW=workers.filter(w=>!attMap[w._id]||attMap[w._id]?.status==='absent');
+  const dayWage=presentW.reduce((s,w)=>s+w.dailyWage,0)+halfW.reduce((s,w)=>s+w.dailyWage/2,0);
+  const paidToday=workers.filter(w=>attMap[w._id]?.wagePaid).reduce((s,w)=>{const st=attMap[w._id]?.status;return s+(st==='present'?w.dailyWage:st==='half'?w.dailyWage/2:0);},0);
+
+  return E('div',null,
+    E('div',{className:'pp'},E('div',{className:'stitle'},'ATTENDANCE'),E('div',{className:'ls'},'Per-worker marking · wage taken tracking')),
+    E('div',{className:'pp'},
+      // TTL info banner + delete all button
+      E('div',{style:{display:'flex',alignItems:'center',gap:'10px',marginBottom:'14px',flexWrap:'wrap'}},
+        stats&&E('div',{className:'ib',style:{margin:0,flex:1}},'ℹ️ ',E('span',null,`Records auto-delete after 2 months. ${stats.count} records stored`+(stats.oldest?` · Oldest: ${fmtDs(stats.oldest)}`:'')+'.')),
+        E('button',{
+          className:'btn btn-d btn-sm',
+          style:{flexShrink:0},
+          onClick:async()=>{
+            if(!confirm(`Delete ALL ${stats?.count||''} attendance records?\n\nThis cannot be undone.`))return;
+            if(!confirm('Are you sure? All wage paid/unpaid history will be lost.'))return;
+            try{
+              const r=await apiFetch('/attendance/delete-all',{method:'DELETE'});
+              toast(r.message);
+              setAttMap({});
+              apiFetch('/attendance/stats').then(setStats).catch(()=>{});
+              setSummary([]);
+            }catch(e){toast(e.message,'error');}
+          }
+        },'🗑️ Delete All Records')
       ),
-      showMore && React.createElement('div', { style: { position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', padding: '8px', marginBottom: '8px', minWidth: '150px', zIndex: 200 } },
-        moreItems.map(item => React.createElement('button', {
-          key: item.id,
-          style: { width: '100%', display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', background: 'none', border: 'none', color: 'var(--text)', cursor: 'pointer', borderRadius: '8px' },
-          onClick: () => { setPage(item.id); setShowMore(false); }
-        }, React.createElement('span', null, item.icon), React.createElement('span', null, item.label))),
-        React.createElement('hr', { style: { margin: '8px 0', borderColor: 'var(--border)' } }),
-        React.createElement('button', {
-          style: { width: '100%', display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', borderRadius: '8px' },
-          onClick: onLogout
-        }, React.createElement('span', null, '🚪'), React.createElement('span', null, 'Logout'))
-      )
-    )
-  );
-}
 
-// Dashboard Component
-function Dashboard({ setPage }) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    apiFetch('/finance/dashboard').then(d => { setData(d); setLoading(false); }).catch(() => setLoading(false));
-  }, []);
-
-  if (loading) return React.createElement('div', { className: 'loader' }, React.createElement('div', { className: 'spinner' }), 'Loading...');
-  if (!data) return React.createElement('div', { className: 'empty-state' }, React.createElement('div', { className: 'empty-icon' }, '⚠️'), 'Failed to load data');
-
-  const { totals, todayAttendance, recentPayments, sites } = data;
-
-  return React.createElement('div', { className: 'main' },
-    React.createElement('div', { className: 'header' },
-      React.createElement('div', { className: 'title' }, 'BUILDLEDGER'),
-      React.createElement('div', { className: 'subtitle' }, formatDate(TODAY))
-    ),
-    React.createElement('div', { className: 'stats-grid' },
-      React.createElement('div', { className: 'stat-card income' },
-        React.createElement('div', { className: 'stat-icon' }, '💰'),
-        React.createElement('div', { className: 'stat-value income' }, formatCurrency(totals.totalReceived)),
-        React.createElement('div', { className: 'stat-label' }, 'Total Received')
+      E('div',{className:'tabs'},
+        E('button',{className:`tab ${tab==='mark'?'active':''}`,onClick:()=>setTab('mark')},'📋 Mark Attendance'),
+        E('button',{className:`tab ${tab==='summary'?'active':''}`,onClick:()=>setTab('summary')},'📊 Wage Summary')
       ),
-      React.createElement('div', { className: 'stat-card outstanding' },
-        React.createElement('div', { className: 'stat-icon' }, '⚠️'),
-        React.createElement('div', { className: 'stat-value outstanding' }, formatCurrency(totals.totalOutstanding)),
-        React.createElement('div', { className: 'stat-label' }, 'Outstanding')
-      ),
-      React.createElement('div', { className: 'stat-card profit' },
-        React.createElement('div', { className: 'stat-icon' }, '📈'),
-        React.createElement('div', { className: 'stat-value profit' }, formatCurrency(totals.netProfit)),
-        React.createElement('div', { className: 'stat-label' }, 'Net Profit')
-      ),
-      React.createElement('div', { className: 'stat-card workers' },
-        React.createElement('div', { className: 'stat-icon' }, '👷'),
-        React.createElement('div', { className: 'stat-value workers' }, todayAttendance.present),
-        React.createElement('div', { className: 'stat-label' }, 'Present Today')
-      )
-    ),
-    React.createElement('div', { className: 'card' },
-      React.createElement('div', { className: 'card-header' },
-        React.createElement('div', { className: 'card-title' }, '💰 Recent Payments'),
-        React.createElement('button', { className: 'btn btn-outline btn-small', onClick: () => setPage('payments') }, 'View All')
-      ),
-      recentPayments?.slice(0, 3).map(p => React.createElement('div', { key: p._id, className: 'list-item' },
-        React.createElement('div', { className: 'list-item-info' },
-          React.createElement('div', { className: 'list-item-title' }, p.siteId?.name || '—'),
-          React.createElement('div', { className: 'list-item-sub' }, formatDate(p.date))
+
+      // ── MARK TAB ──
+      tab==='mark'&&E('div',null,
+        // Date navigation bar
+        E('div',{className:'dbar'},
+          E('div',{className:'dnav'},
+            E('button',{onClick:()=>changeDate(-1)},'‹'),
+            E('input',{className:'fi',type:'date',value:date,onChange:ev=>setDate(ev.target.value),style:{width:'155px',margin:0}}),
+            E('button',{onClick:()=>changeDate(1)},'›'),
+            date!==TODAY&&E('button',{className:'btn btn-o btn-sm',onClick:()=>setDate(TODAY)},'Today')
+          ),
+          E('div',{className:'day-chips'},
+            E('span',{className:'dchip',style:{background:'rgba(45,206,137,.15)',color:'var(--grn)'}},presentW.length+' Present'),
+            E('span',{className:'dchip',style:{background:'rgba(245,166,35,.15)',color:'var(--acc)'}},halfW.length+' Half'),
+            E('span',{className:'dchip',style:{background:'rgba(245,54,92,.15)',color:'var(--red)'}},absentW.length+' Absent')
+          ),
+          E('div',{style:{marginLeft:'auto',textAlign:'right'}},
+            E('div',{style:{fontFamily:'var(--fm)',fontSize:'20px',color:'var(--acc)'}},fmt(dayWage)),
+            E('div',{style:{fontSize:'11px',color:'var(--mut)'}},'Day payroll · Paid: '+fmt(paidToday))
+          )
         ),
-        React.createElement('div', { className: 'list-item-amount positive' }, formatCurrency(p.amount))
-      ))
-    ),
-    React.createElement('div', { className: 'card' },
-      React.createElement('div', { className: 'card-header' },
-        React.createElement('div', { className: 'card-title' }, '🏗️ Active Sites'),
-        React.createElement('button', { className: 'btn btn-outline btn-small', onClick: () => setPage('sites') }, 'View All')
+
+        workers.length===0
+          ? E('div',{className:'empty'},E('div',{className:'ei'},'👷'),E('div',{className:'et'},'Add workers first from the Workers page'))
+          : loading
+          ? E('div',{className:'loader'},E('div',{className:'spin'}))
+          : E('div',{style:{display:'flex',flexDirection:'column',gap:'8px'}},
+              workers.map(w=>{
+                if(!wPhotos[w._id])loadPhoto(w._id);
+                const rec=attMap[w._id];
+                const status=rec?.status;
+                const wagePaid=rec?.wagePaid||false;
+                const assignedSite=rec?.siteId;
+                const wage=status==='present'?w.dailyWage:status==='half'?w.dailyWage/2:0;
+                const ph=wPhotos[w._id];
+                const rowCls=`att-row ${status==='present'?'p-row':status==='half'?'h-row':'a-row'}`;
+
+                return E('div',{key:w._id,className:rowCls},
+                  // avatar
+                  E('div',{className:'aav'},ph?E('img',{src:ph,alt:w.name}):w.name[0]?.toUpperCase()),
+
+                  // name + skill + site picker
+                  E('div',{className:'li'},
+                    E('div',{className:'anm'},w.name),
+                    E('div',{className:'amt'},w.skill+' · '+fmt(w.dailyWage)+'/day'),
+                    E('div',{className:'spw'},
+                      E('span',{className:'site-chip',onClick:()=>setSitePicker(sitePicker===w._id?null:w._id),title:'Optional: assign site'},
+                        assignedSite?(assignedSite.name||'Site'):'+ Site (optional)'
+                      ),
+                      sitePicker===w._id&&E('div',{className:'spdd'},
+                        E('button',{onClick:()=>assignSite(w._id,null)},'— No site —'),
+                        sites.map(s=>E('button',{key:s._id,onClick:()=>assignSite(w._id,s._id)},s.name))
+                      )
+                    )
+                  ),
+
+                  // call / whatsapp
+                  E('div',{className:'mini-ca'},
+                    w.mobile&&E('a',{href:tel(w.mobile),title:'Call '+w.mobile},'📞'),
+                    w.whatsapp&&E('a',{href:wa(w.whatsapp),target:'_blank',rel:'noreferrer',title:'WhatsApp'},'💬')
+                  ),
+
+                  // P / ½ / A
+                  E('div',{className:'pha-w'},
+                    E('button',{className:`pha pp ${status==='present'?'sel':''}`,onClick:()=>markStatus(w._id,'present')},'P'),
+                    E('button',{className:`pha hh ${status==='half'?'sel':''}`,onClick:()=>markStatus(w._id,'half')},'½'),
+                    E('button',{className:`pha aa ${status==='absent'?'sel':''}`,onClick:()=>markStatus(w._id,'absent')},'A')
+                  ),
+
+                  // Wage paid toggle — only shown when worker is present/half
+                  wage>0
+                    ? E('div',{className:'wage-toggle'},
+                        E('span',{className:'wtl'},wagePaid?'Paid':'Unpaid'),
+                        E('button',{className:`tog ${wagePaid?'on':'off'}`,onClick:()=>toggleWagePaid(w._id),title:wagePaid?'Mark unpaid':'Mark paid'})
+                      )
+                    : E('div',{style:{width:'78px'}}),
+
+                  // wage chip
+                  E('div',{className:`wc ${wage>0?(wagePaid?'p':'e'):'z'}`},wage>0?fmt(wage):'—')
+                );
+              })
+            )
       ),
-      sites?.filter(s => s.status === 'active').slice(0, 3).map(s => React.createElement('div', { key: s._id, className: 'list-item' },
-        React.createElement('div', { className: 'list-item-info' },
-          React.createElement('div', { className: 'list-item-title' }, s.name),
-          React.createElement('div', { className: 'list-item-sub' }, s.location)
+
+      // ── SUMMARY TAB ──
+      tab==='summary'&&E('div',null,
+        E('div',{className:'card',style:{marginBottom:'14px'}},
+          E('div',{style:{display:'flex',gap:'12px',alignItems:'flex-end',flexWrap:'wrap'}},
+            E('div',{className:'fg',style:{margin:0}},E('label',{className:'fl'},'From'),E('input',{className:'fi',type:'date',value:sumRange.start,onChange:ev=>setSumRange(r=>({...r,start:ev.target.value}))})),
+            E('div',{className:'fg',style:{margin:0}},E('label',{className:'fl'},'To'),E('input',{className:'fi',type:'date',value:sumRange.end,onChange:ev=>setSumRange(r=>({...r,end:ev.target.value}))})),
+            E('button',{className:'btn btn-p btn-sm',onClick:loadSummary},'🔍 Calculate')
+          )
         ),
-        React.createElement('div', { className: 'list-item-amount' }, formatCurrency(s.contractAmount))
-      ))
+        summary.length===0
+          ? E('div',{className:'empty'},E('div',null,'No records for this period'))
+          : E('div',null,
+              E('div',{className:'sg',style:{gridTemplateColumns:'repeat(4,1fr)',marginBottom:'14px'}},
+                E('div',{className:'sc bl'},E('div',{className:'si'},'👷'),E('div',{className:'sv bl'},summary.length),E('div',{className:'slb'},'Workers')),
+                E('div',{className:'sc or'},E('div',{className:'si'},'💰'),E('div',{className:'sv or'},fmt(summary.reduce((s,x)=>s+x.earnedWage,0))),E('div',{className:'slb'},'Total Earned')),
+                E('div',{className:'sc gn'},E('div',{className:'si'},'✅'),E('div',{className:'sv gn'},fmt(summary.reduce((s,x)=>s+x.paidWage,0))),E('div',{className:'slb'},'Total Paid')),
+                E('div',{className:'sc rd'},E('div',{className:'si'},'⏳'),E('div',{className:'sv rd'},fmt(summary.reduce((s,x)=>s+x.unpaidWage,0))),E('div',{className:'slb'},'Still Owed'))
+              ),
+              E('div',{className:'card'},E('div',{className:'tw'},E('table',null,
+                E('thead',null,E('tr',null,['Worker','Skill','P','½','Days','Earned','Paid','Owed'].map(h=>E('th',{key:h},h)))),
+                E('tbody',null,summary.map((s,i)=>{
+                  const owed=s.unpaidWage;
+                  return E('tr',{key:i,className:owed>0?'ws-unpaid':'ws-paid'},
+                    E('td',null,E('strong',null,s.worker?.name||'?')),
+                    E('td',null,E('span',{className:'badge bg-b'},s.worker?.skill||'—')),
+                    E('td',null,E('span',{className:'badge bg-g'},s.present)),
+                    E('td',null,E('span',{className:'badge bg-o'},s.half)),
+                    E('td',null,s.totalDays),
+                    E('td',{style:{fontFamily:'var(--fm)',color:'var(--acc)'}},fmt(s.earnedWage)),
+                    E('td',{style:{fontFamily:'var(--fm)',color:'var(--grn)'}},fmt(s.paidWage)),
+                    E('td',{style:{fontFamily:'var(--fm)',color:owed>0?'var(--red)':'var(--mut)',fontWeight:owed>0?700:400}},owed>0?fmt(owed):'✓ Clear')
+                  );
+                }))
+              )))
+            )
+      )
     )
   );
 }
+// ── OWNERS ─────────────────────────────────────────────────────────────────────
+function Owners(){
+  const [owners,setOwners]=useState([]);const [loading,setLoading]=useState(true);
+  const [modal,setModal]=useState(null);const [detail,setDetail]=useState(null);
+  const [f,setF]=useState({name:'',mobile:'',whatsapp:'',email:'',address:'',notes:''});
+  const [saving,setSaving]=useState(false);const toast=useToast();
+  const load=()=>apiFetch('/owners').then(d=>{setOwners(d);setLoading(false);});
+  useEffect(()=>{load();},[]);
+  const openAdd=()=>{setF({name:'',mobile:'',whatsapp:'',email:'',address:'',notes:''});setModal('add');};
+  const openEdit=o=>{setF({name:o.name,mobile:o.mobile,whatsapp:o.whatsapp||'',email:o.email||'',address:o.address||'',notes:o.notes||''});setModal(o);};
+  const set=k=>ev=>{
+    const val=ev.target.value;
+    setF(x=>{
+      const upd={...x,[k]:val};
+      if(k==='mobile'&&(x.whatsapp===''||x.whatsapp===x.mobile))upd.whatsapp=val;
+      return upd;
+    });
+  };
+  const save=async()=>{setSaving(true);try{if(modal==='add'){await apiFetch('/owners',{method:'POST',body:JSON.stringify(f)});toast('Owner added');}else{await apiFetch(`/owners/${modal._id}`,{method:'PUT',body:JSON.stringify(f)});toast('Updated');}setModal(null);load();}catch(e){toast(e.message,'error');}setSaving(false);};
+  const del=async id=>{if(!confirm('Delete?'))return;try{await apiFetch(`/owners/${id}`,{method:'DELETE'});toast('Deleted');load();}catch(e){toast(e.message,'error');}};
+  if(detail)return E(OwnerDetail,{ownerId:detail,onBack:()=>setDetail(null)});
+  return E('div',null,
+    E('div',{className:'pp'},E('div',{className:'stitle'},'OWNERS'),E('div',{className:'ls'},'Property owners')),
+    E('div',{className:'pp'},
+      E('div',{className:'card'},
+        E('div',{className:'ch'},E('div',{className:'ct'},owners.length+' Owners'),E('button',{className:'btn btn-p btn-sm',onClick:openAdd},'+ Add Owner')),
+        loading?E('div',{className:'loader'},E('div',{className:'spin'})):owners.length===0?E('div',{className:'empty'},E('div',{className:'ei'},'👤'),E('div',{className:'et'},'No owners yet')):
+        E('div',{className:'tw'},E('table',null,
+          E('thead',null,E('tr',null,['Name','Mobile','WhatsApp','Address',''].map(h=>E('th',{key:h},h)))),
+          E('tbody',null,owners.map(o=>E('tr',{key:o._id},
+            E('td',null,E('strong',{style:{cursor:'pointer',color:'var(--acc)'},onClick:()=>setDetail(o._id)},o.name)),
+            E('td',null,o.mobile?E('a',{href:tel(o.mobile),style:{color:'var(--txt)',textDecoration:'none'}},'📞 '+o.mobile):'—'),
+            E('td',null,o.whatsapp?E('a',{href:wa(o.whatsapp),target:'_blank',rel:'noreferrer',style:{color:'var(--grn)',textDecoration:'none'}},'💬 Chat'):'—'),
+            E('td',null,o.address||'—'),
+            E('td',null,E('div',{style:{display:'flex',gap:'6px'}},E('button',{className:'btn btn-sm btn-o',onClick:()=>setDetail(o._id)},'👁'),E('button',{className:'btn btn-sm btn-o',onClick:()=>openEdit(o)},'✏️'),E('button',{className:'btn btn-sm btn-d',onClick:()=>del(o._id)},'🗑️')))
+          )))
+        ))
+      )
+    ),
+    modal!==null&&E('div',{className:'sov',onClick:ev=>ev.target.className==='ov'&&setModal(null)},E('div',{className:'sheet'},
+      E('div',{className:'shd'},E('div',{className:'sht'},modal==='add'?'Add Owner':'Edit Owner'),E('button',{className:'shc',onClick:()=>setModal(null)},'✕')),
+      E('div',{className:'shb'},
+        E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Owner Name *'),E('input',{className:'fi',value:f.name,onChange:set('name'),placeholder:'Rajesh Sharma'})),E('div',{className:'fg'},E('label',{className:'fl'},'Mobile *'),E('input',{className:'fi',value:f.mobile,onChange:set('mobile'),placeholder:'9876543210',type:'tel'}))),
+        E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'WhatsApp'),E('input',{className:'fi',value:f.whatsapp,onChange:set('whatsapp'),placeholder:'Auto-filled from mobile',type:'tel'})),E('div',{className:'fg'},E('label',{className:'fl'},'Email'),E('input',{className:'fi',type:'email',value:f.email,onChange:set('email'),placeholder:'owner@email.com'}))),
+        E('div',{className:'fg'},E('label',{className:'fl'},'Address'),E('input',{className:'fi',value:f.address,onChange:set('address'),placeholder:'House address'})),
+        E('div',{className:'fg'},E('label',{className:'fl'},'Notes'),E('textarea',{className:'fta',value:f.notes,onChange:set('notes'),placeholder:'Any notes…'})),
+        E('div',{className:'mact'},E('button',{className:'btn btn-o',onClick:()=>setModal(null)},'Cancel'),E('button',{className:'btn btn-p',onClick:save,disabled:saving},saving?'Saving…':'Save'))
+      )
+    ))
+  );
+}
+function OwnerDetail({ownerId,onBack}){
+  const [data,setData]=useState(null);const [loading,setLoading]=useState(true);
+  const [waModal,setWaModal]=useState(false);
+  const [waMsg,setWaMsg]=useState('');
+  const toast=useToast();
+  useEffect(()=>{apiFetch(`/owners/${ownerId}`).then(d=>{setData(d);setLoading(false);});},[ownerId]);
+  if(loading)return E('div',{className:'pp'},E('div',{className:'loader'},E('div',{className:'spin'})));
+  if(!data)return null;
+  const{financials:fin,sites,recentPayments}=data;
 
-// Workers Component
-function Workers() {
-  const [workers, setWorkers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ name: '', mobile: '', skill: 'Mason', dailyWage: '' });
-  const toast = useToast();
+  const templates=[
+    {label:'Payment Reminder',icon:'💰',build:()=>
+      `Hello ${data.name} Sir/Madam,\n\nThis is a reminder regarding the payment for your construction site.\n\n`+
+      `Total Contract : ${fmt(fin.totalContract)}\n`+
+      `Amount Paid    : ${fmt(fin.totalPaid)}\n`+
+      `Balance Due    : ${fmt(fin.balance)}\n\n`+
+      `Kindly arrange the pending payment at your earliest convenience.\n\nThank you.`
+    },
+    {label:'Payment Received',icon:'✅',build:()=>{
+      const last=recentPayments[0];
+      return `Hello ${data.name} Sir/Madam,\n\nThank you for your payment of ${last?fmt(last.amount):'the amount'}${last?' on '+fmtD(last.date):''}.\n\n`+
+        `Total Contract : ${fmt(fin.totalContract)}\n`+
+        `Total Paid     : ${fmt(fin.totalPaid)}\n`+
+        `Balance Left   : ${fmt(fin.balance)}\n\nThank you for your trust.\n\nRegards.`;
+    }},
+    {label:'Work Update',icon:'🏗️',build:()=>
+      `Hello ${data.name} Sir/Madam,\n\nWork is progressing well at your site`+(sites[0]?' ('+sites[0].name+')':'')+`.\n\nWe will keep you updated on the next milestone.\n\nFor any queries please feel free to contact us.\n\nThank you.`
+    },
+    {label:'Custom Message',icon:'✏️',build:()=>''}
+  ];
 
-  const loadWorkers = () => {
-    apiFetch('/workers').then(w => { setWorkers(w); setLoading(false); }).catch(() => setLoading(false));
+  const openTemplate=t=>{setWaMsg(t.build());setWaModal('compose');};
+
+  const sendWa=()=>{
+    if(!data.whatsapp){toast('No WhatsApp number saved for this owner','error');return;}
+    const num='91'+data.whatsapp.replace(/\D/g,'');
+    window.open('https://wa.me/'+num+'?text='+encodeURIComponent(waMsg),'_blank');
+    setWaModal(false);
   };
 
-  useEffect(() => { loadWorkers(); }, []);
+  return E('div',null,
+    E('div',{className:'pp'},
+      E('button',{className:'back-btn',onClick:onBack,style:{marginTop:'8px'}},'← Back'),
+      E('div',{className:'stitle'},data.name),
+      E('div',{className:'ls'},'Property owner')
+    ),
+    E('div',{className:'pp'},
+      E('div',{className:'card'},
+        E('div',{className:'uav',style:{width:'52px',height:'52px',fontSize:'20px',flexShrink:0}},data.name[0]?.toUpperCase()),
+        E('div',{style:{flex:1}},
+          E('div',{style:{fontSize:'18px',fontWeight:600,marginBottom:'8px'}},data.name),
+          E('div',{style:{display:'flex',gap:'8px',flexWrap:'wrap'}},
+            data.mobile&&E('a',{href:tel(data.mobile),className:'btn btn-g btn-sm'},'📞 Call'),
+            data.whatsapp&&E('a',{href:wa(data.whatsapp),target:'_blank',rel:'noreferrer',className:'btn btn-b btn-sm'},'💬 WhatsApp'),
+            data.whatsapp
+              ? E('button',{className:'btn btn-sm',style:{background:'rgba(37,211,102,.15)',color:'#25d366',border:'1px solid rgba(37,211,102,.3)'},onClick:()=>setWaModal('pick')},'✉️ Send Message')
+              : E('span',{style:{fontSize:'12px',color:'var(--mut)',alignSelf:'center'}},'⚠️ No WhatsApp saved')
+          )
+        )
+      ),
+      E('div',{className:'sg',style:{gridTemplateColumns:'repeat(3,1fr)',marginBottom:'16px'}},
+        E('div',{className:'sc or'},E('div',{className:'si'},'🏗️'),E('div',{className:'sv or'},fmt(fin.totalContract)),E('div',{className:'slb'},'Total Contract')),
+        E('div',{className:'sc gn'},E('div',{className:'si'},'💰'),E('div',{className:'sv gn'},fmt(fin.totalPaid)),E('div',{className:'slb'},'Total Paid')),
+        E('div',{className:'sc rd'},E('div',{className:'si'},'⚠️'),E('div',{className:'sv rd'},fmt(fin.balance)),E('div',{className:'slb'},'Balance'))
+      ),
+      sites.length>0&&E('div',{className:'card',style:{marginBottom:'16px'}},
+        E('div',{className:'ct',style:{marginBottom:'14px'}},'Sites'),
+        sites.map(s=>E('div',{key:s._id,style:{marginBottom:'8px',padding:'12px',background:'var(--s2)',borderRadius:'8px'}},
+          E('div',{style:{fontWeight:600}},s.name),
+          E('div',{style:{fontSize:'12px',color:'var(--mut)',marginTop:'3px'}},'📍 '+s.location+' · Contract: '+fmt(s.contractAmount))
+        ))
+      ),
+      recentPayments.length>0&&E('div',{className:'card'},
+        E('div',{className:'ct',style:{marginBottom:'14px'}},'Payment History'),
+        recentPayments.map(p=>E('div',{key:p._id,className:'prow'},
+          E('div',{className:'pay-icon'},'💰'),
+          E('div',{style:{flex:1}},
+            E('div',{style:{fontSize:'14px',fontWeight:500}},p.milestone||p.siteId?.name||'Payment'),
+            E('div',{style:{fontSize:'12px',color:'var(--mut)'}},fmtD(p.date)+' · '+p.paymentMode)
+          ),
+          E('div',{className:'pamt'},fmt(p.amount))
+        ))
+      )
+    ),
 
-  const addWorker = async () => {
-    if (!form.name || !form.dailyWage) { toast('Name and daily wage required', 'error'); return; }
-    try {
-      await apiFetch('/workers', { method: 'POST', body: JSON.stringify({ ...form, dailyWage: Number(form.dailyWage) }) });
-      toast('Worker added');
-      setShowModal(false);
-      setForm({ name: '', mobile: '', skill: 'Mason', dailyWage: '' });
-      loadWorkers();
-    } catch (err) { toast(err.message, 'error'); }
+    // Template picker modal
+    waModal==='pick'&&E('div',{className:'sov',onClick:ev=>ev.target.className==='ov'&&setWaModal(false)},
+      E('div',{className:'sheet'},
+        E('div',{className:'shd'},
+          E('div',{className:'sht'},'💬 Send WhatsApp Message'),
+          E('button',{className:'shc',onClick:()=>setWaModal(false)},'✕')
+        ),
+        E('div',{className:'shb'},
+          E('div',{style:{fontSize:'13px',color:'var(--mut)',marginBottom:'16px',padding:'10px 14px',background:'rgba(37,211,102,.07)',border:'1px solid rgba(37,211,102,.2)',borderRadius:'8px'}},
+            'Sending to: ',E('strong',{style:{color:'var(--txt)'}},data.name),' · ',E('span',{style:{color:'#25d366'}},'+91 '+data.whatsapp)
+          ),
+          E('p',{style:{fontSize:'13px',color:'var(--mut)',marginBottom:'12px'}},'Choose a message template:'),
+          E('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px'}},
+            templates.map(t=>E('button',{
+              key:t.label,
+              onClick:()=>openTemplate(t),
+              style:{background:'var(--s2)',border:'1px solid var(--bd)',borderRadius:'10px',padding:'16px 14px',cursor:'pointer',textAlign:'left',color:'var(--txt)',fontFamily:'var(--fb)',transition:'all .15s',width:'100%'}
+            },
+              E('div',{style:{fontSize:'24px',marginBottom:'8px'}},t.icon),
+              E('div',{style:{fontSize:'13px',fontWeight:600}},t.label)
+            ))
+          )
+        )
+      )
+    ),
+
+    // Compose modal
+    waModal==='compose'&&E('div',{className:'sov',onClick:ev=>ev.target.className==='ov'&&setWaModal(false)},
+      E('div',{className:'sheet'},
+        E('div',{className:'shd'},
+          E('div',{className:'sht'},'✉️ Compose Message'),
+          E('button',{className:'shc',onClick:()=>setWaModal(false)},'✕')
+        ),
+        E('div',{className:'shb'},
+          E('div',{style:{background:'rgba(37,211,102,.08)',border:'1px solid rgba(37,211,102,.2)',borderRadius:'8px',padding:'10px 14px',fontSize:'13px',marginBottom:'14px'}},
+            '💬 To: ',E('strong',null,data.name),' · ',E('span',{style:{color:'#25d366'}},'+91 '+data.whatsapp)
+          ),
+          E('div',{className:'fg'},
+            E('label',{className:'fl'},'Message (edit before sending)'),
+            E('textarea',{
+              className:'fta',
+              style:{minHeight:'200px',fontFamily:'var(--fb)',fontSize:'13px',lineHeight:'1.7'},
+              value:waMsg,
+              onChange:ev=>setWaMsg(ev.target.value)
+            })
+          ),
+          E('div',{style:{fontSize:'12px',color:'var(--mut)',marginBottom:'14px'}},waMsg.length+' characters'),
+          E('div',{className:'mact'},
+            E('button',{className:'btn btn-o',onClick:()=>setWaModal('pick')},'← Templates'),
+            E('button',{
+              onClick:sendWa,
+              disabled:!waMsg.trim(),
+              style:{flex:1,padding:'11px',borderRadius:'var(--r)',background:waMsg.trim()?'#25d366':'var(--bd)',color:'#fff',border:'none',fontFamily:'var(--fb)',fontSize:'14px',fontWeight:600,cursor:waMsg.trim()?'pointer':'not-allowed',display:'flex',alignItems:'center',justifyContent:'center',gap:'8px'}
+            },'💬 Open in WhatsApp')
+          )
+        )
+      )
+    )
+  );
+}
+function Sites(){
+  const [sites,setSites]=useState([]);const [owners,setOwners]=useState([]);const [loading,setLoading]=useState(true);
+  const [modal,setModal]=useState(null);const [detail,setDetail]=useState(null);
+  const [f,setF]=useState({name:'',location:'',ownerId:'',contractAmount:'',startDate:'',expectedEndDate:'',scope:'',status:'active'});
+  const [saving,setSaving]=useState(false);const toast=useToast();
+  const load=()=>Promise.all([apiFetch('/sites'),apiFetch('/owners')]).then(([s,o])=>{setSites(s);setOwners(o);setLoading(false);});
+  useEffect(()=>{load();},[]);
+  const openAdd=()=>{setF({name:'',location:'',ownerId:'',contractAmount:'',startDate:'',expectedEndDate:'',scope:'',status:'active'});setModal('add');};
+  const openEdit=s=>{setF({name:s.name,location:s.location,ownerId:s.ownerId?._id||s.ownerId||'',contractAmount:String(s.contractAmount||''),startDate:s.startDate||'',expectedEndDate:s.expectedEndDate||'',scope:s.scope||'',status:s.status});setModal(s);};
+  const set=k=>ev=>setF(x=>({...x,[k]:ev.target.value}));
+  const save=async()=>{setSaving(true);try{if(modal==='add'){await apiFetch('/sites',{method:'POST',body:JSON.stringify(f)});toast('Site created');}else{await apiFetch(`/sites/${modal._id}`,{method:'PUT',body:JSON.stringify(f)});toast('Updated');}setModal(null);load();}catch(e){toast(e.message,'error');}setSaving(false);};
+  const del=async id=>{if(!confirm('Delete site?'))return;try{await apiFetch(`/sites/${id}`,{method:'DELETE'});toast('Deleted');load();}catch(e){toast(e.message,'error');}};
+  if(detail)return E(SiteDetail,{siteId:detail,onBack:()=>setDetail(null),onReload:load});
+  return E('div',null,
+    E('div',{className:'pp'},E('div',{className:'stitle'},'SITES'),E('div',{className:'ls'},sites.length+' construction sites')),
+    E('div',{className:'pp'},
+      E('div',{className:'ch'},E('div',{className:'ct'},'All Sites'),E('button',{className:'btn btn-p btn-sm',onClick:openAdd},'+ New Site')),
+      loading?E('div',{className:'loader'},E('div',{className:'spin'})):sites.length===0?E('div',{className:'empty'},E('div',{className:'ei'},'🏗️'),E('div',{className:'et'},'No sites yet')):
+      E('div',{style:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(300px,1fr))',gap:'14px'}},
+        sites.map(s=>{
+          const pct=s.contractAmount?Math.min(100,(s.totalPaid/s.contractAmount)*100):0;const owner=s.ownerId;
+          return E('div',{key:s._id,className:'sc2'},
+            E('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},E('div',null,E('div',{style:{fontSize:'15px',fontWeight:600,cursor:'pointer'},onClick:()=>setDetail(s._id)},s.name),E('div',{style:{fontSize:'12px',color:'var(--mut)',marginTop:'2px'}},'📍 '+s.location)),E('span',{className:`badge bg-${s.status==='active'?'g':s.status==='completed'?'b':'gr'}`},s.status)),
+            owner&&E('div',{style:{fontSize:'12px',marginTop:'8px',display:'flex',alignItems:'center',gap:'6px'}},'👤 ',E('strong',null,owner.name),owner.mobile&&E('a',{href:tel(owner.mobile),style:{textDecoration:'none',fontSize:'13px'}},'📞'),owner.whatsapp&&E('a',{href:wa(owner.whatsapp),target:'_blank',rel:'noreferrer',style:{textDecoration:'none',fontSize:'13px'}},'💬')),
+            E('div',{style:{marginTop:'10px'}},E('div',{style:{display:'flex',justifyContent:'space-between',fontSize:'12px'}},E('span',null,'Contract: '+fmt(s.contractAmount)),E('span',{style:{color:'var(--grn)'}},fmt(s.totalPaid)+' paid')),E('div',{className:'progress-bar'},E('div',{className:'progress-fill',style:{width:pct+'%',background:pct>=100?'var(--grn)':'var(--acc)'}})),s.balance>0&&E('div',{style:{fontSize:'12px',color:'var(--red)',marginTop:'4px'}},fmt(s.balance)+' remaining')),
+            E('div',{style:{display:'flex',gap:'6px',marginTop:'12px'}},E('button',{className:'btn btn-sm btn-o',style:{flex:1},onClick:()=>setDetail(s._id)},'💰 Payments'),E('button',{className:'btn btn-sm btn-o',onClick:()=>openEdit(s)},'✏️'),E('button',{className:'btn btn-sm btn-d',onClick:()=>del(s._id)},'🗑️'))
+          );
+        })
+      )
+    ),
+    modal!==null&&E('div',{className:'sov',onClick:ev=>ev.target.className==='ov'&&setModal(null)},E('div',{className:'sheet'},
+      E('div',{className:'shd'},E('div',{className:'sht'},modal==='add'?'New Site':'Edit Site'),E('button',{className:'shc',onClick:()=>setModal(null)},'✕')),
+      E('div',{className:'shb'},
+        E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Site Name *'),E('input',{className:'fi',value:f.name,onChange:set('name'),placeholder:'MG Road Building'})),E('div',{className:'fg'},E('label',{className:'fl'},'Location *'),E('input',{className:'fi',value:f.location,onChange:set('location'),placeholder:'Area / City'}))),
+        E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Owner'),E('select',{className:'fs',value:f.ownerId,onChange:set('ownerId')},[E('option',{key:'',value:''},'— No Owner —'),...owners.map(o=>E('option',{key:o._id,value:o._id},o.name))])),E('div',{className:'fg'},E('label',{className:'fl'},'Contract Amount (₹)'),E('input',{className:'fi',type:'number',value:f.contractAmount,onChange:set('contractAmount'),placeholder:'2500000'}))),
+        E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Start Date'),E('input',{className:'fi',type:'date',value:f.startDate,onChange:set('startDate')})),E('div',{className:'fg'},E('label',{className:'fl'},'Expected End'),E('input',{className:'fi',type:'date',value:f.expectedEndDate,onChange:set('expectedEndDate')}))),
+        E('div',{className:'fg'},E('label',{className:'fl'},'Scope'),E('input',{className:'fi',value:f.scope,onChange:set('scope'),placeholder:'G+2 residential…'})),
+        E('div',{className:'fg'},E('label',{className:'fl'},'Status'),E('select',{className:'fs',value:f.status,onChange:set('status')},['active','completed','on-hold','cancelled'].map(s=>E('option',{key:s,value:s},s)))),
+        E('div',{className:'mact'},E('button',{className:'btn btn-o',onClick:()=>setModal(null)},'Cancel'),E('button',{className:'btn btn-p',onClick:save,disabled:saving},saving?'Saving…':'Save Site'))
+      )
+    ))
+  );
+}
+function SiteDetail({siteId,onBack,onReload}){
+  const [data,setData]=useState(null);const [loading,setLoading]=useState(true);
+  const [payModal,setPayModal]=useState(false);
+  const [pf,setPf]=useState({amount:'',date:TODAY,paymentMode:'cash',milestone:'',notes:''});
+  const [saving,setSaving]=useState(false);const toast=useToast();
+  const load=()=>apiFetch(`/sites/${siteId}`).then(d=>{setData(d);setLoading(false);});
+  useEffect(()=>{load();},[siteId]);
+  const setp=k=>ev=>setPf(x=>({...x,[k]:ev.target.value}));
+  const addPayment=async()=>{setSaving(true);try{await apiFetch('/finance/payments',{method:'POST',body:JSON.stringify({...pf,siteId,amount:Number(pf.amount)})});toast('Payment recorded');setPayModal(false);setPf({amount:'',date:TODAY,paymentMode:'cash',milestone:'',notes:''});load();onReload&&onReload();}catch(e){toast(e.message,'error');}setSaving(false);};
+  const delPay=async id=>{if(!confirm('Delete?'))return;try{await apiFetch(`/finance/payments/${id}`,{method:'DELETE'});toast('Deleted');load();}catch(e){toast(e.message,'error');}};
+  if(loading)return E('div',{className:'pp'},E('div',{className:'loader'},E('div',{className:'spin'})));
+  if(!data)return null;
+  const{financials:fin,payments,ownerId:owner}=data;
+  const pct=fin.contractAmount?Math.min(100,(fin.totalPaid/fin.contractAmount)*100):0;
+  return E('div',null,
+    E('div',{className:'pp'},E('button',{className:'back-btn',onClick:onBack,style:{marginTop:'8px'}},'← Back to Sites'),E('div',{className:'stitle'},data.name),E('div',{className:'ls'},'📍 '+data.location)),
+    E('div',{className:'pp'},
+      E('div',{className:'sg',style:{gridTemplateColumns:'repeat(4,1fr)',marginBottom:'16px'}},
+        E('div',{className:'sc or'},E('div',{className:'si'},'📋'),E('div',{className:'sv or'},fmt(fin.contractAmount)),E('div',{className:'slb'},'Contract')),
+        E('div',{className:'sc gn'},E('div',{className:'si'},'✅'),E('div',{className:'sv gn'},fmt(fin.totalPaid)),E('div',{className:'slb'},'Paid')),
+        E('div',{className:'sc rd'},E('div',{className:'si'},'⏳'),E('div',{className:'sv rd'},fmt(fin.balance)),E('div',{className:'slb'},'Balance')),
+        E('div',{className:'sc bl'},E('div',{className:'si'},'📊'),E('div',{className:'sv bl'},pct.toFixed(0)+'%'),E('div',{className:'slb'},'Collected'))
+      ),
+      E('div',{className:'card',style:{marginBottom:'16px'}},
+        E('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'6px',fontSize:'13px'}},E('span',null,'Payment Progress'),E('span',{style:{color:'var(--acc)'}},fmt(fin.totalPaid)+' / '+fmt(fin.contractAmount))),
+        E('div',{className:'progress-bar',style:{height:'10px'}},E('div',{className:'progress-fill',style:{width:pct+'%',background:pct>=100?'var(--grn)':'var(--acc)'}})),
+        owner&&E('div',{style:{marginTop:'14px',display:'flex',gap:'10px',alignItems:'center',flexWrap:'wrap'}},E('span',{style:{color:'var(--mut)',fontSize:'13px'}},'Owner:'),E('strong',null,owner.name),owner.mobile&&E('a',{href:tel(owner.mobile),className:'btn btn-g btn-sm'},'📞 Call'),owner.whatsapp&&E('a',{href:wa(owner.whatsapp),target:'_blank',rel:'noreferrer',className:'btn btn-b btn-sm'},'💬 WhatsApp'))
+      ),
+      E('div',{className:'card'},
+        E('div',{className:'ch'},E('div',{className:'ct'},'💰 Payments'),E('button',{className:'btn btn-p btn-sm',onClick:()=>setPayModal(true)},'+ Add Payment')),
+        payments.length===0?E('div',{className:'empty',style:{padding:'30px'}},E('div',null,'No payments yet')):
+        payments.map(p=>E('div',{key:p._id,className:'prow'},E('div',{className:'pay-icon'},'💰'),E('div',{style:{flex:1}},E('div',{style:{fontSize:'14px',fontWeight:500}},p.milestone||'Payment'),E('div',{style:{fontSize:'12px',color:'var(--mut)'}},fmtD(p.date)+' · '+p.paymentMode+(p.notes?' · '+p.notes:''))),E('div',{style:{display:'flex',alignItems:'center',gap:'10px'}},E('div',{className:'pamt'},fmt(p.amount)),E('button',{className:'pdel',onClick:()=>delPay(p._id)},'🗑️'))))
+      )
+    ),
+    payModal&&E('div',{className:'sov',onClick:ev=>ev.target.className==='ov'&&setPayModal(false)},E('div',{className:'sheet'},
+      E('div',{className:'shd'},E('div',{className:'sht'},'Add Payment — '+data.name),E('button',{className:'shc',onClick:()=>setPayModal(false)},'✕')),
+      E('div',{className:'shb'},
+        E('div',{style:{background:'rgba(245,166,35,.08)',border:'1px solid rgba(245,166,35,.2)',borderRadius:'8px',padding:'12px',marginBottom:'16px',display:'flex',justifyContent:'space-between'}},E('span',{style:{color:'var(--mut)',fontSize:'13px'}},'Balance Remaining:'),E('span',{style:{fontFamily:'var(--fm)',color:'var(--acc)',fontSize:'16px',fontWeight:600}},fmt(fin.balance))),
+        E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Amount (₹) *'),E('input',{className:'fi',type:'number',value:pf.amount,onChange:setp('amount'),placeholder:'500000'})),E('div',{className:'fg'},E('label',{className:'fl'},'Date *'),E('input',{className:'fi',type:'date',value:pf.date,onChange:setp('date')}))),
+        E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Payment Mode'),E('select',{className:'fs',value:pf.paymentMode,onChange:setp('paymentMode')},['cash','cheque','online','bank transfer'].map(m=>E('option',{key:m,value:m},m)))),E('div',{className:'fg'},E('label',{className:'fl'},'Milestone'),E('input',{className:'fi',value:pf.milestone,onChange:setp('milestone'),placeholder:'Foundation done…'}))),
+        E('div',{className:'fg'},E('label',{className:'fl'},'Notes'),E('input',{className:'fi',value:pf.notes,onChange:setp('notes'),placeholder:'Optional'})),
+        E('div',{className:'mact'},E('button',{className:'btn btn-o',onClick:()=>setPayModal(false)},'Cancel'),E('button',{className:'btn btn-p',onClick:addPayment,disabled:saving},saving?'Saving…':'Record Payment'))
+      )
+    ))
+  );
+}
+function Payments(){
+  const [payments,setPayments]=useState([]);const [loading,setLoading]=useState(true);
+  useEffect(()=>{apiFetch('/finance/payments').then(d=>{setPayments(d);setLoading(false);});},[]);
+  const total=payments.reduce((s,p)=>s+p.amount,0);
+  return E('div',null,
+    E('div',{className:'pp'},E('div',{className:'stitle'},'PAYMENTS'),E('div',{className:'ls'},'Owner payments received')),
+    E('div',{className:'pp'},
+      E('div',{className:'sg',style:{gridTemplateColumns:'repeat(3,1fr)'}},
+        E('div',{className:'sc gn'},E('div',{className:'si'},'💰'),E('div',{className:'sv gn'},fmt(total)),E('div',{className:'slb'},'Total Received')),
+        E('div',{className:'sc or'},E('div',{className:'si'},'🔢'),E('div',{className:'sv or'},payments.length),E('div',{className:'slb'},'Transactions')),
+        E('div',{className:'sc bl'},E('div',{className:'si'},'📍'),E('div',{className:'sv bl'},[...new Set(payments.map(p=>String(p.siteId?._id||p.siteId)))].length),E('div',{className:'slb'},'Sites'))
+      ),
+      E('div',{className:'card'},E('div',{className:'ct',style:{marginBottom:'14px'}},'All Payments'),loading?E('div',{className:'loader'},E('div',{className:'spin'})):payments.length===0?E('div',{className:'empty'},E('div',{className:'ei'},'💰'),E('div',{className:'et'},'Add payments from Sites page')):E('div',{className:'tw'},E('table',null,E('thead',null,E('tr',null,['Date','Site','Milestone','Mode','Amount'].map(h=>E('th',{key:h},h)))),E('tbody',null,payments.map(p=>E('tr',{key:p._id},E('td',null,fmtD(p.date)),E('td',null,p.siteId?.name||'—'),E('td',null,p.milestone||'—'),E('td',null,E('span',{className:'badge bg-b'},p.paymentMode)),E('td',{style:{fontFamily:'var(--fm)',color:'var(--grn)',fontWeight:600}},fmt(p.amount))))))))
+    )
+  );
+}
+function Expenses(){
+  const [sites,setSites]=useState([]);
+  const [workers,setWorkers]=useState([]);
+  const [selectedSite,setSelectedSite]=useState(null);
+  const [expenses,setExpenses]=useState([]);
+  const [loadingExpenses,setLoadingExpenses]=useState(false);
+  const [loadingSites,setLoadingSites]=useState(true);
+  const [modal,setModal]=useState(false);
+  const [f,setF]=useState({amount:'',date:TODAY,category:'labor',description:'',workerId:''});
+  const [saving,setSaving]=useState(false);
+  const toast=useToast();
+
+  useEffect(()=>{
+    Promise.all([apiFetch('/sites'),apiFetch('/workers')])
+      .then(([s,w])=>{setSites(s);setWorkers(w);setLoadingSites(false);});
+  },[]);
+
+  useEffect(()=>{
+    if(!selectedSite)return;
+    setLoadingExpenses(true);
+    apiFetch(`/finance/expenses?siteId=${selectedSite._id}`)
+      .then(e=>{setExpenses(e);setLoadingExpenses(false);})
+      .catch(()=>setLoadingExpenses(false));
+  },[selectedSite]);
+
+  const set=k=>ev=>setF(x=>({...x,[k]:ev.target.value}));
+
+  const save=async()=>{
+    setSaving(true);
+    try{
+      await apiFetch('/finance/expenses',{method:'POST',body:JSON.stringify({...f,siteId:selectedSite._id,amount:Number(f.amount)})});
+      toast('Expense logged');
+      setModal(false);
+      setF({amount:'',date:TODAY,category:'labor',description:'',workerId:''});
+      apiFetch(`/finance/expenses?siteId=${selectedSite._id}`).then(setExpenses);
+    }catch(e){toast(e.message,'error');}
+    setSaving(false);
   };
 
-  const deleteWorker = async (id) => {
-    if (!confirm('Delete this worker?')) return;
-    try {
-      await apiFetch(`/workers/${id}`, { method: 'DELETE' });
+  const del=async id=>{
+    if(!confirm('Delete this expense?'))return;
+    try{
+      await apiFetch(`/finance/expenses/${id}`,{method:'DELETE'});
       toast('Deleted');
-      loadWorkers();
-    } catch (err) { toast(err.message, 'error'); }
+      setExpenses(ex=>ex.filter(e=>e._id!==id));
+    }catch(e){toast(e.message,'error');}
   };
 
-  if (loading) return React.createElement('div', { className: 'loader' }, React.createElement('div', { className: 'spinner' }));
+  const siteTotal=expenses.reduce((s,e)=>s+e.amount,0);
+  const laborTotal=expenses.filter(e=>e.category==='labor').reduce((s,e)=>s+e.amount,0);
 
-  return React.createElement('div', { className: 'main' },
-    React.createElement('div', { className: 'header' },
-      React.createElement('div', { className: 'title' }, 'WORKERS'),
-      React.createElement('div', { className: 'subtitle' }, workers.length + ' workers')
-    ),
-    React.createElement('div', { className: 'card' },
-      React.createElement('div', { className: 'card-header' },
-        React.createElement('div', { className: 'card-title' }, 'All Workers'),
-        React.createElement('button', { className: 'btn btn-primary btn-small', onClick: () => setShowModal(true) }, '+ Add Worker')
+  // ── SITE PICKER ──
+  if(!selectedSite){
+    return E('div',null,
+      E('div',{className:'pp'},
+        E('div',{className:'stitle'},'EXPENSES'),
+        E('div',{className:'ls'},'Select a site to view or add expenses')
       ),
-      workers.length === 0 ? React.createElement('div', { className: 'empty-state' }, React.createElement('div', { className: 'empty-icon' }, '👷'), 'No workers yet') :
-      React.createElement('div', { className: 'worker-grid' }, workers.map(w => React.createElement('div', { key: w._id, className: 'worker-card' },
-        React.createElement('div', { className: 'worker-avatar' }, w.name[0]),
-        React.createElement('div', { className: 'worker-name' }, w.name),
-        React.createElement('div', { className: 'worker-skill' }, React.createElement('span', { className: 'badge badge-info' }, w.skill)),
-        React.createElement('div', { className: 'worker-wage' }, formatCurrency(w.dailyWage) + '/day'),
-        React.createElement('div', { style: { display: 'flex', gap: '8px', marginTop: '8px', justifyContent: 'center' } },
-          w.mobile && React.createElement('a', { href: formatTel(w.mobile), style: { textDecoration: 'none', fontSize: '16px' } }, '📞'),
-          React.createElement('button', { className: 'btn btn-outline btn-small', onClick: () => deleteWorker(w._id) }, '🗑️')
-        )
-      )))
-    ),
-    showModal && React.createElement('div', { className: 'modal-overlay', onClick: e => e.target.className === 'modal-overlay' && setShowModal(false) },
-      React.createElement('div', { className: 'modal' },
-        React.createElement('div', { className: 'modal-header' },
-          React.createElement('div', { className: 'modal-title' }, 'Add Worker'),
-          React.createElement('button', { className: 'modal-close', onClick: () => setShowModal(false) }, '✕')
-        ),
-        React.createElement('div', { className: 'modal-body' },
-          React.createElement('div', { className: 'input-group' },
-            React.createElement('label', { className: 'label' }, 'Full Name *'),
-            React.createElement('input', { className: 'input', value: form.name, onChange: e => setForm({ ...form, name: e.target.value }) })
-          ),
-          React.createElement('div', { className: 'row' },
-            React.createElement('div', { className: 'input-group' },
-              React.createElement('label', { className: 'label' }, 'Mobile'),
-              React.createElement('input', { className: 'input', value: form.mobile, onChange: e => setForm({ ...form, mobile: e.target.value }) })
-            ),
-            React.createElement('div', { className: 'input-group' },
-              React.createElement('label', { className: 'label' }, 'Skill'),
-              React.createElement('select', { className: 'select', value: form.skill, onChange: e => setForm({ ...form, skill: e.target.value }) },
-                ['Mason', 'Helper', 'Carpenter', 'Electrician', 'Plumber', 'Painter'].map(s => React.createElement('option', { key: s, value: s }, s))
+      E('div',{className:'pp'},
+        loadingSites
+          ? E('div',{className:'loader'},E('div',{className:'spin'}),'Loading sites…')
+          : sites.length===0
+          ? E('div',{className:'empty'},E('div',{className:'ei'},'🏗️'),E('div',{className:'et'},'No sites yet. Add a site first.'))
+          : E('div',null,
+              E('div',{className:'ib',style:{marginBottom:'16px'}},'ℹ️ Tap a site card to view and manage its expenses individually'),
+              E('div',{style:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:'14px'}},
+                sites.map(s=>E('div',{key:s._id,className:'sc2',style:{cursor:'pointer'},onClick:()=>setSelectedSite(s)},
+                  E('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'8px'}},
+                    E('div',null,
+                      E('div',{style:{fontSize:'15px',fontWeight:600}},s.name),
+                      E('div',{style:{fontSize:'12px',color:'var(--mut)',marginTop:'3px'}},'📍 '+s.location)
+                    ),
+                    E('span',{className:`badge bg-${s.status==='active'?'g':s.status==='completed'?'b':'gr'}`},s.status)
+                  ),
+                  s.ownerId&&E('div',{style:{fontSize:'12px',color:'var(--mut)',marginBottom:'6px'}},'👤 '+(s.ownerId.name||'')),
+                  E('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:'8px',paddingTop:'8px',borderTop:'1px solid var(--bd)'}},
+                    E('span',{style:{fontSize:'12px',color:'var(--mut)'}},'Contract: '+fmt(s.contractAmount)),
+                    E('span',{style:{fontSize:'13px',fontWeight:600,color:'var(--acc)'}},'View Expenses →')
+                  )
+                ))
               )
             )
-          ),
-          React.createElement('div', { className: 'input-group' },
-            React.createElement('label', { className: 'label' }, 'Daily Wage (₹) *'),
-            React.createElement('input', { className: 'input', type: 'number', value: form.dailyWage, onChange: e => setForm({ ...form, dailyWage: e.target.value }) })
-          ),
-          React.createElement('div', { className: 'modal-actions' },
-            React.createElement('button', { className: 'btn btn-outline', onClick: () => setShowModal(false) }, 'Cancel'),
-            React.createElement('button', { className: 'btn btn-primary', onClick: addWorker }, 'Add Worker')
-          )
-        )
       )
-    )
-  );
-}
+    );
+  }
 
-// Attendance Component
-function Attendance() {
-  const [workers, setWorkers] = useState([]);
-  const [attendance, setAttendance] = useState({});
-  const [date, setDate] = useState(TODAY);
-  const toast = useToast();
-
-  useEffect(() => {
-    apiFetch('/workers').then(w => setWorkers(w.filter(x => x.status === 'active'))).catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    apiFetch(`/attendance/by-date/${date}`).then(recs => {
-      const map = {};
-      recs.forEach(r => { map[r.workerId?._id || r.workerId] = r; });
-      setAttendance(map);
-    }).catch(() => {});
-  }, [date]);
-
-  const markAttendance = async (workerId, status) => {
-    try {
-      const rec = await apiFetch('/attendance/mark', { method: 'POST', body: JSON.stringify({ workerId, date, status }) });
-      setAttendance(a => ({ ...a, [workerId]: rec }));
-    } catch (err) { toast(err.message, 'error'); }
-  };
-
-  const togglePaid = async (workerId) => {
-    const rec = attendance[workerId];
-    if (!rec?._id) { toast('Mark attendance first', 'error'); return; }
-    try {
-      const updated = await apiFetch(`/attendance/${rec._id}/wage-paid`, { method: 'PATCH', body: JSON.stringify({ wagePaid: !rec.wagePaid }) });
-      setAttendance(a => ({ ...a, [workerId]: updated }));
-    } catch (err) { toast(err.message, 'error'); }
-  };
-
-  const changeDate = (days) => {
-    const dt = new Date(date);
-    dt.setDate(dt.getDate() + days);
-    setDate(dt.toISOString().split('T')[0]);
-  };
-
-  return React.createElement('div', { className: 'main' },
-    React.createElement('div', { className: 'header' },
-      React.createElement('div', { className: 'title' }, 'ATTENDANCE'),
-      React.createElement('div', { className: 'subtitle' }, formatDate(date))
+  // ── SITE EXPENSES VIEW ──
+  return E('div',null,
+    E('div',{className:'pp'},
+      E('button',{className:'back-btn',style:{marginTop:'8px'},onClick:()=>{setSelectedSite(null);setExpenses([]);}},'← All Sites'),
+      E('div',{className:'stitle'},selectedSite.name),
+      E('div',{className:'ls'},'📍 '+selectedSite.location+' · Expenses')
     ),
-    React.createElement('div', { className: 'date-bar' },
-      React.createElement('div', { className: 'date-nav' },
-        React.createElement('button', { onClick: () => changeDate(-1) }, '←'),
-        React.createElement('input', { className: 'input', type: 'date', value: date, onChange: e => setDate(e.target.value), style: { width: '140px', margin: 0 } }),
-        React.createElement('button', { onClick: () => changeDate(1) }, '→')
+    E('div',{className:'pp'},
+      E('div',{className:'sg',style:{gridTemplateColumns:'repeat(3,1fr)',marginBottom:'16px'}},
+        E('div',{className:'sc rd'},E('div',{className:'si'},'💸'),E('div',{className:'sv rd'},fmt(siteTotal)),E('div',{className:'slb'},'Total Expenses'),E('div',{className:'ssb'},selectedSite.name)),
+        E('div',{className:'sc or'},E('div',{className:'si'},'🔢'),E('div',{className:'sv or'},expenses.length),E('div',{className:'slb'},'Transactions')),
+        E('div',{className:'sc bl'},E('div',{className:'si'},'👷'),E('div',{className:'sv bl'},fmt(laborTotal)),E('div',{className:'slb'},'Labor Cost'))
       ),
-      date !== TODAY && React.createElement('button', { className: 'btn btn-outline btn-small', onClick: () => setDate(TODAY) }, 'Today')
-    ),
-    workers.map(w => {
-      const rec = attendance[w._id];
-      const status = rec?.status;
-      const wagePaid = rec?.wagePaid;
-      const wageAmount = status === 'present' ? w.dailyWage : status === 'half' ? w.dailyWage / 2 : 0;
-
-      return React.createElement('div', { key: w._id, className: 'attendance-row' },
-        React.createElement('div', { className: 'attendance-avatar' }, w.name[0]),
-        React.createElement('div', { className: 'attendance-info' },
-          React.createElement('div', { className: 'attendance-name' }, w.name),
-          React.createElement('div', { className: 'attendance-meta' }, w.skill + ' · ' + formatCurrency(w.dailyWage) + '/day')
+      E('div',{className:'card'},
+        E('div',{className:'ch'},
+          E('div',{className:'ct'},'Expenses — '+selectedSite.name),
+          E('button',{className:'btn btn-p btn-sm',onClick:()=>{setF({amount:'',date:TODAY,category:'labor',description:'',workerId:''});setModal(true);}},'+ Log Expense')
         ),
-        React.createElement('div', { className: 'status-buttons' },
-          React.createElement('button', { className: `status-btn present ${status === 'present' ? 'active' : ''}`, onClick: () => markAttendance(w._id, 'present') }, 'P'),
-          React.createElement('button', { className: `status-btn half ${status === 'half' ? 'active' : ''}`, onClick: () => markAttendance(w._id, 'half') }, '½'),
-          React.createElement('button', { className: `status-btn absent ${status === 'absent' ? 'active' : ''}`, onClick: () => markAttendance(w._id, 'absent') }, 'A')
-        ),
-        (status === 'present' || status === 'half') && React.createElement('div', { className: 'wage-toggle' },
-          React.createElement('button', { className: `toggle ${wagePaid ? 'on' : 'off'}`, onClick: () => togglePaid(w._id) }),
-          React.createElement('span', { style: { fontSize: '11px', color: 'var(--text-secondary)' } }, wagePaid ? 'Paid' : formatCurrency(wageAmount))
-        )
-      );
-    })
-  );
-}
-
-// Sites Component
-function Sites() {
-  const [sites, setSites] = useState([]);
-  const [owners, setOwners] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ name: '', location: '', ownerId: '', contractAmount: '', status: 'active' });
-  const toast = useToast();
-
-  const loadData = () => {
-    Promise.all([apiFetch('/sites'), apiFetch('/owners')])
-      .then(([s, o]) => { setSites(s); setOwners(o); setLoading(false); })
-      .catch(() => setLoading(false));
-  };
-
-  useEffect(() => { loadData(); }, []);
-
-  const addSite = async () => {
-    if (!form.name || !form.location) { toast('Name and location required', 'error'); return; }
-    try {
-      await apiFetch('/sites', { method: 'POST', body: JSON.stringify({ ...form, contractAmount: Number(form.contractAmount) }) });
-      toast('Site added');
-      setShowModal(false);
-      setForm({ name: '', location: '', ownerId: '', contractAmount: '', status: 'active' });
-      loadData();
-    } catch (err) { toast(err.message, 'error'); }
-  };
-
-  if (loading) return React.createElement('div', { className: 'loader' }, React.createElement('div', { className: 'spinner' }));
-
-  return React.createElement('div', { className: 'main' },
-    React.createElement('div', { className: 'header' },
-      React.createElement('div', { className: 'title' }, 'SITES'),
-      React.createElement('div', { className: 'subtitle' }, sites.length + ' construction sites')
-    ),
-    React.createElement('div', { className: 'card' },
-      React.createElement('div', { className: 'card-header' },
-        React.createElement('div', { className: 'card-title' }, 'All Sites'),
-        React.createElement('button', { className: 'btn btn-primary btn-small', onClick: () => setShowModal(true) }, '+ New Site')
-      ),
-      sites.length === 0 ? React.createElement('div', { className: 'empty-state' }, React.createElement('div', { className: 'empty-icon' }, '🏗️'), 'No sites yet') :
-      sites.map(s => React.createElement('div', { key: s._id, className: 'site-card' },
-        React.createElement('div', { className: 'site-name' }, s.name),
-        React.createElement('div', { className: 'site-location' }, '📍 ' + s.location),
-        React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' } },
-          React.createElement('span', { className: `badge ${s.status === 'active' ? 'badge-success' : 'badge-warning'}` }, s.status),
-          React.createElement('span', { style: { fontWeight: 600 } }, formatCurrency(s.contractAmount))
-        )
-      ))
-    ),
-    showModal && React.createElement('div', { className: 'modal-overlay', onClick: e => e.target.className === 'modal-overlay' && setShowModal(false) },
-      React.createElement('div', { className: 'modal' },
-        React.createElement('div', { className: 'modal-header' },
-          React.createElement('div', { className: 'modal-title' }, 'Add Site'),
-          React.createElement('button', { className: 'modal-close', onClick: () => setShowModal(false) }, '✕')
-        ),
-        React.createElement('div', { className: 'modal-body' },
-          React.createElement('div', { className: 'input-group' },
-            React.createElement('label', { className: 'label' }, 'Site Name *'),
-            React.createElement('input', { className: 'input', value: form.name, onChange: e => setForm({ ...form, name: e.target.value }) })
-          ),
-          React.createElement('div', { className: 'input-group' },
-            React.createElement('label', { className: 'label' }, 'Location *'),
-            React.createElement('input', { className: 'input', value: form.location, onChange: e => setForm({ ...form, location: e.target.value }) })
-          ),
-          React.createElement('div', { className: 'input-group' },
-            React.createElement('label', { className: 'label' }, 'Owner'),
-            React.createElement('select', { className: 'select', value: form.ownerId, onChange: e => setForm({ ...form, ownerId: e.target.value }) },
-              React.createElement('option', { value: '' }, '— None —'),
-              owners.map(o => React.createElement('option', { key: o._id, value: o._id }, o.name))
+        loadingExpenses
+          ? E('div',{className:'loader'},E('div',{className:'spin'}))
+          : expenses.length===0
+          ? E('div',{className:'empty'},
+              E('div',{className:'ei'},'💸'),
+              E('div',{className:'et'},'No expenses for this site yet'),
+              E('button',{className:'btn btn-p btn-sm',style:{marginTop:'14px'},onClick:()=>{setF({amount:'',date:TODAY,category:'labor',description:'',workerId:''});setModal(true);}},'+ Log First Expense')
             )
-          ),
-          React.createElement('div', { className: 'row' },
-            React.createElement('div', { className: 'input-group' },
-              React.createElement('label', { className: 'label' }, 'Contract Amount'),
-              React.createElement('input', { className: 'input', type: 'number', value: form.contractAmount, onChange: e => setForm({ ...form, contractAmount: e.target.value }) })
-            ),
-            React.createElement('div', { className: 'input-group' },
-              React.createElement('label', { className: 'label' }, 'Status'),
-              React.createElement('select', { className: 'select', value: form.status, onChange: e => setForm({ ...form, status: e.target.value }) },
-                ['active', 'completed', 'on-hold'].map(s => React.createElement('option', { key: s, value: s }, s))
+          : E('div',{className:'tw'},
+              E('table',null,
+                E('thead',null,E('tr',null,['Date','Category','Description','Worker','Amount',''].map(h=>E('th',{key:h},h)))),
+                E('tbody',null,expenses.map(e=>E('tr',{key:e._id},
+                  E('td',null,fmtD(e.date)),
+                  E('td',null,E('span',{className:'badge bg-o'},e.category)),
+                  E('td',null,e.description||'—'),
+                  E('td',null,e.workerId?.name||'—'),
+                  E('td',{style:{fontFamily:'var(--fm)',color:'var(--red)',fontWeight:600}},fmt(e.amount)),
+                  E('td',null,E('button',{className:'btn btn-sm btn-d',onClick:()=>del(e._id)},'🗑️'))
+                )))
               )
             )
+      )
+    ),
+    modal&&E('div',{className:'sov',onClick:ev=>ev.target.className==='ov'&&setModal(false)},
+      E('div',{className:'sheet'},
+        E('div',{className:'shd'},
+          E('div',{className:'sht'},'Log Expense — '+selectedSite.name),
+          E('button',{className:'shc',onClick:()=>setModal(false)},'✕')
+        ),
+        E('div',{className:'shb'},
+          E('div',{style:{background:'var(--s2)',border:'1px solid var(--bd)',borderRadius:'8px',padding:'10px 14px',marginBottom:'14px',fontSize:'13px',display:'flex',alignItems:'center',gap:'8px'}},
+            '🏗️ ',E('strong',null,selectedSite.name),E('span',{style:{color:'var(--mut)',marginLeft:'4px'}},'· '+selectedSite.location)
           ),
-          React.createElement('div', { className: 'modal-actions' },
-            React.createElement('button', { className: 'btn btn-outline', onClick: () => setShowModal(false) }, 'Cancel'),
-            React.createElement('button', { className: 'btn btn-primary', onClick: addSite }, 'Save Site')
+          E('div',{className:'frow'},
+            E('div',{className:'fg'},E('label',{className:'fl'},'Amount (₹) *'),E('input',{className:'fi',type:'number',value:f.amount,onChange:set('amount'),placeholder:'15000',autoFocus:true})),
+            E('div',{className:'fg'},E('label',{className:'fl'},'Date *'),E('input',{className:'fi',type:'date',value:f.date,onChange:set('date')}))
+          ),
+          E('div',{className:'frow'},
+            E('div',{className:'fg'},
+              E('label',{className:'fl'},'Category'),
+              E('select',{className:'fs',value:f.category,onChange:set('category')},['labor','materials','equipment','transport','misc'].map(c=>E('option',{key:c,value:c},c)))
+            ),
+            E('div',{className:'fg'},
+              E('label',{className:'fl'},'Worker (if labor)'),
+              E('select',{className:'fs',value:f.workerId,onChange:set('workerId')},[E('option',{key:'',value:''},'— None —'),...workers.map(w=>E('option',{key:w._id,value:w._id},w.name))])
+            )
+          ),
+          E('div',{className:'fg'},
+            E('label',{className:'fl'},'Description'),
+            E('input',{className:'fi',value:f.description,onChange:set('description'),placeholder:'Weekly payout / cement bags / crane hire…'})
+          ),
+          E('div',{className:'mact'},
+            E('button',{className:'btn btn-o',onClick:()=>setModal(false)},'Cancel'),
+            E('button',{className:'btn btn-p',onClick:save,disabled:saving||!f.amount},saving?'Saving…':'Log Expense')
           )
         )
       )
     )
   );
 }
-
-// Owners Component
-function Owners() {
-  const [owners, setOwners] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ name: '', mobile: '', whatsapp: '' });
-  const toast = useToast();
-
-  const loadOwners = () => { apiFetch('/owners').then(setOwners).catch(() => {}); };
-  useEffect(() => { loadOwners(); }, []);
-
-  const addOwner = async () => {
-    if (!form.name || !form.mobile) { toast('Name and mobile required', 'error'); return; }
-    try {
-      await apiFetch('/owners', { method: 'POST', body: JSON.stringify(form) });
-      toast('Owner added');
-      setShowModal(false);
-      setForm({ name: '', mobile: '', whatsapp: '' });
-      loadOwners();
-    } catch (err) { toast(err.message, 'error'); }
-  };
-
-  return React.createElement('div', { className: 'main' },
-    React.createElement('div', { className: 'header' },
-      React.createElement('div', { className: 'title' }, 'OWNERS'),
-      React.createElement('div', { className: 'subtitle' }, owners.length + ' property owners')
-    ),
-    React.createElement('div', { className: 'card' },
-      React.createElement('div', { className: 'card-header' },
-        React.createElement('div', { className: 'card-title' }, 'All Owners'),
-        React.createElement('button', { className: 'btn btn-primary btn-small', onClick: () => setShowModal(true) }, '+ Add Owner')
+const PAGES={dashboard:Dashboard,workers:Workers,attendance:Attendance,sites:Sites,owners:Owners,payments:Payments,expenses:Expenses};
+const NAV_BOTTOM=[{id:'dashboard',ico:'📊',lbl:'Home'},{id:'workers',ico:'👷',lbl:'Workers'},{id:'attendance',ico:'📋',lbl:'Attend'},{id:'sites',ico:'🏗️',lbl:'Sites'},{id:'more',ico:'☰',lbl:'More'}];
+const MORE=[{id:'owners',ico:'👤',lbl:'Owners'},{id:'payments',ico:'💰',lbl:'Payments'},{id:'expenses',ico:'💸',lbl:'Expenses'}];
+const TITLES={dashboard:'BuildLedger',workers:'Workers',attendance:'Attendance',sites:'Sites',owners:'Owners',payments:'Payments',expenses:'Expenses'};
+function App(){
+  const [user,setUser]=useState(()=>{try{return JSON.parse(localStorage.getItem('bl_user'));}catch{return null;}});
+  const [page,setPage]=useState('dashboard');const [drawer,setDrawer]=useState(false);
+  const logout=()=>{localStorage.removeItem('bl_token');localStorage.removeItem('bl_user');setUser(null);};
+  const go=p=>{setPage(p);setDrawer(false);};
+  const Page=PAGES[page]||Dashboard;
+  if(!user)return E(ToastProvider,null,E(AuthScreen,{onLogin:u=>{setUser(u);setPage('dashboard');}}));
+  return E(ToastProvider,null,
+    E('div',{className:'app'},
+      E('div',{className:'topbar'},
+        E('div',{className:'tb-left'},E('div',{className:'tb-title'},TITLES[page]||'BuildLedger'),E('div',{className:'tb-sub'},user.companyName||'Construction')),
+        E('div',{className:'tb-avatar',onClick:()=>{if(confirm('Logout?'))logout();}},user.name?.[0]?.toUpperCase())
       ),
-      owners.length === 0 ? React.createElement('div', { className: 'empty-state' }, React.createElement('div', { className: 'empty-icon' }, '👤'), 'No owners yet') :
-      owners.map(o => React.createElement('div', { key: o._id, className: 'list-item' },
-        React.createElement('div', { className: 'list-item-info' },
-          React.createElement('div', { className: 'list-item-title' }, o.name),
-          React.createElement('div', { className: 'list-item-sub' }, o.mobile)
-        ),
-        o.whatsapp && React.createElement('a', { href: formatWhatsApp(o.whatsapp), target: '_blank', style: { color: 'var(--success)', textDecoration: 'none', fontSize: '20px' } }, '💬')
-      ))
+      E('div',{className:'page-wrap'},E(Page,{setPage:go,nav:go})),
+      E('div',{className:'bottom-nav'},NAV_BOTTOM.map(it=>{
+        if(it.id==='more')return E('button',{key:'more',className:'bnav-item',onClick:()=>setDrawer(true)},E('span',{className:'bnav-ico'},it.ico),it.lbl);
+        return E('button',{key:it.id,className:`bnav-item ${page===it.id?'active':''}`,onClick:()=>go(it.id)},E('span',{className:'bnav-ico'},it.ico),it.lbl);
+      }))
     ),
-    showModal && React.createElement('div', { className: 'modal-overlay', onClick: e => e.target.className === 'modal-overlay' && setShowModal(false) },
-      React.createElement('div', { className: 'modal' },
-        React.createElement('div', { className: 'modal-header' },
-          React.createElement('div', { className: 'modal-title' }, 'Add Owner'),
-          React.createElement('button', { className: 'modal-close', onClick: () => setShowModal(false) }, '✕')
-        ),
-        React.createElement('div', { className: 'modal-body' },
-          React.createElement('div', { className: 'input-group' },
-            React.createElement('label', { className: 'label' }, 'Name *'),
-            React.createElement('input', { className: 'input', value: form.name, onChange: e => setForm({ ...form, name: e.target.value }) })
-          ),
-          React.createElement('div', { className: 'input-group' },
-            React.createElement('label', { className: 'label' }, 'Mobile *'),
-            React.createElement('input', { className: 'input', value: form.mobile, onChange: e => setForm({ ...form, mobile: e.target.value }) })
-          ),
-          React.createElement('div', { className: 'input-group' },
-            React.createElement('label', { className: 'label' }, 'WhatsApp'),
-            React.createElement('input', { className: 'input', value: form.whatsapp, onChange: e => setForm({ ...form, whatsapp: e.target.value }) })
-          ),
-          React.createElement('div', { className: 'modal-actions' },
-            React.createElement('button', { className: 'btn btn-outline', onClick: () => setShowModal(false) }, 'Cancel'),
-            React.createElement('button', { className: 'btn btn-primary', onClick: addOwner }, 'Add Owner')
-          )
-        )
+    drawer&&E('div',{className:'dov',onClick:()=>setDrawer(false)},
+      E('div',{className:'drawer',onClick:ev=>ev.stopPropagation()},
+        E('div',{className:'d-handle'}),
+        MORE.map(it=>E('button',{key:it.id,className:'d-item',onClick:()=>go(it.id)},E('span',{className:'d-ico'},it.ico),it.lbl)),
+        E('div',{className:'d-divider'}),
+        E('button',{className:'d-item',onClick:()=>{setDrawer(false);if(confirm('Logout?'))logout();}},E('span',{className:'d-ico'},'⏏'),E('span',{style:{color:'var(--red)'}},'Logout'))
       )
     )
   );
 }
-
-// Payments Component
-function Payments() {
-  const [payments, setPayments] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    apiFetch('/finance/payments').then(p => { setPayments(p); setLoading(false); }).catch(() => setLoading(false));
-  }, []);
-
-  const total = payments.reduce((s, p) => s + p.amount, 0);
-
-  if (loading) return React.createElement('div', { className: 'loader' }, React.createElement('div', { className: 'spinner' }));
-
-  return React.createElement('div', { className: 'main' },
-    React.createElement('div', { className: 'header' },
-      React.createElement('div', { className: 'title' }, 'PAYMENTS'),
-      React.createElement('div', { className: 'subtitle' }, 'Total: ' + formatCurrency(total))
-    ),
-    React.createElement('div', { className: 'card' },
-      payments.length === 0 ? React.createElement('div', { className: 'empty-state' }, React.createElement('div', { className: 'empty-icon' }, '💰'), 'No payments yet') :
-      payments.map(p => React.createElement('div', { key: p._id, className: 'list-item' },
-        React.createElement('div', { className: 'list-item-info' },
-          React.createElement('div', { className: 'list-item-title' }, p.siteId?.name || '—'),
-          React.createElement('div', { className: 'list-item-sub' }, formatDate(p.date) + ' · ' + p.paymentMode)
-        ),
-        React.createElement('div', { className: 'list-item-amount positive' }, formatCurrency(p.amount))
-      ))
-    )
-  );
-}
-
-// Expenses Component
-function Expenses() {
-  const [expenses, setExpenses] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    apiFetch('/finance/expenses').then(e => { setExpenses(e); setLoading(false); }).catch(() => setLoading(false));
-  }, []);
-
-  const total = expenses.reduce((s, e) => s + e.amount, 0);
-
-  if (loading) return React.createElement('div', { className: 'loader' }, React.createElement('div', { className: 'spinner' }));
-
-  return React.createElement('div', { className: 'main' },
-    React.createElement('div', { className: 'header' },
-      React.createElement('div', { className: 'title' }, 'EXPENSES'),
-      React.createElement('div', { className: 'subtitle' }, 'Total: ' + formatCurrency(total))
-    ),
-    React.createElement('div', { className: 'card' },
-      expenses.length === 0 ? React.createElement('div', { className: 'empty-state' }, React.createElement('div', { className: 'empty-icon' }, '💸'), 'No expenses yet') :
-      expenses.map(e => React.createElement('div', { key: e._id, className: 'list-item' },
-        React.createElement('div', { className: 'list-item-info' },
-          React.createElement('div', { className: 'list-item-title' }, e.category),
-          React.createElement('div', { className: 'list-item-sub' }, formatDate(e.date) + ' · ' + (e.siteId?.name || '—'))
-        ),
-        React.createElement('div', { className: 'list-item-amount negative' }, formatCurrency(e.amount))
-      ))
-    )
-  );
-}
-
-// Main App Component
-const PAGES = { dashboard: Dashboard, workers: Workers, attendance: Attendance, sites: Sites, owners: Owners, payments: Payments, expenses: Expenses };
-
-function App() {
-  const [user, setUser] = useState(() => { try { return JSON.parse(localStorage.getItem('bl_user')); } catch { return null; } });
-  const [page, setPage] = useState('dashboard');
-  const [showMore, setShowMore] = useState(false);
-
-  const logout = () => {
-    localStorage.removeItem('bl_token');
-    localStorage.removeItem('bl_user');
-    setUser(null);
-  };
-
-  if (!user) return React.createElement(ToastProvider, null, React.createElement(AuthScreen, { onLogin: u => { setUser(u); setPage('dashboard'); } }));
-
-  const CurrentPage = PAGES[page] || Dashboard;
-
-  return React.createElement(ToastProvider, null,
-    React.createElement('div', null,
-      React.createElement(CurrentPage, { setPage }),
-      React.createElement(BottomNav, { page, setPage, onLogout: logout, showMore, setShowMore })
-    )
-  );
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
-</script>
-</body>
-</html>
+ReactDOM.createRoot(document.getElementById('root')).render(E(App));
+</script></body></html>
