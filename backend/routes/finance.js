@@ -14,7 +14,7 @@ router.get('/dashboard', async (req, res) => {
       Payment.find({ contractorId: cid }).populate('siteId', 'name').sort({ date: -1, createdAt: -1 }),
       Expense.find({ contractorId: cid }).populate('siteId', 'name').sort({ date: -1, createdAt: -1 }),
       Worker.find({ contractorId: cid }).select('-photo'),
-      Attendance.find({ contractorId: cid, date: TODAY() }),
+      Attendance.find({ contractorId: cid, date: TODAY() }).populate('workerId', 'name skill dailyWage photo'),
     ]);
 
     const paidBySite = {};
@@ -27,6 +27,15 @@ router.get('/dashboard', async (req, res) => {
     const netProfit = totalReceived - totalExpenses;
     const activeSites = sites.filter((s) => s.status === 'active').length;
     const presentToday = todayRecs.filter((r) => r.status === 'present' || r.status === 'half').length;
+    const unpaidToday = todayRecs
+      .filter((r) => (r.status === 'present' || r.status === 'half') && !r.wagePaid && r.workerId)
+      .map((r) => ({
+        _id: r._id,
+        status: r.status,
+        wagePaid: r.wagePaid,
+        worker: r.workerId,
+        wage: r.status === 'present' ? r.workerId.dailyWage : r.workerId.dailyWage / 2,
+      }));
 
     const sitesOut = sites.map((s) => {
       const received = paidBySite[String(s._id)] || 0;
@@ -36,6 +45,7 @@ router.get('/dashboard', async (req, res) => {
     res.json({
       totals: { totalReceived, totalContractValue, totalOutstanding, activeSites, netProfit, totalExpenses, workers: workers.length },
       todayAttendance: { present: presentToday },
+      unpaidToday,
       recentPayments: payments.slice(0, 5),
       recentExpenses: expenses.slice(0, 5),
       sites: sitesOut,
