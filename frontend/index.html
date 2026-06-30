@@ -348,56 +348,170 @@ function Sidebar({page,setPage,user,onLogout}){
   );
 }
 function PhotoPicker({photo,onChange}){
-  const [cam,setCam]=useState(false);const [stream,setStream]=useState(null);
-  const [facing,setFacing]=useState('environment');const [switching,setSwitching]=useState(false);
-  const vRef=useRef(null);const fRef=useRef(null);
+  const [cam,setCam]=useState(false);
+  const [stream,setStream]=useState(null);
+  const [facing,setFacing]=useState('environment');
+  const [switching,setSwitching]=useState(false);
+  const vRef=useRef(null);
+  const fRef=useRef(null);
 
   const stopTracks=s=>{try{s?.getTracks().forEach(t=>t.stop());}catch{}};
 
-  // Tries the requested facing mode first; if the device only has one camera
-  // or the browser rejects the constraint, falls back to whatever camera it can get.
   const openStream=async(mode)=>{
     setSwitching(true);
     let s=null;
+    
+    // Try with the requested mode
     try{
-      s=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:mode}}});
-    }catch{
-      try{ s=await navigator.mediaDevices.getUserMedia({video:true}); }
-      catch{ setSwitching(false); alert('Camera not available — check browser permissions'); return; }
+      s=await navigator.mediaDevices.getUserMedia({
+        video: { 
+          facingMode: mode,
+          width: { ideal: 640 },
+          height: { ideal: 480 }
+        }
+      });
+    } catch(err) {
+      console.log('Camera error:', err);
+      // If fails, try without facingMode constraint
+      try{
+        s=await navigator.mediaDevices.getUserMedia({ video: true });
+      } catch(err2){
+        console.log('Fallback camera error:', err2);
+        setSwitching(false);
+        alert('Camera not available. Please check permissions.');
+        return;
+      }
     }
+    
+    // If we got a stream but with wrong facing mode, try to switch
+    if(s && mode === 'environment' && !s.getVideoTracks()[0]?.getSettings()?.facingMode?.includes('environment')) {
+      // Still use it, it's better than nothing
+      console.log('Using available camera (not the requested one)');
+    }
+    
     setStream(prev=>{ stopTracks(prev); return s; });
     setCam(true);
     setFacing(mode);
     setSwitching(false);
-    setTimeout(()=>{ if(vRef.current) vRef.current.srcObject=s; },50);
+    setTimeout(()=>{ 
+      if(vRef.current && s) {
+        vRef.current.srcObject = s;
+        vRef.current.play().catch(e=>console.log('Play error:', e));
+      }
+    }, 100);
   };
 
-  const startCam=()=>openStream(facing);
-  const switchCam=()=>openStream(facing==='environment'?'user':'environment');
-  const stopCam=()=>{ stopTracks(stream); setStream(null); setCam(false); };
-  useEffect(()=>()=>stopTracks(stream),[stream]); // release camera if component unmounts mid-capture
+  const startCam=()=>{
+    // Check if we have camera permission
+    navigator.permissions.query({name: 'camera'}).then(result => {
+      if(result.state === 'granted') {
+        openStream('environment');
+      } else if(result.state === 'prompt') {
+        // Request permission by trying to open
+        openStream('environment');
+      } else {
+        alert('Camera permission denied. Please enable in settings.');
+      }
+    }).catch(()=>{
+      // Fallback: just try to open
+      openStream('environment');
+    });
+  };
+  
+  const switchCam=()=>{
+    const newMode = facing === 'environment' ? 'user' : 'environment';
+    openStream(newMode);
+  };
+  
+  const stopCam=()=>{ 
+    stopTracks(stream); 
+    setStream(null); 
+    setCam(false); 
+  };
+  
+  useEffect(()=>()=>stopTracks(stream), [stream]);
 
   const capture=()=>{
-    const v=vRef.current,c=document.createElement('canvas');
-    c.width=v.videoWidth;c.height=v.videoHeight;
-    c.getContext('2d').drawImage(v,0,0); // raw frame — never mirrored, even if preview is
-    onChange(c.toDataURL('image/jpeg',.7));
+    const v=vRef.current;
+    if(!v) return;
+    const c=document.createElement('canvas');
+    c.width=v.videoWidth || 640;
+    c.height=v.videoHeight || 480;
+    c.getContext('2d').drawImage(v,0,0);
+    onChange(c.toDataURL('image/jpeg',0.7));
     stopCam();
   };
-  const pickFile=ev=>{const file=ev.target.files[0];if(!file)return;const r=new FileReader();r.onload=e=>onChange(e.target.result);r.readAsDataURL(file);};
+  
+  const pickFile=ev=>{
+    const file=ev.target.files[0];
+    if(!file) return;
+    const r=new FileReader();
+    r.onload=e=>onChange(e.target.result);
+    r.readAsDataURL(file);
+  };
 
-  return E('div',{className:'pw'},cam?E('div',{className:'cw',style:{width:'100%'}},
-    E('video',{ref:vRef,autoPlay:true,playsInline:true,muted:true,style:facing==='user'?{transform:'scaleX(-1)'}:undefined}),
-    E('div',{className:'co'},
-      E('button',{className:'btn btn-p btn-sm',onClick:capture,disabled:switching},'📸 Capture'),
-      E('button',{className:'btn btn-o btn-sm',onClick:switchCam,disabled:switching},switching?'…':'🔄 '+(facing==='environment'?'Front':'Back')),
-      E('button',{className:'btn btn-o btn-sm',onClick:stopCam},'Cancel')
+  // Get camera list to show available cameras
+  const [cameraCount, setCameraCount] = useState(0);
+  useEffect(()=>{
+    navigator.mediaDevices.enumerateDevices().then(devices => {
+      const videoDevices = devices.filter(d => d.kind === 'videoinput');
+      setCameraCount(videoDevices.length);
+    }).catch(()=>{});
+  }, []);
+
+  return E('div',{className:'pw'},
+    cam ? E('div',{className:'cw', style:{width:'100%', position:'relative', background:'#000', borderRadius:'12px', overflow:'hidden'}},
+      E('video', {
+        ref: vRef, 
+        autoPlay: true, 
+        playsInline: true, 
+        muted: true,
+        style: { 
+          width: '100%', 
+          display: 'block',
+          maxHeight: '400px',
+          objectFit: 'cover',
+          transform: facing === 'user' ? 'scaleX(-1)' : 'none'
+        }
+      }),
+      E('div',{className:'co', style:{
+        position:'absolute', 
+        bottom:'12px', 
+        left:0, 
+        right:0, 
+        display:'flex', 
+        justifyContent:'center', 
+        gap:'10px'
+      }},
+        E('button',{className:'btn btn-p btn-sm', onClick:capture, disabled:switching}, '📸 Capture'),
+        E('button',{className:'btn btn-o btn-sm', onClick:switchCam, disabled:switching || cameraCount < 2}, 
+          switching ? '…' : (facing === 'environment' ? '🔄 Front' : '🔄 Back')
+        ),
+        E('button',{className:'btn btn-o btn-sm', onClick:stopCam}, '❌ Cancel')
+      ),
+      E('div',{style:{
+        position:'absolute', 
+        top:'8px', 
+        right:'12px', 
+        fontSize:'11px', 
+        color:'rgba(255,255,255,0.6)',
+        background:'rgba(0,0,0,0.5)',
+        padding:'4px 10px',
+        borderRadius:'12px'
+      }},
+        facing === 'environment' ? '📷 Back' : '🤳 Front'
+      )
+    ) : E(React.Fragment, null,
+      E('div',{className:'pp', onClick:()=>fRef.current?.click(), style:{cursor:'pointer'}},
+        photo ? E('img',{src:photo, alt:'worker', style:{width:'100%', height:'100%', objectFit:'cover'}}) : E('span', null, '👷')
+      ),
+      E('div',{className:'pb', style:{display:'flex', gap:'8px', justifyContent:'center', marginTop:'8px'}},
+        E('button',{className:'btn btn-o btn-sm', onClick:()=>fRef.current?.click()}, '📁 Upload'),
+        E('button',{className:'btn btn-o btn-sm', onClick:startCam}, '📷 Camera')
+      ),
+      E('input',{ref:fRef, type:'file', accept:'image/*', style:{display:'none'}, onChange:pickFile})
     )
-  ):E(React.Fragment,null,
-    E('div',{className:'pp',onClick:()=>fRef.current?.click()},photo?E('img',{src:photo,alt:'w'}):E('span',null,'👷')),
-    E('div',{className:'pb'},E('button',{className:'btn btn-o btn-sm',onClick:()=>fRef.current?.click()},'📁 Upload'),E('button',{className:'btn btn-o btn-sm',onClick:startCam},'📷 Camera')),
-    E('input',{ref:fRef,type:'file',accept:'image/*',style:{display:'none'},onChange:pickFile})
-  ));
+  );
 }
 function Dashboard({setPage}){
   const [data,setData]=useState(null);const [loading,setLoading]=useState(true);
