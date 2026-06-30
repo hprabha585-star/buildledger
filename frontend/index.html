@@ -340,10 +340,24 @@ function PhotoPicker({photo,onChange}){
 }
 function Dashboard({setPage}){
   const [data,setData]=useState(null);const [loading,setLoading]=useState(true);
-  useEffect(()=>{apiFetch('/finance/dashboard').then(d=>{setData(d);setLoading(false);}).catch(()=>setLoading(false));},[]);
+  const [busy,setBusy]=useState({});
+  const toast=useToast();
+  const load=()=>apiFetch('/finance/dashboard').then(d=>{setData(d);setLoading(false);}).catch(()=>setLoading(false));
+  useEffect(()=>{load();},[]);
   if(loading)return E('div',{className:'loader'},E('div',{className:'spin'}),'Loading…');
   if(!data)return null;
-  const{totals:t,todayAttendance:ta,recentPayments:rp,recentExpenses:re,sites}=data;
+  const{totals:t,todayAttendance:ta,unpaidToday:up,recentPayments:rp,recentExpenses:re,sites}=data;
+
+  const markPaid=async(rec)=>{
+    setBusy(b=>({...b,[rec._id]:true}));
+    try{
+      await apiFetch(`/attendance/${rec._id}/wage-paid`,{method:'PATCH',body:JSON.stringify({wagePaid:true})});
+      toast(rec.worker.name+' — wage marked paid');
+      setData(d=>({...d,unpaidToday:d.unpaidToday.filter(x=>x._id!==rec._id)}));
+    }catch(e){toast(e.message,'error');}
+    setBusy(b=>({...b,[rec._id]:false}));
+  };
+
   return E('div',null,
     E('div',{className:'pp'},E('div',{className:'stitle'},'DASHBOARD'),E('div',{className:'ls'},'Overview · '+fmtD(TODAY))),
     E('div',{className:'pp'},
@@ -352,6 +366,27 @@ function Dashboard({setPage}){
         E('div',{className:'sc rd'},E('div',{className:'si'},'⚠️'),E('div',{className:'sv rd'},fmt(t.totalOutstanding)),E('div',{className:'slb'},'Outstanding'),E('div',{className:'ssb'},t.activeSites+' active sites')),
         E('div',{className:'sc gn'},E('div',{className:'si'},'📈'),E('div',{className:'sv gn'},fmt(t.netProfit)),E('div',{className:'slb'},'Net Profit'),E('div',{className:'ssb'},'Expenses: '+fmt(t.totalExpenses))),
         E('div',{className:'sc bl'},E('div',{className:'si'},'👷'),E('div',{className:'sv bl'},ta.present),E('div',{className:'slb'},'Today Present'),E('div',{className:'ssb'},'of '+t.workers+' workers'))
+      ),
+      E('div',{className:'card',style:{marginBottom:'16px',border:(up&&up.length>0)?'1px solid rgba(245,54,92,.3)':undefined}},
+        E('div',{className:'ch'},
+          E('div',{className:'ct'},'⏳ Wages Not Paid Today'+((up&&up.length>0)?' ('+up.length+')':'')),
+          E('button',{className:'btn btn-o btn-sm',onClick:()=>setPage('attendance')},'Go to Attendance')
+        ),
+        (!up||up.length===0)
+          ? E('div',{className:'empty',style:{padding:'24px'}},E('div',{className:'ei'},'✅'),E('div',{className:'et'},'Everyone who worked today has been paid'))
+          : E('div',{style:{display:'flex',flexDirection:'column',gap:'10px'}},
+              up.map(rec=>E('div',{key:rec._id,style:{display:'flex',alignItems:'center',gap:'12px',background:'var(--s2)',borderRadius:'12px',padding:'10px 12px'}},
+                E('div',{className:'wavatar',style:{width:'42px',height:'42px',fontSize:'15px',flexShrink:0}},rec.worker.photo?E('img',{src:rec.worker.photo,alt:rec.worker.name}):rec.worker.name?.[0]?.toUpperCase()),
+                E('div',{style:{flex:1,minWidth:0}},
+                  E('div',{style:{fontSize:'14px',fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}},rec.worker.name),
+                  E('div',{style:{fontSize:'11px',color:'var(--mut)',marginTop:'2px'}},
+                    rec.worker.skill+' · '+(rec.status==='present'?'Full day':'Half day')+' · ',
+                    E('span',{style:{color:'var(--acc)',fontFamily:'var(--fm)'}},fmt(rec.wage))
+                  )
+                ),
+                E('button',{className:'btn btn-g btn-sm',disabled:!!busy[rec._id],onClick:()=>markPaid(rec)},busy[rec._id]?'…':'✅ Mark Paid')
+              ))
+            )
       ),
       E('div',{className:'two-col'},
         E('div',{className:'card'},E('div',{className:'ch'},E('div',{className:'ct'},'💰 Recent Payments'),E('button',{className:'btn btn-o btn-sm',onClick:()=>setPage('payments')},'View All')),(rp||[]).length===0?E('div',{className:'empty',style:{padding:'20px'}},E('div',null,'No payments yet')):(rp||[]).map(p=>E('div',{key:p._id,className:'ldr'},E('div',{className:'ld in'},'⬆️'),E('div',{className:'li'},E('div',{className:'ln'},p.siteId?.name||'—'),E('div',{className:'ls'},fmtD(p.date)+' · '+p.paymentMode)),E('div',{className:'la in'},fmt(p.amount))))),
