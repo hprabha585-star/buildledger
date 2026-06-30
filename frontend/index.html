@@ -221,6 +221,13 @@ body{background:var(--bg);color:var(--txt);font-family:var(--fb);font-size:15px;
 
 /* ── WORKER GRID ── */
 .wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:12px}
+.wlist{display:flex;flex-direction:column;gap:10px}
+.wrow{display:flex;align-items:center;gap:12px;background:var(--s2);border:1px solid var(--bd);border-radius:14px;padding:12px}
+.wrow-mid{flex:1;min-width:0;cursor:pointer}
+.wrow-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.wrow-sub{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap}
+.wrow-gender{font-size:11px;color:var(--mut)}
+.wrow-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
 .wcard{background:var(--s2);border:1px solid var(--bd);border-radius:14px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px}
 .wavatar{width:52px;height:52px;border-radius:50%;background:var(--acc);color:#000;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;flex-shrink:0}
 .wavatar img{width:100%;height:100%;object-fit:cover}
@@ -258,6 +265,17 @@ body{background:var(--bg);color:var(--txt);font-family:var(--fb);font-size:15px;
 .table-wrap th{text-align:left;color:var(--mut);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:1px solid var(--bd);white-space:nowrap}
 .table-wrap td{padding:11px 10px;border-bottom:1px solid rgba(255,255,255,.05);white-space:nowrap}
 .table-wrap tr:last-child td{border-bottom:none}
+
+/* ── VERTICAL RECORD LIST (replaces horizontal-scroll tables) ── */
+.vlist{display:flex;flex-direction:column;gap:10px}
+.vrow{background:var(--s2);border:1px solid var(--bd);border-radius:14px;padding:13px 14px}
+.vrow-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.vrow-name{font-size:14.5px;font-weight:600}
+.vrow-amt{font-family:var(--fm);font-size:15px;font-weight:600;color:var(--grn)}
+.vrow-amt.rd{color:var(--red)}
+.vrow-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--mut)}
+.vrow-meta a{color:inherit;text-decoration:none}
+.vrow-actions{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)}
 </style>
 
 </head>
@@ -331,12 +349,55 @@ function Sidebar({page,setPage,user,onLogout}){
 }
 function PhotoPicker({photo,onChange}){
   const [cam,setCam]=useState(false);const [stream,setStream]=useState(null);
+  const [facing,setFacing]=useState('environment');const [switching,setSwitching]=useState(false);
   const vRef=useRef(null);const fRef=useRef(null);
-  const startCam=async()=>{try{const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});setStream(s);setCam(true);setTimeout(()=>{if(vRef.current)vRef.current.srcObject=s;},100);}catch{alert('Camera not available');}};
-  const stopCam=()=>{stream?.getTracks().forEach(t=>t.stop());setStream(null);setCam(false);};
-  const capture=()=>{const v=vRef.current,c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);onChange(c.toDataURL('image/jpeg',.7));stopCam();};
+
+  const stopTracks=s=>{try{s?.getTracks().forEach(t=>t.stop());}catch{}};
+
+  // Tries the requested facing mode first; if the device only has one camera
+  // or the browser rejects the constraint, falls back to whatever camera it can get.
+  const openStream=async(mode)=>{
+    setSwitching(true);
+    let s=null;
+    try{
+      s=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:mode}}});
+    }catch{
+      try{ s=await navigator.mediaDevices.getUserMedia({video:true}); }
+      catch{ setSwitching(false); alert('Camera not available — check browser permissions'); return; }
+    }
+    setStream(prev=>{ stopTracks(prev); return s; });
+    setCam(true);
+    setFacing(mode);
+    setSwitching(false);
+    setTimeout(()=>{ if(vRef.current) vRef.current.srcObject=s; },50);
+  };
+
+  const startCam=()=>openStream(facing);
+  const switchCam=()=>openStream(facing==='environment'?'user':'environment');
+  const stopCam=()=>{ stopTracks(stream); setStream(null); setCam(false); };
+  useEffect(()=>()=>stopTracks(stream),[stream]); // release camera if component unmounts mid-capture
+
+  const capture=()=>{
+    const v=vRef.current,c=document.createElement('canvas');
+    c.width=v.videoWidth;c.height=v.videoHeight;
+    c.getContext('2d').drawImage(v,0,0); // raw frame — never mirrored, even if preview is
+    onChange(c.toDataURL('image/jpeg',.7));
+    stopCam();
+  };
   const pickFile=ev=>{const file=ev.target.files[0];if(!file)return;const r=new FileReader();r.onload=e=>onChange(e.target.result);r.readAsDataURL(file);};
-  return E('div',{className:'pw'},cam?E('div',{className:'cw',style:{width:'100%'}},E('video',{ref:vRef,autoPlay:true,playsInline:true}),E('div',{className:'co'},E('button',{className:'btn btn-p btn-sm',onClick:capture},'📸 Capture'),E('button',{className:'btn btn-o btn-sm',onClick:stopCam},'Cancel'))):E(React.Fragment,null,E('div',{className:'pp',onClick:()=>fRef.current?.click()},photo?E('img',{src:photo,alt:'w'}):E('span',null,'👷')),E('div',{className:'pb'},E('button',{className:'btn btn-o btn-sm',onClick:()=>fRef.current?.click()},'📁 Upload'),E('button',{className:'btn btn-o btn-sm',onClick:startCam},'📷 Camera')),E('input',{ref:fRef,type:'file',accept:'image/*',style:{display:'none'},onChange:pickFile})));
+
+  return E('div',{className:'pw'},cam?E('div',{className:'cw',style:{width:'100%'}},
+    E('video',{ref:vRef,autoPlay:true,playsInline:true,muted:true,style:facing==='user'?{transform:'scaleX(-1)'}:undefined}),
+    E('div',{className:'co'},
+      E('button',{className:'btn btn-p btn-sm',onClick:capture,disabled:switching},'📸 Capture'),
+      E('button',{className:'btn btn-o btn-sm',onClick:switchCam,disabled:switching},switching?'…':'🔄 '+(facing==='environment'?'Front':'Back')),
+      E('button',{className:'btn btn-o btn-sm',onClick:stopCam},'Cancel')
+    )
+  ):E(React.Fragment,null,
+    E('div',{className:'pp',onClick:()=>fRef.current?.click()},photo?E('img',{src:photo,alt:'w'}):E('span',null,'👷')),
+    E('div',{className:'pb'},E('button',{className:'btn btn-o btn-sm',onClick:()=>fRef.current?.click()},'📁 Upload'),E('button',{className:'btn btn-o btn-sm',onClick:startCam},'📷 Camera')),
+    E('input',{ref:fRef,type:'file',accept:'image/*',style:{display:'none'},onChange:pickFile})
+  ));
 }
 function Dashboard({setPage}){
   const [data,setData]=useState(null);const [loading,setLoading]=useState(true);
@@ -392,7 +453,11 @@ function Dashboard({setPage}){
         E('div',{className:'card'},E('div',{className:'ch'},E('div',{className:'ct'},'💰 Recent Payments'),E('button',{className:'btn btn-o btn-sm',onClick:()=>setPage('payments')},'View All')),(rp||[]).length===0?E('div',{className:'empty',style:{padding:'20px'}},E('div',null,'No payments yet')):(rp||[]).map(p=>E('div',{key:p._id,className:'ldr'},E('div',{className:'ld in'},'⬆️'),E('div',{className:'li'},E('div',{className:'ln'},p.siteId?.name||'—'),E('div',{className:'ls'},fmtD(p.date)+' · '+p.paymentMode)),E('div',{className:'la in'},fmt(p.amount))))),
         E('div',{className:'card'},E('div',{className:'ch'},E('div',{className:'ct'},'💸 Recent Expenses'),E('button',{className:'btn btn-o btn-sm',onClick:()=>setPage('expenses')},'View All')),(re||[]).length===0?E('div',{className:'empty',style:{padding:'20px'}},E('div',null,'No expenses yet')):(re||[]).map(e=>E('div',{key:e._id,className:'ldr'},E('div',{className:'ld out'},'⬇️'),E('div',{className:'li'},E('div',{className:'ln'},e.description||e.category),E('div',{className:'ls'},fmtD(e.date)+' · '+e.siteId?.name)),E('div',{className:'la out'},fmt(e.amount)))))
       ),
-      E('div',{className:'card',style:{marginTop:'16px'}},E('div',{className:'ch'},E('div',{className:'ct'},'🏗️ Sites'),E('button',{className:'btn btn-o btn-sm',onClick:()=>setPage('sites')},'View All')),(sites||[]).length===0?E('div',{className:'empty'},E('div',{className:'ei'},'🏗️'),E('div',{className:'et'},'No sites yet')):E('div',{className:'table-wrap'},E('table',null,E('thead',null,E('tr',null,['Site','Contract','Received','Balance','Status'].map(h=>E('th',{key:h},h)))),E('tbody',null,(sites||[]).map(s=>{const pct=s.contractAmount?Math.min(100,(s.received/s.contractAmount)*100):0;return E('tr',{key:s._id},E('td',null,E('strong',null,s.name)),E('td',{style:{fontFamily:'var(--fm)'}},fmt(s.contractAmount)),E('td',null,E('div',{style:{fontFamily:'var(--fm)',color:'var(--grn)'}},fmt(s.received)),E('div',{className:'progress-bar'},E('div',{className:'progress-fill',style:{width:pct+'%',background:'var(--grn)'}}))),E('td',{style:{fontFamily:'var(--fm)',color:s.balance>0?'var(--red)':'var(--grn)'}},fmt(s.balance)),E('td',null,E('span',{className:`badge bg-${s.status==='active'?'g':'gr'}`},s.status)));})))))
+      E('div',{className:'card',style:{marginTop:'16px'}},E('div',{className:'ch'},E('div',{className:'ct'},'🏗️ Sites'),E('button',{className:'btn btn-o btn-sm',onClick:()=>setPage('sites')},'View All')),(sites||[]).length===0?E('div',{className:'empty'},E('div',{className:'ei'},'🏗️'),E('div',{className:'et'},'No sites yet')):E('div',{className:'vlist'},(sites||[]).map(s=>{const pct=s.contractAmount?Math.min(100,(s.received/s.contractAmount)*100):0;return E('div',{key:s._id,className:'vrow'},
+        E('div',{className:'vrow-top'},E('div',{className:'vrow-name'},s.name),E('span',{className:`badge bg-${s.status==='active'?'g':'gr'}`},s.status)),
+        E('div',{className:'vrow-meta'},E('span',null,'Contract: '+fmt(s.contractAmount)),E('span',{style:{color:'var(--grn)'}},'Received: '+fmt(s.received)),E('span',{style:{color:s.balance>0?'var(--red)':'var(--grn)'}},'Balance: '+fmt(s.balance))),
+        E('div',{className:'progress-bar'},E('div',{className:'progress-fill',style:{width:pct+'%',background:'var(--grn)'}}))
+      );})))
     )
   );
 }
@@ -428,16 +493,19 @@ function Workers(){
         E('div',{className:'ch'},E('div',{className:'swrap'},E('input',{className:'sbar',placeholder:'Search…',value:search,onChange:ev=>setSearch(ev.target.value)})),E('button',{className:'btn btn-p btn-sm',onClick:openAdd},'+ Add Worker')),
         loading?E('div',{className:'loader'},E('div',{className:'spin'})):
         filtered.length===0?E('div',{className:'empty'},E('div',{className:'ei'},'👷'),E('div',{className:'et'},'No workers yet')):
-        E('div',{className:'wgrid'},filtered.map(w=>{
+        E('div',{className:'wlist'},filtered.map(w=>{
           if(!wPhotos[w._id])loadPhoto(w._id);const ph=wPhotos[w._id];
-          return E('div',{key:w._id,className:'wcard'},
+          return E('div',{key:w._id,className:'wrow'},
             E('div',{className:'wavatar',onClick:()=>setDetail(w._id)},ph?E('img',{src:ph,alt:w.name}):w.name[0]?.toUpperCase()),
-            E('div',{className:'wname',onClick:()=>setDetail(w._id)},w.name),
-            E('div',{className:'wskill'},E('span',{className:'badge bg-b'},w.skill)),
-            E('div',{className:'wwage'},fmt(w.dailyWage)+'/day'),
-            E('div',{className:'wcontact'},w.mobile&&E('a',{href:tel(w.mobile),title:'Call'},'📞'),w.whatsapp&&E('a',{href:wa(w.whatsapp),target:'_blank',rel:'noreferrer',title:'WhatsApp'},'💬')),
-            E('span',{className:`badge bg-${w.status==='active'?'g':'gr'}`},w.status),
-            E('div',{style:{display:'flex',gap:'6px',marginTop:'4px'}},E('button',{className:'btn btn-sm btn-o',onClick:()=>openEdit(w)},'✏️'),E('button',{className:'btn btn-sm btn-d',onClick:()=>del(w._id)},'🗑️'))
+            E('div',{className:'wrow-mid',onClick:()=>setDetail(w._id)},
+              E('div',{className:'wrow-top'},E('div',{className:'wname'},w.name),E('span',{className:`badge bg-${w.status==='active'?'g':'gr'}`},w.status)),
+              E('div',{className:'wrow-sub'},E('span',{className:'badge bg-b'},w.skill),w.gender&&E('span',{className:'wrow-gender'},w.gender[0].toUpperCase()+w.gender.slice(1))),
+              E('div',{className:'wwage'},fmt(w.dailyWage)+'/day')
+            ),
+            E('div',{className:'wrow-actions'},
+              E('div',{className:'wcontact'},w.mobile&&E('a',{href:tel(w.mobile),title:'Call'},'📞'),w.whatsapp&&E('a',{href:wa(w.whatsapp),target:'_blank',rel:'noreferrer',title:'WhatsApp'},'💬')),
+              E('div',{style:{display:'flex',gap:'6px'}},E('button',{className:'btn btn-sm btn-o',onClick:()=>openEdit(w)},'✏️'),E('button',{className:'btn btn-sm btn-d',onClick:()=>del(w._id)},'🗑️'))
+            )
           );
         }))
       )
@@ -488,7 +556,14 @@ function WorkerDetail({workerId,onBack}){
             E('div',{className:'sc or'},E('div',{className:'si'},'💰'),E('div',{className:'sv or'},fmt(summary.totalWage)),E('div',{className:'slb'},'Total Earned')),
             E('div',{className:'sc bl'},E('div',{className:'si'},'📋'),E('div',{className:'sv bl'},summary.records?.length||0),E('div',{className:'slb'},'Records'))
           ),
-          summary.records?.length>0&&E('div',{className:'card'},E('div',{className:'ct',style:{marginBottom:'14px'}},'Attendance Records'),E('div',{className:'table-wrap'},E('table',null,E('thead',null,E('tr',null,['Date','Site','Status','Wage','Paid?'].map(h=>E('th',{key:h},h)))),E('tbody',null,(summary.records||[]).map((r,i)=>E('tr',{key:i},E('td',null,fmtD(r.date)),E('td',null,r.siteId?.name||E('span',{style:{color:'var(--mut)'}},'—')),E('td',null,E('span',{className:`badge bg-${r.status==='present'?'g':r.status==='half'?'o':'r'}`},r.status)),E('td',{style:{fontFamily:'var(--fm)',color:'var(--acc)'}},r.status==='present'?fmt(worker.dailyWage):r.status==='half'?fmt(worker.dailyWage/2):'—'),E('td',null,E('span',{className:`badge bg-${r.wagePaid?'g':'r'}`},r.wagePaid?'Paid':'Unpaid'))))))))
+          summary.records?.length>0&&E('div',{className:'card'},E('div',{className:'ct',style:{marginBottom:'14px'}},'Attendance Records'),E('div',{className:'vlist'},(summary.records||[]).map((r,i)=>E('div',{key:i,className:'vrow'},
+            E('div',{className:'vrow-top'},E('div',{className:'vrow-name'},fmtD(r.date)),E('span',{className:`badge bg-${r.wagePaid?'g':'r'}`},r.wagePaid?'Paid':'Unpaid')),
+            E('div',{className:'vrow-meta'},
+              E('span',{className:`badge bg-${r.status==='present'?'g':r.status==='half'?'o':'r'}`},r.status),
+              r.siteId?.name&&E('span',null,'📍 '+r.siteId.name),
+              E('span',{style:{color:'var(--acc)',fontFamily:'var(--fm)'}},r.status==='present'?fmt(worker.dailyWage):r.status==='half'?fmt(worker.dailyWage/2):'—')
+            )
+          ))))
         )
       )
     )
@@ -700,22 +775,22 @@ function Attendance(){
                 E('div',{className:'sc gn'},E('div',{className:'si'},'✅'),E('div',{className:'sv gn'},fmt(summary.reduce((s,x)=>s+x.paidWage,0))),E('div',{className:'slb'},'Total Paid')),
                 E('div',{className:'sc rd'},E('div',{className:'si'},'⏳'),E('div',{className:'sv rd'},fmt(summary.reduce((s,x)=>s+x.unpaidWage,0))),E('div',{className:'slb'},'Still Owed'))
               ),
-              E('div',{className:'card'},E('div',{className:'table-wrap'},E('table',null,
-                E('thead',null,E('tr',null,['Worker','Skill','P','½','Days','Earned','Paid','Owed'].map(h=>E('th',{key:h},h)))),
-                E('tbody',null,summary.map((s,i)=>{
-                  const owed=s.unpaidWage;
-                  return E('tr',{key:i,className:owed>0?'ws-unpaid':'ws-paid'},
-                    E('td',null,E('strong',null,s.worker?.name||'?')),
-                    E('td',null,E('span',{className:'badge bg-b'},s.worker?.skill||'—')),
-                    E('td',null,E('span',{className:'badge bg-g'},s.present)),
-                    E('td',null,E('span',{className:'badge bg-o'},s.half)),
-                    E('td',null,s.totalDays),
-                    E('td',{style:{fontFamily:'var(--fm)',color:'var(--acc)'}},fmt(s.earnedWage)),
-                    E('td',{style:{fontFamily:'var(--fm)',color:'var(--grn)'}},fmt(s.paidWage)),
-                    E('td',{style:{fontFamily:'var(--fm)',color:owed>0?'var(--red)':'var(--mut)',fontWeight:owed>0?700:400}},owed>0?fmt(owed):'✓ Clear')
-                  );
-                }))
-              )))
+              E('div',{className:'card'},E('div',{className:'vlist'},summary.map((s,i)=>{
+                const owed=s.unpaidWage;
+                return E('div',{key:i,className:'vrow'},
+                  E('div',{className:'vrow-top'},E('div',{className:'vrow-name'},s.worker?.name||'?'),E('span',{className:`vrow-amt${owed>0?' rd':''}`},owed>0?fmt(owed)+' owed':'✓ Clear')),
+                  E('div',{className:'vrow-meta'},
+                    E('span',{className:'badge bg-b'},s.worker?.skill||'—'),
+                    E('span',{className:'badge bg-g'},s.present+' full'),
+                    E('span',{className:'badge bg-o'},s.half+' half'),
+                    E('span',null,s.totalDays+' days')
+                  ),
+                  E('div',{className:'vrow-meta',style:{marginTop:'6px'}},
+                    E('span',null,'Earned: '+fmt(s.earnedWage)),
+                    E('span',{style:{color:'var(--grn)'}},'Paid: '+fmt(s.paidWage))
+                  )
+                );
+              })))
             )
       )
     )
@@ -748,16 +823,14 @@ function Owners(){
       E('div',{className:'card'},
         E('div',{className:'ch'},E('div',{className:'ct'},owners.length+' Owners'),E('button',{className:'btn btn-p btn-sm',onClick:openAdd},'+ Add Owner')),
         loading?E('div',{className:'loader'},E('div',{className:'spin'})):owners.length===0?E('div',{className:'empty'},E('div',{className:'ei'},'👤'),E('div',{className:'et'},'No owners yet')):
-        E('div',{className:'table-wrap'},E('table',null,
-          E('thead',null,E('tr',null,['Name','Mobile','WhatsApp','Address',''].map(h=>E('th',{key:h},h)))),
-          E('tbody',null,owners.map(o=>E('tr',{key:o._id},
-            E('td',null,E('strong',{style:{cursor:'pointer',color:'var(--acc)'},onClick:()=>setDetail(o._id)},o.name)),
-            E('td',null,o.mobile?E('a',{href:tel(o.mobile),style:{color:'var(--txt)',textDecoration:'none'}},'📞 '+o.mobile):'—'),
-            E('td',null,o.whatsapp?E('a',{href:wa(o.whatsapp),target:'_blank',rel:'noreferrer',style:{color:'var(--grn)',textDecoration:'none'}},'💬 Chat'):'—'),
-            E('td',null,o.address||'—'),
-            E('td',null,E('div',{style:{display:'flex',gap:'6px'}},E('button',{className:'btn btn-sm btn-o',onClick:()=>setDetail(o._id)},'👁'),E('button',{className:'btn btn-sm btn-o',onClick:()=>openEdit(o)},'✏️'),E('button',{className:'btn btn-sm btn-d',onClick:()=>del(o._id)},'🗑️')))
-          )))
-        ))
+        E('div',{className:'vlist'},owners.map(o=>E('div',{key:o._id,className:'vrow'},
+          E('div',{className:'vrow-top'},E('div',{className:'vrow-name',style:{color:'var(--acc)',cursor:'pointer'},onClick:()=>setDetail(o._id)},o.name),o.address&&E('div',{style:{fontSize:'11px',color:'var(--mut)',textAlign:'right'}},o.address)),
+          E('div',{className:'vrow-meta'},
+            o.mobile?E('a',{href:tel(o.mobile)},'📞 '+o.mobile):E('span',null,'—'),
+            o.whatsapp&&E('a',{href:wa(o.whatsapp),target:'_blank',rel:'noreferrer',style:{color:'var(--grn)'}},'💬 Chat')
+          ),
+          E('div',{className:'vrow-actions'},E('button',{className:'btn btn-sm btn-o',onClick:()=>setDetail(o._id)},'👁 View'),E('button',{className:'btn btn-sm btn-o',onClick:()=>openEdit(o)},'✏️ Edit'),E('button',{className:'btn btn-sm btn-d',onClick:()=>del(o._id)},'🗑️ Delete'))
+        )))
       )
     ),
     modal!==null&&E('div',{className:'sov',onClick:ev=>ev.target.className==='ov'&&setModal(null)},E('div',{className:'sheet'},
@@ -1018,7 +1091,10 @@ function Payments(){
         E('div',{className:'sc or'},E('div',{className:'si'},'🔢'),E('div',{className:'sv or'},payments.length),E('div',{className:'slb'},'Transactions')),
         E('div',{className:'sc bl'},E('div',{className:'si'},'📍'),E('div',{className:'sv bl'},[...new Set(payments.map(p=>String(p.siteId?._id||p.siteId)))].length),E('div',{className:'slb'},'Sites'))
       ),
-      E('div',{className:'card'},E('div',{className:'ct',style:{marginBottom:'14px'}},'All Payments'),loading?E('div',{className:'loader'},E('div',{className:'spin'})):payments.length===0?E('div',{className:'empty'},E('div',{className:'ei'},'💰'),E('div',{className:'et'},'Add payments from Sites page')):E('div',{className:'table-wrap'},E('table',null,E('thead',null,E('tr',null,['Date','Site','Milestone','Mode','Amount'].map(h=>E('th',{key:h},h)))),E('tbody',null,payments.map(p=>E('tr',{key:p._id},E('td',null,fmtD(p.date)),E('td',null,p.siteId?.name||'—'),E('td',null,p.milestone||'—'),E('td',null,E('span',{className:'badge bg-b'},p.paymentMode)),E('td',{style:{fontFamily:'var(--fm)',color:'var(--grn)',fontWeight:600}},fmt(p.amount))))))))
+      E('div',{className:'card'},E('div',{className:'ct',style:{marginBottom:'14px'}},'All Payments'),loading?E('div',{className:'loader'},E('div',{className:'spin'})):payments.length===0?E('div',{className:'empty'},E('div',{className:'ei'},'💰'),E('div',{className:'et'},'Add payments from Sites page')):E('div',{className:'vlist'},payments.map(p=>E('div',{key:p._id,className:'vrow'},
+        E('div',{className:'vrow-top'},E('div',{className:'vrow-name'},p.siteId?.name||'—'),E('div',{className:'vrow-amt'},fmt(p.amount))),
+        E('div',{className:'vrow-meta'},E('span',null,fmtD(p.date)),E('span',{className:'badge bg-b'},p.paymentMode),p.milestone&&E('span',null,p.milestone))
+      ))))
     )
   );
 }
@@ -1134,19 +1210,11 @@ function Expenses(){
               E('div',{className:'et'},'No expenses for this site yet'),
               E('button',{className:'btn btn-p btn-sm',style:{marginTop:'14px'},onClick:()=>{setF({amount:'',date:TODAY,category:'labor',description:'',workerId:''});setModal(true);}},'+ Log First Expense')
             )
-          : E('div',{className:'table-wrap'},
-              E('table',null,
-                E('thead',null,E('tr',null,['Date','Category','Description','Worker','Amount',''].map(h=>E('th',{key:h},h)))),
-                E('tbody',null,expenses.map(e=>E('tr',{key:e._id},
-                  E('td',null,fmtD(e.date)),
-                  E('td',null,E('span',{className:'badge bg-o'},e.category)),
-                  E('td',null,e.description||'—'),
-                  E('td',null,e.workerId?.name||'—'),
-                  E('td',{style:{fontFamily:'var(--fm)',color:'var(--red)',fontWeight:600}},fmt(e.amount)),
-                  E('td',null,E('button',{className:'btn btn-sm btn-d',onClick:()=>del(e._id)},'🗑️'))
-                )))
-              )
-            )
+          : E('div',{className:'vlist'},expenses.map(e=>E('div',{key:e._id,className:'vrow'},
+              E('div',{className:'vrow-top'},E('div',{className:'vrow-name'},e.description||e.category),E('div',{className:'vrow-amt rd'},fmt(e.amount))),
+              E('div',{className:'vrow-meta'},E('span',null,fmtD(e.date)),E('span',{className:'badge bg-o'},e.category),e.workerId?.name&&E('span',null,'👷 '+e.workerId.name)),
+              E('div',{className:'vrow-actions'},E('button',{className:'btn btn-sm btn-d',onClick:()=>del(e._id)},'🗑️ Delete'))
+            )))
       )
     ),
     modal&&E('div',{className:'sov',onClick:ev=>ev.target.className==='ov'&&setModal(false)},
