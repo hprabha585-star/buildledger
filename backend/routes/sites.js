@@ -1,85 +1,76 @@
 const router = require('express').Router();
-const { Site, Payment, Expense, Owner } = require('../models');
-const auth   = require('../middleware/auth');
+const mongoose = require('mongoose');
+const auth = require('../middleware/auth');
+const { Site, Payment, Expense } = require('../models');
 
 router.use(auth);
 
-// GET all sites
+// List sites with computed totalPaid / balance per site
 router.get('/', async (req, res) => {
   try {
-    const sites = await Site.find({ contractorId: req.user.id })
-      .populate('ownerId', 'name mobile whatsapp')
-      .sort({ createdAt: -1 });
-
-    // Attach payment totals
-    const enriched = await Promise.all(sites.map(async s => {
-      const payments = await Payment.find({ siteId: s._id });
-      const totalPaid = payments.reduce((t, p) => t + p.amount, 0);
+    const sites = await Site.find({ contractorId: req.user.id }).populate('ownerId', 'name mobile whatsapp').sort({ createdAt: -1 });
+    const payments = await Payment.aggregate([
+      { $match: { contractorId: new mongoose.Types.ObjectId(req.user.id) } },
+      { $group: { _id: '$siteId', total: { $sum: '$amount' } } },
+    ]);
+    const paidMap = {};
+    payments.forEach((p) => { paidMap[String(p._id)] = p.total; });
+    const out = sites.map((s) => {
+      const totalPaid = paidMap[String(s._id)] || 0;
       return { ...s.toObject(), totalPaid, balance: (s.contractAmount || 0) - totalPaid };
-    }));
-    res.json(enriched);
+    });
+    res.json(out);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// GET single site with full details
 router.get('/:id', async (req, res) => {
   try {
-    const site = await Site.findOne({ _id: req.params.id, contractorId: req.user.id })
-      .populate('ownerId', 'name mobile whatsapp email address');
-    if (!site) return res.status(404).json({ error: 'Not found' });
-
-    const [payments, expenses] = await Promise.all([
-      Payment.find({ siteId: req.params.id }).sort({ date: -1 }),
-      Expense.find({ siteId: req.params.id }).populate('workerId', 'name').sort({ date: -1 }),
-    ]);
-
-    const totalPaid    = payments.reduce((s, p) => s + p.amount, 0);
-    const totalExpense = expenses.reduce((s, e) => s + e.amount, 0);
-
+    const site = await Site.findOne({ _id: req.params.id, contractorId: req.user.id }).populate('ownerId', 'name mobile whatsapp');
+    if (!site) return res.status(404).json({ error: 'Site not found' });
+    const payments = await Payment.find({ siteId: site._id, contractorId: req.user.id }).sort({ date: -1 });
+    const totalPaid = payments.reduce((s, p) => s + p.amount, 0);
     res.json({
-      ...site.toObject(), payments, expenses,
-      financials: {
-        contractAmount: site.contractAmount,
-        totalPaid, balance: site.contractAmount - totalPaid,
-        totalExpense, profit: totalPaid - totalExpense,
-      }
+      ...site.toObject(),
+      payments,
+      financials: { contractAmount: site.contractAmount || 0, totalPaid, balance: (site.contractAmount || 0) - totalPaid },
     });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// CREATE site
 router.post('/', async (req, res) => {
   try {
     const { name, location, ownerId, contractAmount, startDate, expectedEndDate, scope, status } = req.body;
-    if (!name || !location) return res.status(400).json({ error: 'Name and location required' });
-    const site = await Site.create({
-      contractorId: req.user.id, name, location,
-      ownerId: ownerId || null, contractAmount: Number(contractAmount) || 0,
-      startDate: startDate || '', expectedEndDate: expectedEndDate || '',
-      scope: scope || '', status: status || 'active',
+    if (!name || !location) return res.status(400).json({ error: 'Name and location are required' });
+    const s = await Site.create({
+      name, location, ownerId: ownerId || null, contractAmount: Number(contractAmount) || 0,
+      startDate, expectedEndDate, scope, status: status || 'active', contractorId: req.user.id,
     });
-    res.status(201).json(site);
+    res.json(s);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// UPDATE site
 router.put('/:id', async (req, res) => {
   try {
     const { name, location, ownerId, contractAmount, startDate, expectedEndDate, scope, status } = req.body;
-    const site = await Site.findOneAndUpdate(
+    const s = await Site.findOneAndUpdate(
       { _id: req.params.id, contractorId: req.user.id },
-      { name, location, ownerId: ownerId || null, contractAmount: Number(contractAmount), startDate, expectedEndDate, scope, status },
+      { name, location, ownerId: ownerId || null, contractAmount: Number(contractAmount) || 0, startDate, expectedEndDate, scope, status },
       { new: true }
-    ).populate('ownerId', 'name mobile');
-    res.json(site);
+    );
+    if (!s) return res.status(404).json({ error: 'Site not found' });
+    res.json(s);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// DELETE site
 router.delete('/:id', async (req, res) => {
   try {
-    await Site.findOneAndDelete({ _id: req.params.id, contractorId: req.user.id });
-    res.json({ message: 'Deleted' });
+    const s = await Site.findOneAndDelete({ _id: req.params.id, contractorId: req.user.id });
+    if (!s) return res.status(404).json({ error: 'Site not found' });
+    await Promise.all([
+      Payment.deleteMany({ siteId: req.params.id, contractorId: req.user.id }),
+      Expense.deleteMany({ siteId: req.params.id, contractorId: req.user.id }),
+    ]);
+    res.json({ message: 'Site deleted' });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

@@ -288,14 +288,14 @@ function Workers(){
   const [workers,setWorkers]=useState([]);const [loading,setLoading]=useState(true);
   const [modal,setModal]=useState(null);const [detail,setDetail]=useState(null);
   const [photo,setPhoto]=useState('');const [wPhotos,setWPhotos]=useState({});
-  const [f,setF]=useState({name:'',mobile:'',whatsapp:'',skill:'Mason',dailyWage:'',address:'',joiningDate:'',idProof:''});
+  const [f,setF]=useState({name:'',gender:'male',mobile:'',whatsapp:'',skill:'Mason',dailyWage:'',address:'',joiningDate:'',idProof:''});
   const [search,setSearch]=useState('');const [saving,setSaving]=useState(false);
   const toast=useToast();
   const load=()=>apiFetch('/workers').then(d=>{setWorkers(d);setLoading(false);});
   useEffect(()=>{load();},[]);
   const loadPhoto=async id=>{if(wPhotos[id])return;try{const d=await apiFetch(`/workers/${id}/photo`);setWPhotos(m=>({...m,[id]:d.photo}));}catch{}};
-  const openAdd=()=>{setF({name:'',mobile:'',whatsapp:'',skill:'Mason',dailyWage:'',address:'',joiningDate:'',idProof:''});setPhoto('');setModal('add');};
-  const openEdit=w=>{setF({name:w.name,mobile:w.mobile||'',whatsapp:w.whatsapp||'',skill:w.skill,dailyWage:String(w.dailyWage),address:w.address||'',joiningDate:w.joiningDate||'',idProof:w.idProof||''});setPhoto('');setModal(w);};
+  const openAdd=()=>{setF({name:'',gender:'male',mobile:'',whatsapp:'',skill:'Mason',dailyWage:'',address:'',joiningDate:'',idProof:''});setPhoto('');setModal('add');};
+  const openEdit=w=>{setF({name:w.name,gender:w.gender||'male',mobile:w.mobile||'',whatsapp:w.whatsapp||'',skill:w.skill,dailyWage:String(w.dailyWage),address:w.address||'',joiningDate:w.joiningDate||'',idProof:w.idProof||''});setPhoto('');setModal(w);};
   const set=k=>ev=>{
     const val=ev.target.value;
     setF(x=>{
@@ -334,10 +334,11 @@ function Workers(){
         E('div',{className:'shd'},E('div',{className:'sht'},modal==='add'?'Add Worker':'Edit Worker'),E('button',{className:'shc',onClick:()=>setModal(null)},'✕')),
         E('div',{className:'shb'},
           E(PhotoPicker,{photo,onChange:setPhoto}),
-          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Full Name *'),E('input',{className:'fi',value:f.name,onChange:set('name'),placeholder:'Suresh Kumar'})),E('div',{className:'fg'},E('label',{className:'fl'},'Mobile (calling) *'),E('input',{className:'fi',value:f.mobile,onChange:set('mobile'),placeholder:'9876543210',type:'tel'}))),
-          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'WhatsApp'),E('input',{className:'fi',value:f.whatsapp,onChange:set('whatsapp'),placeholder:'Auto-filled from mobile',type:'tel'})),E('div',{className:'fg'},E('label',{className:'fl'},'Aadhaar / ID'),E('input',{className:'fi',value:f.idProof,onChange:set('idProof'),placeholder:'XXXX XXXX XXXX'}))),
-          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Skill *'),E('select',{className:'fs',value:f.skill,onChange:set('skill')},SKILLS.map(s=>E('option',{key:s,value:s},s)))),E('div',{className:'fg'},E('label',{className:'fl'},'Daily Wage (₹) *'),E('input',{className:'fi',type:'number',value:f.dailyWage,onChange:set('dailyWage'),placeholder:'600'}))),
-          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Joining Date'),E('input',{className:'fi',type:'date',value:f.joiningDate,onChange:set('joiningDate')})),E('div',{className:'fg'},E('label',{className:'fl'},'Address'),E('input',{className:'fi',value:f.address,onChange:set('address'),placeholder:'Village / City'}))),
+          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Full Name *'),E('input',{className:'fi',value:f.name,onChange:set('name'),placeholder:'Suresh Kumar'})),E('div',{className:'fg'},E('label',{className:'fl'},'Gender'),E('select',{className:'fs',value:f.gender,onChange:set('gender')},['male','female','other'].map(g=>E('option',{key:g,value:g},g[0].toUpperCase()+g.slice(1)))))),
+          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Mobile (calling) *'),E('input',{className:'fi',value:f.mobile,onChange:set('mobile'),placeholder:'9876543210',type:'tel'})),E('div',{className:'fg'},E('label',{className:'fl'},'WhatsApp'),E('input',{className:'fi',value:f.whatsapp,onChange:set('whatsapp'),placeholder:'Auto-filled from mobile',type:'tel'}))),
+          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Aadhaar / ID'),E('input',{className:'fi',value:f.idProof,onChange:set('idProof'),placeholder:'XXXX XXXX XXXX'})),E('div',{className:'fg'},E('label',{className:'fl'},'Skill *'),E('select',{className:'fs',value:f.skill,onChange:set('skill')},SKILLS.map(s=>E('option',{key:s,value:s},s))))),
+          E('div',{className:'frow'},E('div',{className:'fg'},E('label',{className:'fl'},'Daily Wage (₹) *'),E('input',{className:'fi',type:'number',value:f.dailyWage,onChange:set('dailyWage'),placeholder:'600'})),E('div',{className:'fg'},E('label',{className:'fl'},'Joining Date'),E('input',{className:'fi',type:'date',value:f.joiningDate,onChange:set('joiningDate')}))),
+          E('div',{className:'fg'},E('label',{className:'fl'},'Address'),E('input',{className:'fi',value:f.address,onChange:set('address'),placeholder:'Village / City'})),
           E('div',{className:'mact'},E('button',{className:'btn btn-o',onClick:()=>setModal(null)},'Cancel'),E('button',{className:'btn btn-p',onClick:save,disabled:saving},saving?'Saving…':'Save Worker'))
         )
       )
@@ -365,7 +366,7 @@ function WorkerDetail({workerId,onBack}){
         )
       ),
       E('div',{className:'tabs'},['info','wages'].map(t=>E('button',{key:t,className:`tab ${tab===t?'active':''}`,onClick:()=>setTab(t)},t==='info'?'📋 Info':'💰 Wage Ledger'))),
-      tab==='info'&&E('div',{className:'card'},E('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}},[['Mobile',worker.mobile||'—'],['WhatsApp',worker.whatsapp||'—'],['ID Proof',worker.idProof||'—'],['Joined',fmtD(worker.joiningDate)],['Address',worker.address||'—']].map(([k,v])=>E('div',{key:k},E('div',{className:'fl'},k),E('div',{style:{fontSize:'14px'}},v))))),
+      tab==='info'&&E('div',{className:'card'},E('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}},[['Gender',worker.gender?worker.gender[0].toUpperCase()+worker.gender.slice(1):'—'],['Mobile',worker.mobile||'—'],['WhatsApp',worker.whatsapp||'—'],['ID Proof',worker.idProof||'—'],['Joined',fmtD(worker.joiningDate)],['Address',worker.address||'—']].map(([k,v])=>E('div',{key:k},E('div',{className:'fl'},k),E('div',{style:{fontSize:'14px'}},v))))),
       tab==='wages'&&E('div',null,
         E('div',{className:'card',style:{marginBottom:'14px'}},E('div',{style:{display:'flex',gap:'12px',alignItems:'flex-end',flexWrap:'wrap'}},E('div',{className:'fg',style:{margin:0}},E('label',{className:'fl'},'From'),E('input',{className:'fi',type:'date',value:range.start,onChange:ev=>setRange(r=>({...r,start:ev.target.value}))})),E('div',{className:'fg',style:{margin:0}},E('label',{className:'fl'},'To'),E('input',{className:'fi',type:'date',value:range.end,onChange:ev=>setRange(r=>({...r,end:ev.target.value}))})),E('button',{className:'btn btn-p btn-sm',onClick:loadSummary},'Calculate'))),
         summary&&E('div',null,

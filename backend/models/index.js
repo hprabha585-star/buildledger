@@ -13,6 +13,7 @@ const UserSchema = new Schema({
 const WorkerSchema = new Schema({
   contractorId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
   name:         { type: String, required: true, trim: true },
+  gender:       { type: String, enum: ['male', 'female', 'other'], default: 'male' },
   photo:        { type: String, default: '' },
   mobile:       { type: String, default: '' },
   whatsapp:     { type: String, default: '' },
@@ -50,7 +51,8 @@ const SiteSchema = new Schema({
 
 // ── ATTENDANCE ────────────────────────────────────────────────────────────────
 // siteId is OPTIONAL — worker may not be assigned to a specific site that day
-// wagePaid: whether the contractor has paid this worker for this day
+// status: 'present' (1 day), 'half' (1/2 day), 'absent' (0)
+// wagePaid: whether the contractor has paid this worker for this day (tracked separately)
 // Auto-delete: TTL index removes records older than 62 days (≈2 months)
 const AttendanceSchema = new Schema({
   contractorId: { type: Schema.Types.ObjectId, ref: 'User',   required: true, index: true },
