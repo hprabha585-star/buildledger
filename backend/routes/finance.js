@@ -9,12 +9,18 @@ const TODAY = () => new Date().toISOString().split('T')[0];
 router.get('/dashboard', async (req, res) => {
   try {
     const cid = req.user.id;
-    const [sites, payments, expenses, workers, todayRecs] = await Promise.all([
+    const [sites, payments, expenses, workers, todayRecs, allUnpaidRecs] = await Promise.all([
       Site.find({ contractorId: cid }).populate('ownerId', 'name'),
       Payment.find({ contractorId: cid }).populate('siteId', 'name').sort({ date: -1, createdAt: -1 }),
       Expense.find({ contractorId: cid }).populate('siteId', 'name').sort({ date: -1, createdAt: -1 }),
       Worker.find({ contractorId: cid }).select('-photo'),
-      Attendance.find({ contractorId: cid, date: TODAY() }).populate('workerId', 'name skill dailyWage photo'),
+      Attendance.find({ contractorId: cid, date: TODAY() }),
+      // All worked-but-unpaid records across all stored dates (up to 62-day TTL)
+      Attendance.find({
+        contractorId: cid,
+        status: { $in: ['present', 'half'] },
+        wagePaid: false,
+      }).populate('workerId', 'name skill dailyWage photo').sort({ date: -1 }),
     ]);
 
     const paidBySite = {};
@@ -27,10 +33,11 @@ router.get('/dashboard', async (req, res) => {
     const netProfit = totalReceived - totalExpenses;
     const activeSites = sites.filter((s) => s.status === 'active').length;
     const presentToday = todayRecs.filter((r) => r.status === 'present' || r.status === 'half').length;
-    const unpaidToday = todayRecs
-      .filter((r) => (r.status === 'present' || r.status === 'half') && !r.wagePaid && r.workerId)
+    const unpaidToday = allUnpaidRecs
+      .filter((r) => r.workerId) // guard against deleted workers
       .map((r) => ({
         _id: r._id,
+        date: r.date,
         status: r.status,
         wagePaid: r.wagePaid,
         worker: r.workerId,
