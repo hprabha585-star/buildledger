@@ -114,23 +114,23 @@ body{background:var(--bg);color:var(--txt);font-family:var(--fb);font-size:15px;
 /* ATTENDANCE */
 .arow{display:flex;align-items:center;padding:12px 16px;gap:10px;background:var(--s1);border-bottom:1px solid rgba(255,255,255,.05)}
 .arow.pr{border-left:3px solid var(--grn)}.arow.hr{border-left:3px solid var(--acc)}.arow.ar{border-left:3px solid transparent}
-.aav{width:52px;height:52px;border-radius:50%;background:var(--acc);color:#000;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.aav{width:58px;height:58px;border-radius:50%;background:var(--acc);color:#000;font-weight:700;font-size:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
 .aav img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .ainf{flex:1;min-width:0}
-.anm{font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.amt{font-size:11px;color:var(--mut);margin-top:1px}
+.anm{font-size:16px;font-weight:700;line-height:1.3}
+.amt{font-size:13px;color:var(--mut);margin-top:3px}
 .pha-w{display:flex;gap:4px;flex-shrink:0}
-.pha{padding:9px 12px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid;background:transparent;touch-action:manipulation;min-width:40px;min-height:40px}
+.pha{padding:11px 16px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;border:2px solid;background:transparent;touch-action:manipulation;min-width:48px;min-height:48px}
 .pha:active{transform:scale(.93)}
 .pha.pp{border-color:var(--grn);color:var(--grn)}.pha.pp.sel{background:var(--grn);color:#000}
 .pha.hh{border-color:var(--acc);color:var(--acc)}.pha.hh.sel{background:var(--acc);color:#000}
 .pha.aa{border-color:var(--red);color:var(--red)}.pha.aa.sel{background:var(--red);color:#fff}
 .wtw{display:flex;align-items:center;gap:5px;flex-shrink:0}
-.wtl{font-size:10px;color:var(--mut)}
-.tog{width:36px;height:20px;border-radius:10px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;touch-action:manipulation}
+.wtl{font-size:13px;color:var(--mut);font-weight:500}
+.tog{width:48px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;touch-action:manipulation}
 .tog.on{background:var(--grn)}.tog.off{background:var(--bd)}
-.tog::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;transition:left .2s}
-.tog.on::after{left:19px}.tog.off::after{left:3px}
+.tog::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;transition:left .2s}
+.tog.on::after{left:25px}.tog.off::after{left:3px}
 .wc{font-family:var(--fm);font-size:11px;min-width:58px;text-align:right;flex-shrink:0}
 .wc.e{color:var(--acc)}.wc.p{color:var(--grn)}.wc.z{color:var(--mut)}
 .spw{position:relative;display:inline-block}
@@ -239,20 +239,25 @@ body{background:var(--bg);color:var(--txt);font-family:var(--fb);font-size:15px;
 .wcontact a{text-decoration:none;font-size:22px;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:var(--s1);border:1px solid var(--bd);transition:background .15s}
 .wcontact a:active{background:var(--bd)}
 
-/* ── ATTENDANCE ROWS (att-row aliases) ── */
-.att-row{display:flex;align-items:center;padding:12px 14px;gap:10px;background:var(--s1);border:1px solid var(--bd);border-radius:14px}
-.p-row{border-left:3px solid var(--grn)}.h-row{border-left:3px solid var(--acc)}.a-row{border-left:3px solid var(--bd)}
+/* ── ATTENDANCE ROW — vertical card ── */
+.att-row{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:12px}
+.p-row{border-left:4px solid var(--grn)}.h-row{border-left:4px solid var(--acc)}.a-row{border-left:4px solid var(--bd)}
+/* top section: avatar + info + call icons */
+.att-top{display:flex;align-items:flex-start;gap:12px}
+.att-info{flex:1;min-width:0}
+/* bottom section: P/½/A + paid toggle + wage */
+.att-bot{display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
 
 /* ── SITE CHIP / SITE PICKER TRIGGER ── */
-.site-chip{font-size:10px;padding:2px 7px;border-radius:5px;background:rgba(94,114,228,.1);color:var(--blu);border:1px solid rgba(94,114,228,.2);cursor:pointer;display:inline-block;margin-top:4px;white-space:nowrap}
+.site-chip{font-size:12px;padding:5px 10px;border-radius:7px;background:rgba(94,114,228,.1);color:var(--blu);border:1px solid rgba(94,114,228,.2);cursor:pointer;display:inline-block;margin-top:4px;white-space:nowrap}
 
 /* ── CALL/WHATSAPP MINI ICONS (attendance row) ── */
 .mini-ca{display:flex;gap:8px;flex-shrink:0}
-.mini-ca a{text-decoration:none;font-size:22px;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:var(--s1);border:1px solid var(--bd)}
+.mini-ca a{text-decoration:none;font-size:22px;display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:12px;background:var(--s2);border:1px solid var(--bd)}
 
 /* ── WAGE PAID TOGGLE (attendance row) ── */
 .wage-toggle{display:flex;align-items:center;gap:6px;flex-shrink:0;width:78px;justify-content:flex-end}
-.wtl{font-size:10px;color:var(--mut)}
+.wtl{font-size:13px;color:var(--mut);font-weight:500}
 
 /* ── PAYMENT ICON (owner/site detail) ── */
 .pay-icon{width:36px;height:36px;border-radius:10px;background:rgba(45,206,137,.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
@@ -734,47 +739,42 @@ function Attendance(){
                 const rowCls=`att-row ${status==='present'?'p-row':status==='half'?'h-row':'a-row'}`;
 
                 return E('div',{key:w._id,className:rowCls},
-                  // avatar
-                  E('div',{className:'aav'},ph?E('img',{src:ph,alt:w.name}):w.name[0]?.toUpperCase()),
-
-                  // name + skill + site picker
-                  E('div',{className:'li'},
-                    E('div',{className:'anm'},w.name),
-                    E('div',{className:'amt'},w.skill+' · '+fmt(w.dailyWage)+'/day'),
-                    E('div',{className:'spw'},
-                      E('span',{className:'site-chip',onClick:()=>setSitePicker(sitePicker===w._id?null:w._id),title:'Optional: assign site'},
-                        assignedSite?(assignedSite.name||'Site'):'+ Site (optional)'
-                      ),
-                      sitePicker===w._id&&E('div',{className:'spdd'},
-                        E('button',{onClick:()=>assignSite(w._id,null)},'— No site —'),
-                        sites.map(s=>E('button',{key:s._id,onClick:()=>assignSite(w._id,s._id)},s.name))
+                  // ── ROW TOP: avatar + name/skill + call/whatsapp ──
+                  E('div',{className:'att-top'},
+                    E('div',{className:'aav'},ph?E('img',{src:ph,alt:w.name}):w.name[0]?.toUpperCase()),
+                    E('div',{className:'att-info'},
+                      E('div',{className:'anm'},w.name),
+                      E('div',{className:'amt'},w.skill+' · ₹'+w.dailyWage+'/day'),
+                      E('div',{className:'spw'},
+                        E('span',{className:'site-chip',onClick:()=>setSitePicker(sitePicker===w._id?null:w._id)},
+                          assignedSite?(assignedSite.name||'Site'):'+ Site (optional)'
+                        ),
+                        sitePicker===w._id&&E('div',{className:'spdd'},
+                          E('button',{onClick:()=>assignSite(w._id,null)},'— No site —'),
+                          sites.map(s=>E('button',{key:s._id,onClick:()=>assignSite(w._id,s._id)},s.name))
+                        )
                       )
+                    ),
+                    E('div',{className:'mini-ca'},
+                      w.mobile&&E('a',{href:tel(w.mobile),title:'Call'},'📞'),
+                      w.whatsapp&&E('a',{href:wa(w.whatsapp),target:'_blank',rel:'noreferrer',title:'WhatsApp'},'💬')
                     )
                   ),
-
-                  // call / whatsapp
-                  E('div',{className:'mini-ca'},
-                    w.mobile&&E('a',{href:tel(w.mobile),title:'Call '+w.mobile},'📞'),
-                    w.whatsapp&&E('a',{href:wa(w.whatsapp),target:'_blank',rel:'noreferrer',title:'WhatsApp'},'💬')
-                  ),
-
-                  // P / ½ / A
-                  E('div',{className:'pha-w'},
-                    E('button',{className:`pha pp ${status==='present'?'sel':''}`,onClick:()=>markStatus(w._id,'present')},'P'),
-                    E('button',{className:`pha hh ${status==='half'?'sel':''}`,onClick:()=>markStatus(w._id,'half')},'½'),
-                    E('button',{className:`pha aa ${status==='absent'?'sel':''}`,onClick:()=>markStatus(w._id,'absent')},'A')
-                  ),
-
-                  // Wage paid toggle — only shown when worker is present/half
-                  wage>0
-                    ? E('div',{className:'wage-toggle'},
-                        E('span',{className:'wtl'},wagePaid?'Paid':'Unpaid'),
-                        E('button',{className:`tog ${wagePaid?'on':'off'}`,onClick:()=>toggleWagePaid(w._id),title:wagePaid?'Mark unpaid':'Mark paid'})
-                      )
-                    : E('div',{style:{width:'78px'}}),
-
-                  // wage chip
-                  E('div',{className:`wc ${wage>0?(wagePaid?'p':'e'):'z'}`},wage>0?fmt(wage):'—')
+                  // ── ROW BOTTOM: P/½/A  +  wage paid toggle  +  wage amount ──
+                  E('div',{className:'att-bot'},
+                    E('div',{className:'pha-w'},
+                      E('button',{className:`pha pp ${status==='present'?'sel':''}`,onClick:()=>markStatus(w._id,'present')},'P'),
+                      E('button',{className:`pha hh ${status==='half'?'sel':''}`,onClick:()=>markStatus(w._id,'half')},'½'),
+                      E('button',{className:`pha aa ${status==='absent'?'sel':''}`,onClick:()=>markStatus(w._id,'absent')},'A')
+                    ),
+                    wage>0
+                      ? E('div',{className:'wage-toggle'},
+                          E('span',{className:'wtl'},wagePaid?'✅ Paid':'⏳ Unpaid'),
+                          E('button',{className:`tog ${wagePaid?'on':'off'}`,onClick:()=>toggleWagePaid(w._id)})
+                        )
+                      : E('span',{className:'wtl',style:{color:'var(--mut)'}},status==='absent'?'Absent':''),
+                    E('div',{className:`wc ${wage>0?(wagePaid?'p':'e'):'z'}`},wage>0?fmt(wage):'—')
+                  )
                 );
               })
             )
@@ -1035,10 +1035,34 @@ function Sites(){
         sites.map(s=>{
           const pct=s.contractAmount?Math.min(100,(s.totalPaid/s.contractAmount)*100):0;const owner=s.ownerId;
           return E('div',{key:s._id,className:'sc2'},
-            E('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},E('div',null,E('div',{style:{fontSize:'15px',fontWeight:600,cursor:'pointer'},onClick:()=>setDetail(s._id)},s.name),E('div',{style:{fontSize:'12px',color:'var(--mut)',marginTop:'2px'}},'📍 '+s.location)),E('span',{className:`badge bg-${s.status==='active'?'g':s.status==='completed'?'b':'gr'}`},s.status)),
-            owner&&E('div',{style:{fontSize:'12px',marginTop:'8px',display:'flex',alignItems:'center',gap:'6px'}},'👤 ',E('strong',null,owner.name),owner.mobile&&E('a',{href:tel(owner.mobile),style:{textDecoration:'none',fontSize:'13px'}},'📞'),owner.whatsapp&&E('a',{href:wa(owner.whatsapp),target:'_blank',rel:'noreferrer',style:{textDecoration:'none',fontSize:'13px'}},'💬')),
-            E('div',{style:{marginTop:'10px'}},E('div',{style:{display:'flex',justifyContent:'space-between',fontSize:'12px'}},E('span',null,'Contract: '+fmt(s.contractAmount)),E('span',{style:{color:'var(--grn)'}},fmt(s.totalPaid)+' paid')),E('div',{className:'progress-bar'},E('div',{className:'progress-fill',style:{width:pct+'%',background:pct>=100?'var(--grn)':'var(--acc)'}})),s.balance>0&&E('div',{style:{fontSize:'12px',color:'var(--red)',marginTop:'4px'}},fmt(s.balance)+' remaining')),
-            E('div',{style:{display:'flex',gap:'6px',marginTop:'12px'}},E('button',{className:'btn btn-sm btn-o',style:{flex:1},onClick:()=>setDetail(s._id)},'💰 Payments'),E('button',{className:'btn btn-sm btn-o',onClick:()=>openEdit(s)},'✏️'),E('button',{className:'btn btn-sm btn-d',onClick:()=>del(s._id)},'🗑️'))
+            E('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'8px'}},
+              E('div',{style:{flex:1,minWidth:0}},
+                E('div',{style:{fontSize:'18px',fontWeight:700,cursor:'pointer',marginBottom:'4px'},onClick:()=>setDetail(s._id)},s.name),
+                E('div',{style:{fontSize:'13px',color:'var(--mut)'}},'📍 '+s.location)
+              ),
+              E('span',{className:`badge bg-${s.status==='active'?'g':s.status==='completed'?'b':'gr'}`},s.status)
+            ),
+            owner&&E('div',{style:{marginTop:'12px',display:'flex',alignItems:'center',gap:'10px',flexWrap:'wrap'}},
+              E('span',{style:{fontSize:'14px'}},'👤 '),
+              E('strong',{style:{fontSize:'14px'}},owner.name),
+              E('div',{style:{display:'flex',gap:'8px',marginLeft:'auto'}},
+                owner.mobile&&E('a',{href:tel(owner.mobile),style:{textDecoration:'none',fontSize:'24px',display:'flex',alignItems:'center',justifyContent:'center',width:'46px',height:'46px',borderRadius:'12px',background:'var(--s2)',border:'1px solid var(--bd)'}},'📞'),
+                owner.whatsapp&&E('a',{href:wa(owner.whatsapp),target:'_blank',rel:'noreferrer',style:{textDecoration:'none',fontSize:'24px',display:'flex',alignItems:'center',justifyContent:'center',width:'46px',height:'46px',borderRadius:'12px',background:'var(--s2)',border:'1px solid var(--bd)'}},'💬')
+              )
+            ),
+            E('div',{style:{marginTop:'12px'}},
+              E('div',{style:{display:'flex',justifyContent:'space-between',fontSize:'13px',marginBottom:'6px'}},
+                E('span',null,'Contract: '+fmt(s.contractAmount)),
+                E('span',{style:{color:'var(--grn)',fontWeight:600}},fmt(s.totalPaid)+' paid')
+              ),
+              E('div',{className:'progress-bar'},E('div',{className:'progress-fill',style:{width:pct+'%',background:pct>=100?'var(--grn)':'var(--acc)'}})),
+              s.balance>0&&E('div',{style:{fontSize:'13px',color:'var(--red)',marginTop:'5px',fontWeight:600}},fmt(s.balance)+' remaining')
+            ),
+            E('div',{style:{display:'flex',gap:'8px',marginTop:'14px'}},
+              E('button',{className:'btn btn-o',style:{flex:1,fontSize:'14px'},onClick:()=>setDetail(s._id)},'💰 Payments'),
+              E('button',{className:'btn btn-o',style:{minWidth:'48px'},onClick:()=>openEdit(s)},'✏️'),
+              E('button',{className:'btn btn-d',style:{minWidth:'48px'},onClick:()=>del(s._id)},'🗑️')
+            )
           );
         })
       )
