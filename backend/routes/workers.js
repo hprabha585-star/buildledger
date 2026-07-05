@@ -1,9 +1,7 @@
 const router = require('express').Router();
-const multer = require('multer');
 const auth = require('../middleware/auth');
 const { Worker, Attendance } = require('../models');
 
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 } });
 router.use(auth);
 
 const FIELDS = ['name', 'gender', 'mobile', 'whatsapp', 'skill', 'dailyWage', 'address', 'joiningDate', 'idProof', 'status'];
@@ -14,7 +12,7 @@ const pick = (body) => {
   return out;
 };
 
-// List workers — exclude photo (large base64) for fast list rendering
+// List workers (no photo — fast)
 router.get('/', async (req, res) => {
   try {
     const workers = await Worker.find({ contractorId: req.user.id }).select('-photo').sort({ createdAt: -1 });
@@ -22,7 +20,7 @@ router.get('/', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// Single worker — includes photo (used by worker detail page)
+// Single worker with photo
 router.get('/:id', async (req, res) => {
   try {
     const w = await Worker.findOne({ _id: req.params.id, contractorId: req.user.id });
@@ -31,7 +29,7 @@ router.get('/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// Lazy-load just the photo (used by list views)
+// Lazy-load photo separately
 router.get('/:id/photo', async (req, res) => {
   try {
     const w = await Worker.findOne({ _id: req.params.id, contractorId: req.user.id }).select('photo');
@@ -40,22 +38,28 @@ router.get('/:id/photo', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.post('/', upload.none(), async (req, res) => {
+// POST — pure JSON, no multer (fixes Android browser compatibility)
+router.post('/', async (req, res) => {
   try {
     const data = pick(req.body);
     if (!data.name || !data.skill || data.dailyWage === undefined) {
       return res.status(400).json({ error: 'Name, skill and daily wage are required' });
     }
-    if (req.body.photo && req.body.photo.startsWith('data:')) data.photo = req.body.photo;
+    if (req.body.photo && typeof req.body.photo === 'string' && req.body.photo.startsWith('data:')) {
+      data.photo = req.body.photo;
+    }
     const w = await Worker.create({ ...data, contractorId: req.user.id });
     res.json(w);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.put('/:id', upload.none(), async (req, res) => {
+// PUT — pure JSON, no multer
+router.put('/:id', async (req, res) => {
   try {
     const data = pick(req.body);
-    if (req.body.photo && req.body.photo.startsWith('data:')) data.photo = req.body.photo;
+    if (req.body.photo && typeof req.body.photo === 'string' && req.body.photo.startsWith('data:')) {
+      data.photo = req.body.photo;
+    }
     const w = await Worker.findOneAndUpdate(
       { _id: req.params.id, contractorId: req.user.id }, data, { new: true }
     );
@@ -73,7 +77,7 @@ router.delete('/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// Wage summary for one worker over a date range
+// Wage summary for one worker
 router.get('/:id/wage-summary', async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
