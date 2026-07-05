@@ -29,7 +29,13 @@ router.post('/mark', async (req, res) => {
     const worker = await Worker.findOne({ _id: workerId, contractorId: req.user.id });
     if (!worker) return res.status(404).json({ error: 'Worker not found' });
 
-    const expireAt = new Date(); expireAt.setDate(expireAt.getDate() + 62);
+    // Expiry = end of next month relative to the attendance DATE (not today)
+    const expireAt = (() => {
+      const d = date ? new Date(date + 'T00:00:00Z') : new Date();
+      const expiry = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 2, 1));
+      expiry.setUTCMilliseconds(-1);
+      return expiry;
+    })();
     const rec = await Attendance.findOneAndUpdate(
       { contractorId: req.user.id, workerId, date },
       { status, siteId: siteId || null, $setOnInsert: { wagePaid: false }, expireAt },
