@@ -250,6 +250,14 @@ body{background:var(--bg);color:var(--txt);font-family:var(--fb);font-size:var(-
 .cbtn.call{background:rgba(45,206,137,.1);color:var(--grn);border-color:rgba(45,206,137,.3)}
 .cbtn.wa{background:rgba(37,211,102,.1);color:#25d366;border-color:rgba(37,211,102,.3)}
 
+/* ── WORKER DETAIL — ATTENDANCE DAY ROW ── */
+.wd-row{background:var(--s2);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px}
+.wd-date{flex-shrink:0;text-align:center;min-width:42px}
+.wd-day{font-size:11px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.wd-num{font-size:13px;font-weight:700;margin-top:2px;color:var(--txt)}
+.wd-mid{flex:1;min-width:0}
+.wd-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+
 /* ── WORKER LIST ── */
 .wlist{display:flex;flex-direction:column;gap:10px}
 .wrow{display:flex;align-items:center;gap:clamp(10px,3vw,14px);background:var(--s2);border:1px solid var(--bd);border-radius:14px;padding:clamp(11px,3vw,15px)}
@@ -638,43 +646,172 @@ function Workers(){
   );
 }
 function WorkerDetail({workerId,onBack}){
-  const [worker,setWorker]=useState(null);const [summary,setSummary]=useState(null);
-  const [range,setRange]=useState({start:monthStart(),end:TODAY});
-  const [tab,setTab]=useState('info');const [loading,setLoading]=useState(true);
+  const [worker,setWorker]=useState(null);
+  const [loading,setLoading]=useState(true);
+  const [tab,setTab]=useState('attendance');
+  // month = 'YYYY-MM' — default to current month
+  const [month,setMonth]=useState(TODAY.slice(0,7));
+  const [attRecs,setAttRecs]=useState(null);   // null = not loaded yet
+  const [attLoading,setAttLoading]=useState(false);
+  const toast=useToast();
+
   useEffect(()=>{apiFetch(`/workers/${workerId}`).then(d=>{setWorker(d);setLoading(false);});},[workerId]);
-  const loadSummary=()=>apiFetch(`/workers/${workerId}/wage-summary?startDate=${range.start}&endDate=${range.end}`).then(setSummary);
-  useEffect(()=>{if(tab==='wages')loadSummary();},[tab]);
+
+  // Load attendance whenever month or tab changes
+  useEffect(()=>{
+    if(tab!=='attendance')return;
+    setAttLoading(true);
+    const start=month+'-01';
+    const lastDay=new Date(Number(month.slice(0,4)),Number(month.slice(5,7)),0).getDate();
+    const end=month+'-'+String(lastDay).padStart(2,'0');
+    apiFetch(`/workers/${workerId}/wage-summary?startDate=${start}&endDate=${end}`)
+      .then(d=>{setAttRecs(d);setAttLoading(false);})
+      .catch(e=>{toast(e.message,'error');setAttLoading(false);});
+  },[tab,month,workerId]);
+
+  const prevMonth=()=>{
+    const d=new Date(month+'-01');
+    d.setMonth(d.getMonth()-1);
+    setMonth(d.toISOString().slice(0,7));
+  };
+  const nextMonth=()=>{
+    const d=new Date(month+'-01');
+    d.setMonth(d.getMonth()+1);
+    const next=d.toISOString().slice(0,7);
+    if(next<=TODAY.slice(0,7))setMonth(next);
+  };
+  const monthLabel=m=>{
+    const d=new Date(m+'-01');
+    return d.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  };
+
+  // Quick-jump: this month / last month
+  const thisMonth=TODAY.slice(0,7);
+  const lastMonthDate=new Date(TODAY.slice(0,7)+'-01');
+  lastMonthDate.setMonth(lastMonthDate.getMonth()-1);
+  const lastMonthStr=lastMonthDate.toISOString().slice(0,7);
+
   if(loading)return E('div',{className:'pp'},E('div',{className:'loader'},E('div',{className:'spin'})));
   if(!worker)return null;
+
+  const recs=attRecs?.records||[];
+  const presentRecs=recs.filter(r=>r.status==='present');
+  const halfRecs=recs.filter(r=>r.status==='half');
+  const absentRecs=recs.filter(r=>r.status==='absent');
+  const totalDays=presentRecs.length+halfRecs.length*0.5;
+  const totalEarned=presentRecs.length*worker.dailyWage+halfRecs.length*(worker.dailyWage/2);
+  const totalPaid=recs.reduce((s,r)=>{
+    if(!r.wagePaid)return s;
+    return s+(r.status==='present'?worker.dailyWage:r.status==='half'?worker.dailyWage/2:0);
+  },0);
+  const totalUnpaid=totalEarned-totalPaid;
+
   return E('div',null,
-    E('div',{className:'pp'},E('button',{className:'back-btn',onClick:onBack,style:{marginTop:'8px'}},'← Back'),E('div',{className:'stitle'},worker.name),E('div',{className:'ls'},worker.skill+' · '+fmt(worker.dailyWage)+'/day')),
-    E('div',{className:'pp'},
-      E('div',{className:'card'},
-        E('div',{className:'wavatar',style:{width:'70px',height:'70px',fontSize:'26px',flexShrink:0}},worker.photo?E('img',{src:worker.photo,alt:worker.name}):worker.name[0]?.toUpperCase()),
-        E('div',{style:{flex:1}},
-          E('div',{style:{fontSize:'18px',fontWeight:600,marginBottom:'8px'}},worker.name),
-          E('div',{style:{display:'flex',gap:'8px',flexWrap:'wrap'}},E('span',{className:`badge bg-${worker.status==='active'?'g':'gr'}`},worker.status),E('span',{className:'badge bg-b'},worker.skill),E('span',{className:'badge bg-o'},fmt(worker.dailyWage)+'/day')),
-          worker.mobile&&E('div',{style:{marginTop:'10px',display:'flex',gap:'8px',flexWrap:'wrap'}},E('a',{href:tel(worker.mobile),className:'btn btn-g'},'📞 Call '+worker.mobile),worker.whatsapp&&E('a',{href:wa(worker.whatsapp),target:'_blank',rel:'noreferrer',className:'btn btn-b'},'💬 WhatsApp'))
+    // ── HEADER ──
+    E('div',{className:'pp',style:{paddingBottom:'8px'}},
+      E('button',{className:'back-btn',onClick:onBack},'← Workers'),
+    ),
+    E('div',{className:'pp',style:{paddingTop:'0'}},
+      // Worker profile card
+      E('div',{className:'card',style:{display:'flex',alignItems:'center',gap:'14px'}},
+        E('div',{className:'wavatar',style:{width:'68px',height:'68px',fontSize:'24px',flexShrink:0}},
+          worker.photo?E('img',{src:worker.photo,alt:worker.name,style:{width:'100%',height:'100%',objectFit:'cover',borderRadius:'50%'}}):worker.name[0]?.toUpperCase()
+        ),
+        E('div',{style:{flex:1,minWidth:0}},
+          E('div',{style:{fontSize:'18px',fontWeight:700,marginBottom:'6px'}},worker.name),
+          E('div',{style:{display:'flex',gap:'6px',flexWrap:'wrap',marginBottom:'8px'}},
+            E('span',{className:`badge bg-${worker.status==='active'?'g':'gr'}`},worker.status),
+            E('span',{className:'badge bg-b'},worker.skill),
+            worker.gender&&E('span',{className:'badge bg-gr'},worker.gender)
+          ),
+          E('div',{style:{fontFamily:'var(--fm)',fontSize:'16px',color:'var(--acc)',fontWeight:700}},fmt(worker.dailyWage)+'/day'),
+          E('div',{style:{display:'flex',gap:'8px',marginTop:'10px',flexWrap:'wrap'}},
+            worker.mobile&&E('a',{href:tel(worker.mobile),className:'btn btn-g btn-sm'},'📞 Call'),
+            worker.whatsapp&&E('a',{href:wa(worker.whatsapp),target:'_blank',rel:'noreferrer',className:'btn btn-b btn-sm'},'💬 WhatsApp')
+          )
         )
       ),
-      E('div',{className:'tabs'},['info','wages'].map(t=>E('button',{key:t,className:`tab ${tab===t?'active':''}`,onClick:()=>setTab(t)},t==='info'?'📋 Info':'💰 Wage Ledger'))),
-      tab==='info'&&E('div',{className:'card'},E('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}},[['Gender',worker.gender?worker.gender[0].toUpperCase()+worker.gender.slice(1):'—'],['Mobile',worker.mobile||'—'],['WhatsApp',worker.whatsapp||'—'],['ID Proof',worker.idProof||'—'],['Joined',fmtD(worker.joiningDate)],['Address',worker.address||'—']].map(([k,v])=>E('div',{key:k},E('div',{className:'fl'},k),E('div',{style:{fontSize:'14px'}},v))))),
-      tab==='wages'&&E('div',null,
-        E('div',{className:'card',style:{marginBottom:'14px'}},E('div',{style:{display:'flex',gap:'12px',alignItems:'flex-end',flexWrap:'wrap'}},E('div',{className:'fg',style:{margin:0}},E('label',{className:'fl'},'From'),E('input',{className:'fi',type:'date',value:range.start,onChange:ev=>setRange(r=>({...r,start:ev.target.value}))})),E('div',{className:'fg',style:{margin:0}},E('label',{className:'fl'},'To'),E('input',{className:'fi',type:'date',value:range.end,onChange:ev=>setRange(r=>({...r,end:ev.target.value}))})),E('button',{className:'btn btn-p btn-sm',onClick:loadSummary},'Calculate'))),
-        summary&&E('div',null,
-          E('div',{className:'sg',style:{gridTemplateColumns:'repeat(3,1fr)',marginBottom:'14px'}},
-            E('div',{className:'sc gn'},E('div',{className:'si'},'✅'),E('div',{className:'sv gn'},summary.totalDays),E('div',{className:'slb'},'Days Worked')),
-            E('div',{className:'sc or'},E('div',{className:'si'},'💰'),E('div',{className:'sv or'},fmt(summary.totalWage)),E('div',{className:'slb'},'Total Earned')),
-            E('div',{className:'sc bl'},E('div',{className:'si'},'📋'),E('div',{className:'sv bl'},summary.records?.length||0),E('div',{className:'slb'},'Records'))
+
+      // ── TABS ──
+      E('div',{className:'tabs'},
+        E('button',{className:`tab ${tab==='attendance'?'active':''}`,onClick:()=>setTab('attendance')},'📅 Attendance'),
+        E('button',{className:`tab ${tab==='info'?'active':''}`,onClick:()=>setTab('info')},'📋 Info')
+      ),
+
+      // ── ATTENDANCE TAB ──
+      tab==='attendance'&&E('div',null,
+        // Month navigator
+        E('div',{className:'card',style:{padding:'12px 14px'}},
+          E('div',{style:{display:'flex',alignItems:'center',gap:'8px',marginBottom:'10px'}},
+            E('button',{className:'btn btn-o btn-sm',style:{padding:'8px 12px'},onClick:prevMonth},'‹'),
+            E('div',{style:{flex:1,textAlign:'center',fontWeight:700,fontSize:'15px'}},monthLabel(month)),
+            E('button',{className:`btn btn-o btn-sm`,style:{padding:'8px 12px'},onClick:nextMonth,disabled:month>=thisMonth},'›')
           ),
-          summary.records?.length>0&&E('div',{className:'card'},E('div',{className:'ct',style:{marginBottom:'14px'}},'Attendance Records'),E('div',{className:'vlist'},(summary.records||[]).map((r,i)=>E('div',{key:i,className:'vrow'},
-            E('div',{className:'vrow-top'},E('div',{className:'vrow-name'},fmtD(r.date)),E('span',{className:`badge bg-${r.wagePaid?'g':'r'}`},r.wagePaid?'Paid':'Unpaid')),
-            E('div',{className:'vrow-meta'},
-              E('span',{className:`badge bg-${r.status==='present'?'g':r.status==='half'?'o':'r'}`},r.status),
-              r.siteId?.name&&E('span',null,'📍 '+r.siteId.name),
-              E('span',{style:{color:'var(--acc)',fontFamily:'var(--fm)'}},r.status==='present'?fmt(worker.dailyWage):r.status==='half'?fmt(worker.dailyWage/2):'—')
+          E('div',{style:{display:'flex',gap:'8px',justifyContent:'center'}},
+            E('button',{className:`btn btn-sm ${month===thisMonth?'btn-p':'btn-o'}`,onClick:()=>setMonth(thisMonth)},'This Month'),
+            E('button',{className:`btn btn-sm ${month===lastMonthStr?'btn-p':'btn-o'}`,onClick:()=>setMonth(lastMonthStr)},'Last Month')
+          )
+        ),
+
+        // Summary stats
+        attLoading
+          ? E('div',{className:'loader'},E('div',{className:'spin'}))
+          : E('div',null,
+              E('div',{className:'sg',style:{gridTemplateColumns:'1fr 1fr',marginBottom:'14px'}},
+                E('div',{className:'sc gn'},E('div',{className:'si'},'☀️'),E('div',{className:'sv gn'},presentRecs.length+'P + '+halfRecs.length+'½'),E('div',{className:'slb'},totalDays+' days worked')),
+                E('div',{className:'sc or'},E('div',{className:'si'},'💰'),E('div',{className:'sv or'},fmt(totalEarned)),E('div',{className:'slb'},'Total Earned')),
+                E('div',{className:'sc bl'},E('div',{className:'si'},'✅'),E('div',{className:'sv bl'},fmt(totalPaid)),E('div',{className:'slb'},'Wage Paid')),
+                E('div',{className:`sc ${totalUnpaid>0?'rd':'gn'}`},E('div',{className:'si'},totalUnpaid>0?'⏳':'✓'),E('div',{className:`sv ${totalUnpaid>0?'rd':'gn'}`},fmt(totalUnpaid)),E('div',{className:'slb'},totalUnpaid>0?'Still Owed':'All Clear'))
+              ),
+
+              // Day-by-day records
+              recs.length===0
+                ? E('div',{className:'card'},E('div',{className:'empty'},E('div',{className:'ei'},'📋'),E('div',{className:'et'},'No attendance recorded for '+monthLabel(month))))
+                : E('div',{style:{display:'flex',flexDirection:'column',gap:'8px'}},
+                    // Sort newest first
+                    [...recs].sort((a,b)=>b.date.localeCompare(a.date)).map(r=>{
+                      const wage=r.status==='present'?worker.dailyWage:r.status==='half'?worker.dailyWage/2:0;
+                      const dayName=new Date(r.date+'T00:00:00').toLocaleDateString('en-IN',{weekday:'short'});
+                      const dayNum=new Date(r.date+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short'});
+                      return E('div',{key:r._id||r.date,className:'wd-row',style:{borderLeft:`4px solid ${r.status==='present'?'var(--grn)':r.status==='half'?'var(--acc)':'var(--bd)'}`}},
+                        // Left: date block
+                        E('div',{className:'wd-date'},
+                          E('div',{className:'wd-day'},dayName),
+                          E('div',{className:'wd-num'},dayNum)
+                        ),
+                        // Middle: status + site
+                        E('div',{className:'wd-mid'},
+                          E('span',{className:`badge bg-${r.status==='present'?'g':r.status==='half'?'o':'r'}`},
+                            r.status==='present'?'Full Day':r.status==='half'?'Half Day':'Absent'
+                          ),
+                          r.siteId?.name&&E('div',{style:{fontSize:'12px',color:'var(--mut)',marginTop:'4px'}},'📍 '+r.siteId.name),
+                          r.note&&E('div',{style:{fontSize:'12px',color:'var(--mut)',marginTop:'2px'}},r.note)
+                        ),
+                        // Right: wage + paid status
+                        E('div',{className:'wd-right'},
+                          wage>0&&E('div',{style:{fontFamily:'var(--fm)',fontSize:'14px',fontWeight:700,color:'var(--acc)'}},fmt(wage)),
+                          E('span',{className:`badge bg-${r.wagePaid?'g':'r'}`,style:{marginTop:'4px'}},r.wagePaid?'✅ Paid':'⏳ Unpaid')
+                        )
+                      );
+                    })
+                  )
             )
-          ))))
+      ),
+
+      // ── INFO TAB ──
+      tab==='info'&&E('div',{className:'card'},
+        E('div',{style:{display:'flex',flexDirection:'column',gap:'14px'}},
+          [['Gender',worker.gender?worker.gender[0].toUpperCase()+worker.gender.slice(1):'—'],
+           ['Mobile',worker.mobile||'—'],
+           ['WhatsApp',worker.whatsapp||'—'],
+           ['ID / Aadhaar',worker.idProof||'—'],
+           ['Joining Date',fmtD(worker.joiningDate)],
+           ['Address',worker.address||'—'],
+           ['Daily Wage',fmt(worker.dailyWage)]
+          ].map(([k,v])=>E('div',{key:k,style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:'12px',paddingBottom:'12px',borderBottom:'1px solid var(--bd)'}},
+            E('div',{style:{fontSize:'12px',color:'var(--mut)',fontWeight:600,textTransform:'uppercase',letterSpacing:'.5px',flexShrink:0}},k),
+            E('div',{style:{fontSize:'14px',fontWeight:500,textAlign:'right'}},v)
+          ))
         )
       )
     )
