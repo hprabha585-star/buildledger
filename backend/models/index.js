@@ -54,6 +54,18 @@ const SiteSchema = new Schema({
 // status: 'present' (1 day), 'half' (1/2 day), 'absent' (0)
 // wagePaid: whether the contractor has paid this worker for this day (tracked separately)
 // Auto-delete: TTL index removes records older than 62 days (≈2 months)
+// Compute expireAt = last moment of the month AFTER the attendance date's month.
+// e.g. attendance on Jun 15 → expireAt = Jul 31 23:59:59
+// This guarantees records are visible for the month they were recorded AND the full next month.
+function attendanceExpiry(dateStr) {
+  const d = dateStr ? new Date(dateStr + 'T00:00:00Z') : new Date();
+  // Move to first day of month after next (month + 2)
+  const expiry = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 2, 1, 0, 0, 0, 0));
+  // Subtract 1ms → last moment of next month
+  expiry.setUTCMilliseconds(-1);
+  return expiry;
+}
+
 const AttendanceSchema = new Schema({
   contractorId: { type: Schema.Types.ObjectId, ref: 'User',   required: true, index: true },
   workerId:     { type: Schema.Types.ObjectId, ref: 'Worker', required: true },
@@ -62,12 +74,9 @@ const AttendanceSchema = new Schema({
   status:       { type: String, enum: ['present', 'absent', 'half'], default: 'absent' },
   wagePaid:     { type: Boolean, default: false },   // wage taken by worker or not
   note:         { type: String, default: '' },
-  // TTL field — Mongo auto-deletes doc when expireAt is reached
-  expireAt:     { type: Date, default: () => {
-    const d = new Date();
-    d.setDate(d.getDate() + 62); // 62 days ≈ 2 months
-    return d;
-  }},
+  // TTL field — set to end of NEXT month so records persist for: current month + next month
+  // (meaning you always have last month + this month visible)
+  expireAt:     { type: Date, default: () => attendanceExpiry(null) },
 }, { timestamps: true });
 
 // Unique: one record per worker per date (site is optional, not part of unique key)
