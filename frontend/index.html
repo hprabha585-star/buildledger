@@ -578,7 +578,22 @@ function Workers(){
       return upd;
     });
   };
-  const save=async()=>{setSaving(true);try{const fd=new FormData();Object.entries(f).forEach(([k,v])=>fd.append(k,v));if(photo&&photo.startsWith('data:'))fd.append('photo',photo);if(modal==='add'){await apiForm('/workers',fd,'POST');toast('Worker added');}else{await apiForm(`/workers/${modal._id}`,fd,'PUT');toast('Updated');}setModal(null);load();}catch(e){toast(e.message,'error');}setSaving(false);};
+  const save=async()=>{
+    setSaving(true);
+    try{
+      const body={...f};
+      if(photo&&photo.startsWith('data:'))body.photo=photo;
+      if(modal==='add'){
+        await apiFetch('/workers',{method:'POST',body:JSON.stringify(body)});
+        toast('Worker added');
+      }else{
+        await apiFetch(`/workers/${modal._id}`,{method:'PUT',body:JSON.stringify(body)});
+        toast('Updated');
+      }
+      setModal(null);load();
+    }catch(e){toast(e.message,'error');}
+    setSaving(false);
+  };
   const del=async id=>{if(!confirm('Delete?'))return;try{await apiFetch(`/workers/${id}`,{method:'DELETE'});toast('Deleted');load();}catch(e){toast(e.message,'error');}};
   const filtered=workers.filter(w=>w.name.toLowerCase().includes(search.toLowerCase())||w.skill.toLowerCase().includes(search.toLowerCase()));
   if(detail)return E(WorkerDetail,{workerId:detail,onBack:()=>setDetail(null)});
@@ -747,7 +762,7 @@ function Attendance(){
     E('div',{className:'pp'},
       // TTL info banner + delete all button
       E('div',{style:{display:'flex',alignItems:'center',gap:'10px',marginBottom:'14px',flexWrap:'wrap'}},
-        stats&&E('div',{className:'ib',style:{margin:0,flex:1}},'ℹ️ ',E('span',null,`Records auto-delete after 2 months. ${stats.count} records stored`+(stats.oldest?` · Oldest: ${fmtDs(stats.oldest)}`:'')+'.')),
+        stats&&E('div',{className:'ib',style:{margin:0,flex:1}},'ℹ️ ',E('span',null,`Keeps last month + current month. ${stats.count} records stored`+(stats.oldest?` · Oldest: ${fmtDs(stats.oldest)}`:'')+'.')),
         E('button',{
           className:'btn btn-d btn-sm',
           style:{flexShrink:0},
